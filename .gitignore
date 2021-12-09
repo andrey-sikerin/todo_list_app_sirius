@@ -88,3 +88,9 @@ fastlane/test_output
 # https://github.com/johnno1962/injectionforxcode
 
 iOSInjectionProject/
+
+# Added custom ingnoring
+.DS_Store
+.Trashes
+*.swp
+*~.nib

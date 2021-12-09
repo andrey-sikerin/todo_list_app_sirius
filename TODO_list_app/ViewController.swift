@@ -6,12 +6,19 @@
 //
 
 import UIKit
+import RxSwift
+import PromiseKit
 
 class ViewController: UIViewController {
+    let helloSequence = Observable.of("Hello Rx")
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        print("loaded")
+        helloSequence.subscribe { event in
+          print(event)
+        }
     }
 
 

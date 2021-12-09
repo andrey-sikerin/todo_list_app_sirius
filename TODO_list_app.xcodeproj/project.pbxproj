@@ -21,7 +21,8 @@
 		CE9652A9276234C800932C06 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = CE9652A8276234C800932C06 /* RxCocoa */; };
 		CE9652AB276234C800932C06 /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = CE9652AA276234C800932C06 /* RxRelay */; };
 		CE9652AD276234C800932C06 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = CE9652AC276234C800932C06 /* RxSwift */; };
-		CE9652AF276234C800932C06 /* RxTest in Frameworks */ = {isa = PBXBuildFile; productRef = CE9652AE276234C800932C06 /* RxTest */; };
+		CE9652B8276242C800932C06 /* RxTest in Frameworks */ = {isa = PBXBuildFile; productRef = CE9652B7276242C800932C06 /* RxTest */; };
+		CE9652B9276242D000932C06 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE9652B127623CB600932C06 /* XCTest.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,7 @@
 		CE3CD6372760FF1200365472 /* TODO_list_appUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TODO_list_appUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE3CD63B2760FF1200365472 /* TODO_list_appUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TODO_list_appUITests.swift; sourceTree = "<group>"; };
 		CE3CD63D2760FF1200365472 /* TODO_list_appUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TODO_list_appUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		CE9652B127623CB600932C06 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,7 +68,6 @@
 				CE9652A42762345300932C06 /* PromiseKit in Frameworks */,
 				CE9652AD276234C800932C06 /* RxSwift in Frameworks */,
 				CE9652AB276234C800932C06 /* RxRelay in Frameworks */,
-				CE9652AF276234C800932C06 /* RxTest in Frameworks */,
 				CE9652A7276234C800932C06 /* RxBlocking in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -75,6 +76,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE9652B9276242D000932C06 /* XCTest.framework in Frameworks */,
+				CE9652B8276242C800932C06 /* RxTest in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,6 +98,7 @@
 				CE3CD6302760FF1200365472 /* TODO_list_appTests */,
 				CE3CD63A2760FF1200365472 /* TODO_list_appUITests */,
 				CE3CD6182760FF1000365472 /* Products */,
+				CE9652B027623CB600932C06 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -139,6 +143,14 @@
 			path = TODO_list_appUITests;
 			sourceTree = "<group>";
 		};
+		CE9652B027623CB600932C06 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CE9652B127623CB600932C06 /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -161,7 +173,6 @@
 				CE9652A8276234C800932C06 /* RxCocoa */,
 				CE9652AA276234C800932C06 /* RxRelay */,
 				CE9652AC276234C800932C06 /* RxSwift */,
-				CE9652AE276234C800932C06 /* RxTest */,
 			);
 			productName = TODO_list_app;
 			productReference = CE3CD6172760FF1000365472 /* TODO_list_app.app */;
@@ -181,6 +192,9 @@
 				CE3CD62F2760FF1200365472 /* PBXTargetDependency */,
 			);
 			name = TODO_list_appTests;
+			packageProductDependencies = (
+				CE9652B7276242C800932C06 /* RxTest */,
+			);
 			productName = TODO_list_appTests;
 			productReference = CE3CD62D2760FF1200365472 /* TODO_list_appTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -688,7 +702,7 @@
 			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxSwift;
 		};
-		CE9652AE276234C800932C06 /* RxTest */ = {
+		CE9652B7276242C800932C06 /* RxTest */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxTest;

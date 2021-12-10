@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		36EBC72333D4B3694D87E61D /* EditTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBC6A7CDDA5E43F286147C /* EditTaskViewController.swift */; };
-		36EBCE7C3B02653471C78481 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBCCB2820DE61351386AA4 /* NavigationController.swift */; };
 		81D8D9A227637A71001D3A1B /* RootGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81D8D9A127637A71001D3A1B /* RootGraph.swift */; };
 		CE3CD61B2760FF1000365472 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3CD61A2760FF1000365472 /* AppDelegate.swift */; };
 		CE3CD61D2760FF1000365472 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3CD61C2760FF1000365472 /* SceneDelegate.swift */; };
@@ -27,6 +26,7 @@
 		CE9652B9276242D000932C06 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE9652B127623CB600932C06 /* XCTest.framework */; };
 		CE9652BE2762473400932C06 /* RxTest in Frameworks */ = {isa = PBXBuildFile; productRef = CE9652BD2762473400932C06 /* RxTest */; };
 		CE9652BF2762473900932C06 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE9652B127623CB600932C06 /* XCTest.framework */; };
+		CEC8FADC27639A1C0048F291 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEC8FADE27639A1C0048F291 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,7 +48,6 @@
 
 /* Begin PBXFileReference section */
 		36EBC6A7CDDA5E43F286147C /* EditTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditTaskViewController.swift; sourceTree = "<group>"; };
-		36EBCCB2820DE61351386AA4 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		81D8D9A127637A71001D3A1B /* RootGraph.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RootGraph.swift; path = TODO_list_app/RootGraph.swift; sourceTree = "<group>"; };
 		CE3CD6172760FF1000365472 /* TODO_list_app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TODO_list_app.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE3CD61A2760FF1000365472 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -63,6 +62,8 @@
 		CE3CD63B2760FF1200365472 /* TODO_list_appUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TODO_list_appUITests.swift; sourceTree = "<group>"; };
 		CE3CD63D2760FF1200365472 /* TODO_list_appUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TODO_list_appUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		CE9652B127623CB600932C06 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		CEC8FAD92763996C0048F291 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		CEC8FADF27639A2B0048F291 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,7 +132,7 @@
 				CE3CD6252760FF1200365472 /* LaunchScreen.storyboard */,
 				CE3CD6282760FF1200365472 /* Info.plist */,
 				36EBC6A7CDDA5E43F286147C /* EditTaskViewController.swift */,
-				36EBCCB2820DE61351386AA4 /* NavigationController.swift */,
+				CEC8FADE27639A1C0048F291 /* Localizable.strings */,
 			);
 			path = TODO_list_app;
 			sourceTree = "<group>";
@@ -260,11 +261,12 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = CE3CD60E2760FF1000365472;
 			packageReferences = (
-				CE9652A22762345300932C06 /* XCRemoteSwiftPackageReference "PromiseKit.git" */,
-				CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */,
+				CE9652A22762345300932C06 /* XCRemoteSwiftPackageReference "PromiseKit" */,
+				CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */,
 			);
 			productRefGroup = CE3CD6182760FF1000365472 /* Products */;
 			projectDirPath = "";
@@ -283,6 +285,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE3CD6272760FF1200365472 /* LaunchScreen.storyboard in Resources */,
+				CEC8FADC27639A1C0048F291 /* Localizable.strings in Resources */,
 				CE3CD6242760FF1200365472 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -313,7 +316,6 @@
 				CE3CD61B2760FF1000365472 /* AppDelegate.swift in Sources */,
 				CE3CD61D2760FF1000365472 /* SceneDelegate.swift in Sources */,
 				36EBC72333D4B3694D87E61D /* EditTaskViewController.swift in Sources */,
-				36EBCE7C3B02653471C78481 /* NavigationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -354,8 +356,17 @@
 			isa = PBXVariantGroup;
 			children = (
 				CE3CD6262760FF1200365472 /* Base */,
+				CEC8FAD92763996C0048F291 /* ru */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		CEC8FADE27639A1C0048F291 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEC8FADF27639A2B0048F291 /* en */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -365,6 +376,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
@@ -426,6 +438,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
@@ -665,7 +678,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		CE9652A22762345300932C06 /* XCRemoteSwiftPackageReference "PromiseKit.git" */ = {
+		CE9652A22762345300932C06 /* XCRemoteSwiftPackageReference "PromiseKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mxcl/PromiseKit.git";
 			requirement = {
@@ -673,7 +686,7 @@
 				version = 6.16.2;
 			};
 		};
-		CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */ = {
+		CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ReactiveX/RxSwift.git";
 			requirement = {
@@ -686,37 +699,37 @@
 /* Begin XCSwiftPackageProductDependency section */
 		CE9652A32762345300932C06 /* PromiseKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CE9652A22762345300932C06 /* XCRemoteSwiftPackageReference "PromiseKit.git" */;
+			package = CE9652A22762345300932C06 /* XCRemoteSwiftPackageReference "PromiseKit" */;
 			productName = PromiseKit;
 		};
 		CE9652A6276234C800932C06 /* RxBlocking */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxBlocking;
 		};
 		CE9652A8276234C800932C06 /* RxCocoa */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxCocoa;
 		};
 		CE9652AA276234C800932C06 /* RxRelay */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxRelay;
 		};
 		CE9652AC276234C800932C06 /* RxSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxSwift;
 		};
 		CE9652B7276242C800932C06 /* RxTest */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxTest;
 		};
 		CE9652BD2762473400932C06 /* RxTest */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxTest;
 		};
 /* End XCSwiftPackageProductDependency section */

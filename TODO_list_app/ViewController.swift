@@ -20,7 +20,5 @@ class ViewController: UIViewController {
           print(event)
         }
     }
-
-
 }
 

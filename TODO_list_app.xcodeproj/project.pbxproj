@@ -64,6 +64,7 @@
 		CE9652B127623CB600932C06 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		CEC8FAD92763996C0048F291 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		CEC8FADF27639A2B0048F291 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		CEC8FAE12763A0850048F291 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -365,6 +366,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				CEC8FADF27639A2B0048F291 /* en */,
+				CEC8FAE12763A0850048F291 /* ru */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";

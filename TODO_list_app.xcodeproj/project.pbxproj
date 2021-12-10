@@ -16,6 +16,15 @@
 		CE3CD6322760FF1200365472 /* TODO_list_appTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3CD6312760FF1200365472 /* TODO_list_appTests.swift */; };
 		CE3CD63C2760FF1200365472 /* TODO_list_appUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3CD63B2760FF1200365472 /* TODO_list_appUITests.swift */; };
 		CE3CD63E2760FF1200365472 /* TODO_list_appUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3CD63D2760FF1200365472 /* TODO_list_appUITestsLaunchTests.swift */; };
+		CE9652A42762345300932C06 /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = CE9652A32762345300932C06 /* PromiseKit */; };
+		CE9652A7276234C800932C06 /* RxBlocking in Frameworks */ = {isa = PBXBuildFile; productRef = CE9652A6276234C800932C06 /* RxBlocking */; };
+		CE9652A9276234C800932C06 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = CE9652A8276234C800932C06 /* RxCocoa */; };
+		CE9652AB276234C800932C06 /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = CE9652AA276234C800932C06 /* RxRelay */; };
+		CE9652AD276234C800932C06 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = CE9652AC276234C800932C06 /* RxSwift */; };
+		CE9652B8276242C800932C06 /* RxTest in Frameworks */ = {isa = PBXBuildFile; productRef = CE9652B7276242C800932C06 /* RxTest */; };
+		CE9652B9276242D000932C06 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE9652B127623CB600932C06 /* XCTest.framework */; };
+		CE9652BE2762473400932C06 /* RxTest in Frameworks */ = {isa = PBXBuildFile; productRef = CE9652BD2762473400932C06 /* RxTest */; };
+		CE9652BF2762473900932C06 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE9652B127623CB600932C06 /* XCTest.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +58,7 @@
 		CE3CD6372760FF1200365472 /* TODO_list_appUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TODO_list_appUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE3CD63B2760FF1200365472 /* TODO_list_appUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TODO_list_appUITests.swift; sourceTree = "<group>"; };
 		CE3CD63D2760FF1200365472 /* TODO_list_appUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TODO_list_appUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		CE9652B127623CB600932C06 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +66,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE9652A9276234C800932C06 /* RxCocoa in Frameworks */,
+				CE9652A42762345300932C06 /* PromiseKit in Frameworks */,
+				CE9652AD276234C800932C06 /* RxSwift in Frameworks */,
+				CE9652AB276234C800932C06 /* RxRelay in Frameworks */,
+				CE9652A7276234C800932C06 /* RxBlocking in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +78,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE9652B9276242D000932C06 /* XCTest.framework in Frameworks */,
+				CE9652B8276242C800932C06 /* RxTest in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,6 +87,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE9652BF2762473900932C06 /* XCTest.framework in Frameworks */,
+				CE9652BE2762473400932C06 /* RxTest in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +102,7 @@
 				CE3CD6302760FF1200365472 /* TODO_list_appTests */,
 				CE3CD63A2760FF1200365472 /* TODO_list_appUITests */,
 				CE3CD6182760FF1000365472 /* Products */,
+				CE9652B027623CB600932C06 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -127,6 +147,14 @@
 			path = TODO_list_appUITests;
 			sourceTree = "<group>";
 		};
+		CE9652B027623CB600932C06 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CE9652B127623CB600932C06 /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -143,6 +171,13 @@
 			dependencies = (
 			);
 			name = TODO_list_app;
+			packageProductDependencies = (
+				CE9652A32762345300932C06 /* PromiseKit */,
+				CE9652A6276234C800932C06 /* RxBlocking */,
+				CE9652A8276234C800932C06 /* RxCocoa */,
+				CE9652AA276234C800932C06 /* RxRelay */,
+				CE9652AC276234C800932C06 /* RxSwift */,
+			);
 			productName = TODO_list_app;
 			productReference = CE3CD6172760FF1000365472 /* TODO_list_app.app */;
 			productType = "com.apple.product-type.application";
@@ -161,6 +196,9 @@
 				CE3CD62F2760FF1200365472 /* PBXTargetDependency */,
 			);
 			name = TODO_list_appTests;
+			packageProductDependencies = (
+				CE9652B7276242C800932C06 /* RxTest */,
+			);
 			productName = TODO_list_appTests;
 			productReference = CE3CD62D2760FF1200365472 /* TODO_list_appTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -179,6 +217,9 @@
 				CE3CD6392760FF1200365472 /* PBXTargetDependency */,
 			);
 			name = TODO_list_appUITests;
+			packageProductDependencies = (
+				CE9652BD2762473400932C06 /* RxTest */,
+			);
 			productName = TODO_list_appUITests;
 			productReference = CE3CD6372760FF1200365472 /* TODO_list_appUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -215,6 +256,10 @@
 				Base,
 			);
 			mainGroup = CE3CD60E2760FF1000365472;
+			packageReferences = (
+				CE9652A22762345300932C06 /* XCRemoteSwiftPackageReference "PromiseKit" */,
+				CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */,
+			);
 			productRefGroup = CE3CD6182760FF1000365472 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -620,6 +665,63 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CE9652A22762345300932C06 /* XCRemoteSwiftPackageReference "PromiseKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mxcl/PromiseKit.git";
+			requirement = {
+				kind = exactVersion;
+				version = 6.16.2;
+			};
+		};
+		CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactiveX/RxSwift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 6.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CE9652A32762345300932C06 /* PromiseKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE9652A22762345300932C06 /* XCRemoteSwiftPackageReference "PromiseKit" */;
+			productName = PromiseKit;
+		};
+		CE9652A6276234C800932C06 /* RxBlocking */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxBlocking;
+		};
+		CE9652A8276234C800932C06 /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxCocoa;
+		};
+		CE9652AA276234C800932C06 /* RxRelay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxRelay;
+		};
+		CE9652AC276234C800932C06 /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
+		};
+		CE9652B7276242C800932C06 /* RxTest */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxTest;
+		};
+		CE9652BD2762473400932C06 /* RxTest */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxTest;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CE3CD60F2760FF1000365472 /* Project object */;
 }

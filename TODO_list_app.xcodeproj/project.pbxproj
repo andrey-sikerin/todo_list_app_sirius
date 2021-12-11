@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		36EBC72333D4B3694D87E61D /* EditTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBC6A7CDDA5E43F286147C /* EditTaskViewController.swift */; };
+		36EBC7FE7C762AD1875F66FD /* AppStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBC184EC2EB3F6F9A4F6BF /* AppStyles.swift */; };
 		8150DB382764F18C00BA3FF1 /* TodoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8150DB372764F18C00BA3FF1 /* TodoItem.swift */; };
 		8150DB3A2764F1BF00BA3FF1 /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8150DB392764F1BF00BA3FF1 /* FileCache.swift */; };
 		8150DB3D2764F1D700BA3FF1 /* CacheFileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8150DB3B2764F1D700BA3FF1 /* CacheFileTests.swift */; };
@@ -52,6 +53,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		36EBC184EC2EB3F6F9A4F6BF /* AppStyles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStyles.swift; sourceTree = "<group>"; };
 		36EBC6A7CDDA5E43F286147C /* EditTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditTaskViewController.swift; sourceTree = "<group>"; };
 		8150DB372764F18C00BA3FF1 /* TodoItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoItem.swift; sourceTree = "<group>"; };
 		8150DB392764F1BF00BA3FF1 /* FileCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FileCache.swift; path = TODO_list_app/FileCache.swift; sourceTree = "<group>"; };
@@ -154,6 +156,7 @@
 				CE3CD6282760FF1200365472 /* Info.plist */,
 				36EBC6A7CDDA5E43F286147C /* EditTaskViewController.swift */,
 				CEC8FADE27639A1C0048F291 /* Localizable.strings */,
+				36EBC184EC2EB3F6F9A4F6BF /* AppStyles.swift */,
 			);
 			path = TODO_list_app;
 			sourceTree = "<group>";
@@ -289,8 +292,8 @@
 			);
 			mainGroup = CE3CD60E2760FF1000365472;
 			packageReferences = (
-				CE9652A22762345300932C06 /* XCRemoteSwiftPackageReference "PromiseKit" */,
-				CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */,
+				CE9652A22762345300932C06 /* XCRemoteSwiftPackageReference "PromiseKit.git" */,
+				CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */,
 				8150DB3F2764F22E00BA3FF1 /* XCRemoteSwiftPackageReference "swift-collections" */,
 			);
 			productRefGroup = CE3CD6182760FF1000365472 /* Products */;
@@ -343,6 +346,7 @@
 				CE3CD61D2760FF1000365472 /* SceneDelegate.swift in Sources */,
 				8150DB382764F18C00BA3FF1 /* TodoItem.swift in Sources */,
 				36EBC72333D4B3694D87E61D /* EditTaskViewController.swift in Sources */,
+				36EBC7FE7C762AD1875F66FD /* AppStyles.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -716,7 +720,7 @@
 				minimumVersion = 1.0.0;
 			};
 		};
-		CE9652A22762345300932C06 /* XCRemoteSwiftPackageReference "PromiseKit" */ = {
+		CE9652A22762345300932C06 /* XCRemoteSwiftPackageReference "PromiseKit.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mxcl/PromiseKit.git";
 			requirement = {
@@ -724,7 +728,7 @@
 				version = 6.16.2;
 			};
 		};
-		CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
+		CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ReactiveX/RxSwift.git";
 			requirement = {
@@ -742,37 +746,37 @@
 		};
 		CE9652A32762345300932C06 /* PromiseKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CE9652A22762345300932C06 /* XCRemoteSwiftPackageReference "PromiseKit" */;
+			package = CE9652A22762345300932C06 /* XCRemoteSwiftPackageReference "PromiseKit.git" */;
 			productName = PromiseKit;
 		};
 		CE9652A6276234C800932C06 /* RxBlocking */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */;
 			productName = RxBlocking;
 		};
 		CE9652A8276234C800932C06 /* RxCocoa */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */;
 			productName = RxCocoa;
 		};
 		CE9652AA276234C800932C06 /* RxRelay */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */;
 			productName = RxRelay;
 		};
 		CE9652AC276234C800932C06 /* RxSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */;
 			productName = RxSwift;
 		};
 		CE9652B7276242C800932C06 /* RxTest */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */;
 			productName = RxTest;
 		};
 		CE9652BD2762473400932C06 /* RxTest */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */;
 			productName = RxTest;
 		};
 /* End XCSwiftPackageProductDependency section */

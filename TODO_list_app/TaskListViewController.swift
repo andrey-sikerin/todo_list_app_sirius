@@ -10,28 +10,21 @@ import UIKit
 
 class TaskListViewController: UIViewController {
     
-    private var taskTableView = UITableView(frame: .zero, style: .insetGrouped)
+    private lazy var taskTableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .insetGrouped)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "test")
+        return tableView
+    }()
         
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        navigationController?.navigationBar.topItem?.title = "Tasks"
-        navigationController?.navigationBar.prefersLargeTitles = true
-        view.addSubview(taskTableView)
-        setUpTableView()
-    }
-    
-    func setUpTableView() {
-        view.addSubview(taskTableView)
         
-        taskTableView.register(UITableViewCell.self, forCellReuseIdentifier: "test")
+        navigationController?.navigationBar.prefersLargeTitles = true
+        title = "My Tasks"
         taskTableView.delegate = self
         taskTableView.dataSource = self
-        
-        taskTableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        taskTableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        taskTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        taskTableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        view.addSubview(taskTableView)
+        taskTableView.frame = view.bounds
     }
 }
 
@@ -41,6 +34,7 @@ extension TaskListViewController: UITableViewDataSource {
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "test")!
+        cell.backgroundColor = .blue
         return cell
     }
 }
@@ -48,5 +42,9 @@ extension TaskListViewController: UITableViewDataSource {
 extension TaskListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         "TasksList"
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        <#code#>
     }
 }

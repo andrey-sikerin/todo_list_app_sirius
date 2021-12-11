@@ -7,10 +7,10 @@
 
 import Foundation
 import UIKit
+import RxSwift
 
 class TaskListViewController: UIViewController {
-
-    private struct PlusButton {
+private struct PlusButton {
         static let dimension: CGFloat = 54
         static let size = CGSize(width: dimension, height: dimension)
         static let bottomOffset: CGFloat = 56
@@ -39,7 +39,7 @@ class TaskListViewController: UIViewController {
     private lazy var taskTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.register(AddNewTaskCell.self, forCellReuseIdentifier: AddNewTaskCell.defaultReuseIdentifier)
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        tableView.register(ToDoCell.self, forCellReuseIdentifier: ToDoCell.identifier)
         return tableView
     }()
 
@@ -79,6 +79,14 @@ class TaskListViewController: UIViewController {
         taskTableView.delegate = self
         taskTableView.dataSource = self
         view.addSubview(taskTableView)
+        taskTableView.frame = view.bounds
+        taskTableView.rowHeight = 56
+
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        taskTableView.reloadData()
     }
 
     @objc func plusButtonTriggered(sender: Any) {
@@ -108,16 +116,21 @@ extension TaskListViewController: UITableViewDataSource {
             print("Unable to dequeue a cell with Identifier: \(reuseIdentifier)")
             return UITableViewCell()
         }
-        
+
         cell.backgroundColor = Color.backgroundSecondary
+
+
+
         return cell
     }
 }
 
 extension TaskListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        "TasksList"
+        "Header"
     }
+
+
 }
 
 fileprivate let reuseIdentifier = "test"

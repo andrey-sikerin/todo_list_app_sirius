@@ -10,6 +10,8 @@
 		8150DB2A2764C59300BA3FF1 /* TaskListGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8150DB292764C59300BA3FF1 /* TaskListGraph.swift */; };
 		8150DB2C2764C61D00BA3FF1 /* TaskListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8150DB2B2764C61D00BA3FF1 /* TaskListViewController.swift */; };
 		81D8D9A227637A71001D3A1B /* RootGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81D8D9A127637A71001D3A1B /* RootGraph.swift */; };
+		8CAC85B02764E90D00963E09 /* ToDoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CAC85AF2764E90D00963E09 /* ToDoCell.swift */; };
+		8CAC85B227656CEF00963E09 /* TaskListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CAC85B127656CEF00963E09 /* TaskListViewController.swift */; };
 		CE3CD61B2760FF1000365472 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3CD61A2760FF1000365472 /* AppDelegate.swift */; };
 		CE3CD61D2760FF1000365472 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3CD61C2760FF1000365472 /* SceneDelegate.swift */; };
 		CE3CD61F2760FF1000365472 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3CD61E2760FF1000365472 /* NavigationController.swift */; };
@@ -50,6 +52,8 @@
 		8150DB292764C59300BA3FF1 /* TaskListGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListGraph.swift; sourceTree = "<group>"; };
 		8150DB2B2764C61D00BA3FF1 /* TaskListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListViewController.swift; sourceTree = "<group>"; };
 		81D8D9A127637A71001D3A1B /* RootGraph.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RootGraph.swift; path = TODO_list_app/RootGraph.swift; sourceTree = "<group>"; };
+		8CAC85AF2764E90D00963E09 /* ToDoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoCell.swift; sourceTree = "<group>"; };
+		8CAC85B127656CEF00963E09 /* TaskListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskListViewController.swift; sourceTree = "<group>"; };
 		CE3CD6172760FF1000365472 /* TODO_list_app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TODO_list_app.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE3CD61A2760FF1000365472 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CE3CD61C2760FF1000365472 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -127,11 +131,18 @@
 				8150DB292764C59300BA3FF1 /* TaskListGraph.swift */,
 				CE3CD61A2760FF1000365472 /* AppDelegate.swift */,
 				CE3CD61C2760FF1000365472 /* SceneDelegate.swift */,
+				81D8D9A127637A71001D3A1B /* RootGraph.swift */,
+				8150DB392764F1BF00BA3FF1 /* FileCache.swift */,
 				CE3CD61E2760FF1000365472 /* NavigationController.swift */,
 				8150DB2B2764C61D00BA3FF1 /* TaskListViewController.swift */,
+				8CAC85B127656CEF00963E09 /* TaskListViewController.swift */,
+				36EBC6A7CDDA5E43F286147C /* EditTaskViewController.swift */,
+				8CAC85AF2764E90D00963E09 /* ToDoCell.swift */,
+				8150DB362764F18C00BA3FF1 /* Models */,
 				CE3CD6232760FF1200365472 /* Assets.xcassets */,
 				CE3CD6252760FF1200365472 /* LaunchScreen.storyboard */,
 				CE3CD6282760FF1200365472 /* Info.plist */,
+				CEC8FADE27639A1C0048F291 /* Localizable.strings */,
 			);
 			path = TODO_list_app;
 			sourceTree = "<group>";
@@ -310,8 +321,10 @@
 			files = (
 				8150DB2A2764C59300BA3FF1 /* TaskListGraph.swift in Sources */,
 				81D8D9A227637A71001D3A1B /* RootGraph.swift in Sources */,
+				8CAC85B02764E90D00963E09 /* ToDoCell.swift in Sources */,
 				CE3CD61F2760FF1000365472 /* NavigationController.swift in Sources */,
 				CE3CD61B2760FF1000365472 /* AppDelegate.swift in Sources */,
+				8CAC85B227656CEF00963E09 /* TaskListViewController.swift in Sources */,
 				CE3CD61D2760FF1000365472 /* SceneDelegate.swift in Sources */,
 				8150DB2C2764C61D00BA3FF1 /* TaskListViewController.swift in Sources */,
 			);
@@ -484,6 +497,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = ZFV226CCRN;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TODO_list_app/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -511,6 +525,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = ZFV226CCRN;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TODO_list_app/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

@@ -9,7 +9,7 @@ import UIKit
 import RxSwift
 import PromiseKit
 
-class ViewController: UIViewController {
+class NavigationController: UINavigationController {
     let helloSequence = Observable.of("Hello Rx")
 
     override func viewDidLoad() {

@@ -36,10 +36,7 @@ extension TodoItem: Codable {
         // if nil is decoded than deadline is assigned to nil automatically
         let stringDate = try values.decode(String?.self, forKey: .deadline)
         if let stringDate = stringDate {
-            let formatter = DateFormatter()
-            formatter.dateStyle = .full
-            formatter.timeStyle = .full
-            deadline = formatter.date(from: stringDate)
+            deadline =  DateFormatter.todoItemFormatter.date(from: stringDate)
         }
         
         // if decode a nil then priority is not decoded, thus it's normal
@@ -51,7 +48,7 @@ extension TodoItem: Codable {
                 fatalError("Unable to decode a TodoItem, invalid priority: \(stringPriority)")
             }
         } else {
-            priority = Priority.normal
+            priority = .normal
         }
     }
     
@@ -69,13 +66,19 @@ extension TodoItem: Codable {
         
         // if there is a deadline, encode it, else don't
         if let date = deadline {
-            let formatter = DateFormatter()
-            formatter.dateStyle = .full
-            formatter.timeStyle = .full
-            let stringDate = formatter.string(from: date)
+            let stringDate = DateFormatter.todoItemFormatter.string(from: date)
             try container.encode(stringDate, forKey: .deadline)
         } else {
             try container.encode(String?.none, forKey: .deadline)
         }
     }
+}
+
+fileprivate extension DateFormatter {
+    static let todoItemFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .full
+        formatter.timeStyle = .full
+        return formatter
+    }()
 }

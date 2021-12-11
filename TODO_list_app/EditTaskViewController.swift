@@ -4,7 +4,7 @@ class EditTaskViewController: UIViewController {
 
     private let scrollView = UIScrollView()
     private let layoutStyle: LayoutStyle = .defaultStyle
-
+    private let testView = UIView()
     private let strings: Strings
 
     public struct Strings {
@@ -29,7 +29,6 @@ class EditTaskViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        let testView = UIView()
         navigationItem.leftBarButtonItem = UIBarButtonItem(
                 title: strings.leftNavigationBarText,
                 style: .plain,
@@ -44,7 +43,6 @@ class EditTaskViewController: UIViewController {
         )
         navigationItem.title = strings.titleNavigationBarText
         testView.backgroundColor = .blue
-        testView.frame = CGRect(x: .zero, y: .zero, width: scrollView.contentSize.width, height: scrollView.contentSize.height)
         view.addSubview(scrollView)
         scrollView.addSubview(testView)
     }
@@ -63,9 +61,14 @@ class EditTaskViewController: UIViewController {
                 height: view.frame.height)
         var customSafeAreaInsets = view.safeAreaInsets
         customSafeAreaInsets.top = 0
-        scrollView.contentInset = customSafeAreaInsets + layoutStyle.contentInsets
-        scrollView.contentSize = CGSize(width: view.frame.width - scrollView.safeAreaInsets.left -
-                scrollView.safeAreaInsets.right, height: 2 * view.frame.height)
+        let sumInsets = customSafeAreaInsets + layoutStyle.contentInsets
+
+        scrollView.contentInset = sumInsets
+        scrollView.contentSize = CGSize(
+                width: view.frame.width - sumInsets.left - sumInsets.right,
+                height: 2 * view.frame.height
+        )
+        testView.frame = CGRect(x: .zero, y: .zero, width: scrollView.contentSize.width, height: scrollView.contentSize.height)
     }
 }
 

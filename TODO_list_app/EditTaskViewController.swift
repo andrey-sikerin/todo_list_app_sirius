@@ -1,8 +1,9 @@
 import UIKit
 
 class EditTaskViewController: UIViewController {
+
     private let scrollView = UIScrollView()
-    private let testView = UIView()
+    private let layoutStyle: LayoutStyle = .defaultStyle
 
     private let strings: Strings
 
@@ -10,6 +11,10 @@ class EditTaskViewController: UIViewController {
         let leftNavigationBarText: String
         let rightNavigationBarText: String
         let titleNavigationBarText: String
+    }
+
+    fileprivate struct LayoutStyle {
+        let contentInsets: UIEdgeInsets
     }
 
     init(strings: Strings) {
@@ -24,7 +29,7 @@ class EditTaskViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-
+        let testView = UIView()
         navigationItem.leftBarButtonItem = UIBarButtonItem(
                 title: strings.leftNavigationBarText,
                 style: .plain,
@@ -38,6 +43,8 @@ class EditTaskViewController: UIViewController {
                 action: #selector(onRightBarButtonClicked)
         )
         navigationItem.title = strings.titleNavigationBarText
+        testView.backgroundColor = .blue
+        testView.frame = CGRect(x: .zero, y: .zero, width: scrollView.contentSize.width, height: scrollView.contentSize.height)
         view.addSubview(scrollView)
         scrollView.addSubview(testView)
     }
@@ -54,13 +61,21 @@ class EditTaskViewController: UIViewController {
         super.viewWillLayoutSubviews()
         scrollView.frame = CGRect(x: .zero, y: .zero, width: view.frame.width,
                 height: view.frame.height)
-        scrollView.contentInset = UIEdgeInsets(top: 16, left: view.safeAreaInsets.left + 16, bottom: view.safeAreaInsets.bottom + 32,
-                right: view.safeAreaInsets.right + 16)
-        scrollView.contentSize = CGSize(width: view.frame.width - 2*16 - view.safeAreaInsets.left -
-                view.safeAreaInsets.right, height: 2*view.frame.height)
-        testView.frame = CGRect(x:.zero, y:.zero, width: scrollView.contentSize.width, height: scrollView.contentSize.height)
-        testView.backgroundColor = .blue
-
+        var customSafeAreaInsets = view.safeAreaInsets
+        customSafeAreaInsets.top = 0
+        scrollView.contentInset = customSafeAreaInsets + layoutStyle.contentInsets
+        scrollView.contentSize = CGSize(width: view.frame.width - scrollView.safeAreaInsets.left -
+                scrollView.safeAreaInsets.right, height: 2 * view.frame.height)
     }
+}
+
+fileprivate extension UIEdgeInsets{
+    static func + (lhs: UIEdgeInsets, rhs: UIEdgeInsets) -> UIEdgeInsets {
+        UIEdgeInsets(top: lhs.top + rhs.top, left: lhs.left + rhs.left, bottom: lhs.bottom + rhs.bottom, right: lhs.right + rhs.right)
+    }
+}
+
+fileprivate extension EditTaskViewController.LayoutStyle {
+    static let defaultStyle = Self.init(contentInsets: UIEdgeInsets(top: 16, left: 16, bottom: 32, right: 16))
 }
 

@@ -37,13 +37,14 @@ class TaskListViewController: UIViewController {
     }
 
 
+    private static let numberOfRows = 20
+
     private lazy var taskTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
         return tableView
     }()
-
-    private lazy var plusButton: UIButton = {
+private lazy var plusButton: UIButton = {
         let button = UIButton()
         button.setBackgroundImage(UIImage(named: "plusButton"), for: .normal)
         button.layer.shadowColor = UIColor.black.cgColor
@@ -53,7 +54,6 @@ class TaskListViewController: UIViewController {
         button.addTarget(self, action: #selector(plusButtonTriggered), for: .touchUpInside)
         return button
     }()
-
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         taskTableView.frame = view.bounds
@@ -88,12 +88,18 @@ class TaskListViewController: UIViewController {
 
 extension TaskListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        4
+        TaskListViewController.numberOfRows
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier)!
-        cell.backgroundColor = .blue
-        return cell
+//        guard let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as? ToDoCell else { return UITableViewCell() }
+
+        if indexPath.row == TaskListViewController.numberOfRows - 1 {
+            let newTaskCell = AddNewTaskCell()
+            newTaskCell.configure()
+            return newTaskCell
+        }
+
+        return UITableViewCell()
     }
 }
 

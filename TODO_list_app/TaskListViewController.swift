@@ -9,6 +9,8 @@ import Foundation
 import UIKit
 
 class TaskListViewController: UIViewController {
+    
+    private static let numberOfRows = 20
 
     private lazy var taskTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
@@ -31,10 +33,16 @@ class TaskListViewController: UIViewController {
 
 extension TaskListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        20
+        TaskListViewController.numberOfRows
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: ToDoCell.identifier, for: indexPath) as? ToDoCell else { return UITableViewCell() }
+        
+        if indexPath.row == TaskListViewController.numberOfRows - 1 {
+            let newTaskCell = AddNewTaskCell()
+            newTaskCell.configure()
+            return newTaskCell
+        }
 
         return cell
     }

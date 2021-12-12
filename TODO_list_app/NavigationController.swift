@@ -21,4 +21,3 @@ class NavigationController: UINavigationController {
         }
     }
 }
-

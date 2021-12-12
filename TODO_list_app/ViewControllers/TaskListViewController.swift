@@ -10,7 +10,29 @@ import UIKit
 import RxSwift
 
 class TaskListViewController: UIViewController {
-private struct PlusButton {
+private static let numberOfRows = 20
+
+    private struct SwipeIcons {
+        static let doneIconName = "doneIcon"
+        static let doneIconPosition = CGPoint(x: 20, y: 20)
+        static let doneIconSize = CGSize(width: 27, height: 26)
+        static let doneContainerSize = CGSize(width: 67, height: 66)
+        static let doneIconColor = UIColor(red: 0.204, green: 0.78, blue: 0.349, alpha: 1)
+
+        static let infoIconName = "infoIcon"
+        static let infoIconPosition = CGPoint(x: 20, y: 20)
+        static let infoIconSize = CGSize(width: 27, height: 26)
+        static let infoContainerSize = CGSize(width: 67, height: 66)
+        static let infoIconColor = UIColor(red: 0.82, green: 0.82, blue: 0.839, alpha: 1)
+
+        static let deleteIconName = "deleteIcon"
+        static let deleteIconPosition = CGPoint(x: 20, y: 20)
+        static let deleteIconSize = CGSize(width: 26, height: 26)
+        static let deleteContainerSize = CGSize(width: 66, height: 66)
+        static let deleteIconColor = UIColor(red: 1, green: 0.231, blue: 0.188, alpha: 1)
+    }
+
+    private struct PlusButton {
         static let dimension: CGFloat = 54
         static let size = CGSize(width: dimension, height: dimension)
         static let bottomOffset: CGFloat = 56
@@ -27,11 +49,6 @@ private struct PlusButton {
 
     private let strings: Strings
 
-    init(strings: Strings) {
-        self.strings = strings
-        super.init(nibName: nil, bundle: nil)
-    }
-
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -42,6 +59,14 @@ private struct PlusButton {
         tableView.register(ToDoCell.self, forCellReuseIdentifier: ToDoCell.identifier)
         return tableView
     }()
+
+    typealias TransitionAction = (IndexPath) -> Void
+    private var transitionAction: TransitionAction
+    init(strings: Strings, transitionToEdit: @escaping TransitionAction) {
+        self.strings = strings
+        self.transitionAction = transitionToEdit
+        super.init(nibName: nil, bundle: nil)
+    }
 
     private lazy var plusButton: UIButton = {
         let button = UIButton()
@@ -92,11 +117,27 @@ private struct PlusButton {
     @objc func plusButtonTriggered(sender: Any) {
         print("Button Pressed")
     }
+
+    private func handleMarkAsDone(at indexPath: IndexPath) {
+        print("task is done")
+    }
+
+    private func handleInfoTask(at indexPath: IndexPath) {
+        print("task is redacting")
+    }
+
+    private func handleDeleteTask(at indexPath: IndexPath) {
+        print("task deleted")
+    }
+
+    private func isLastRow(_ indexPath: IndexPath) -> Bool {
+        indexPath.row == Self.numberOfRows - 1
+    }
 }
 
 extension TaskListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        numberOfRows
+        Self.numberOfRows
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -104,7 +145,7 @@ extension TaskListViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.row == numberOfRows - 1 {
+        if isLastRow(indexPath) {
             guard let newTaskCell = tableView.dequeueReusableCell(withIdentifier: AddNewTaskCell.defaultReuseIdentifier) as? AddNewTaskCell else {
                 print("Unable to dequeue a cell with Identifier: \(reuseIdentifier)")
                 return UITableViewCell()
@@ -125,14 +166,59 @@ extension TaskListViewController: UITableViewDataSource {
     }
 }
 
-extension TaskListViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        "Header"
-    }
-
-
-}
-
 fileprivate let reuseIdentifier = "test"
 fileprivate let numberOfRows = 20
 fileprivate let defaultHeight: CGFloat = 56
+
+extension TaskListViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        guard !isLastRow(indexPath) else {
+            return nil
+        }
+        let doneAction = UIContextualAction(style: .normal, title: nil) { (action, sourceView, completion) in
+            self.handleMarkAsDone(at: indexPath)
+            completion(true)
+        }
+        doneAction.image = UIGraphicsImageRenderer(bounds: CGRect(origin: .zero, size: SwipeIcons.doneContainerSize)).image { _ in
+            UIImage(named: SwipeIcons.doneIconName)?.draw(in: CGRect(origin: SwipeIcons.doneIconPosition, size: SwipeIcons.doneIconSize))
+        }
+        doneAction.backgroundColor = SwipeIcons.doneIconColor
+        return UISwipeActionsConfiguration(actions: [doneAction])
+    }
+
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        guard !isLastRow(indexPath) else {
+            return nil
+        }
+
+        let infoAction = UIContextualAction(style: .normal, title: nil) { (action, sourceView, completion) in
+            self.handleInfoTask(at: indexPath)
+            completion(true)
+        }
+        infoAction.image = UIGraphicsImageRenderer(size: SwipeIcons.infoContainerSize).image { _ in
+            UIImage(named: SwipeIcons.infoIconName)?.draw(in: CGRect(origin: SwipeIcons.infoIconPosition, size: SwipeIcons.infoIconSize))
+        }
+        infoAction.backgroundColor = SwipeIcons.infoIconColor
+
+        let deleteAction = UIContextualAction(style: .normal, title: nil) { (action, sourceView, completion) in
+            self.handleDeleteTask(at: indexPath)
+            completion(true)
+        }
+        deleteAction.image = UIGraphicsImageRenderer(size: SwipeIcons.doneContainerSize).image { _ in
+            UIImage(named: SwipeIcons.deleteIconName)?.draw(in: CGRect(origin: SwipeIcons.deleteIconPosition, size: SwipeIcons.deleteIconSize))
+        }
+        deleteAction.backgroundColor = SwipeIcons.deleteIconColor
+
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction, infoAction])
+        configuration.performsFirstActionWithFullSwipe = true
+        return configuration
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("Selected Row number: \(indexPath.row)")
+        transitionAction(indexPath)
+    }
+}
+
+

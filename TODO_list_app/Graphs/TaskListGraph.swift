@@ -10,12 +10,56 @@ import UIKit
 
 class TaskListGraph {
     private(set) var viewController: UIViewController
-    
+    private var tasks: FileCache = FileCache.test
+    private var currentEdit: EditTaskGraph?
+
     init() {
-        self.viewController = TaskListViewController(
-            strings: TaskListViewController.Strings(
-                titleNavigationBarText: NSLocalizedString("Tasks", comment: "")
+        self.viewController = UIViewController()
+        let transitionToEditVC: (IndexPath) -> Void = { [weak self] index in
+            let editTaskVC = EditTaskViewController(
+                strings: EditTaskViewController.Strings(
+                    leftNavigationBarText: NSLocalizedString("Cancel", comment: ""),
+                    rightNavigationBarText: NSLocalizedString("Save", comment: ""),
+                    titleNavigationBarText: NSLocalizedString("Task", comment: ""),
+                    textViewPlaceholder: NSLocalizedString("TaskDescriptionPlaceholder", comment: "")
+            ),
+                styles: EditTaskViewController.Styles(
+                    itemsBackground: Color.backgroundSecondary,
+                    backgroundColor: Color.backgroundPrimary,
+                    textViewTextColor: Color.labelPrimary,
+                    textViewPlaceholderColor: Color.labelTertiary)
             )
-        )
+            let navController = UINavigationController(rootViewController: editTaskVC)
+            self?.viewController.present(navController, animated: true)
+        }
+        self.viewController = TaskListViewController(
+                strings: TaskListViewController.Strings (
+                        titleNavigationBarText: NSLocalizedString("Tasks", comment: "")
+                ),
+                transitionToEdit: transitionToEditVC)
     }
+}
+
+fileprivate extension FileCache {
+    static var test: FileCache = {
+        let manager = FileCache.FileManager(write: { data, url in
+            try data.write(to: url)
+        }, read: { url in
+            try Data(contentsOf: url)
+        })
+        let file = FileCache(manager: manager)
+        let buyFood = TodoItem(id: "BuyFoodIdString", text: "Working for food", priority: .low)
+        let goRun = TodoItem(text: "Running is good", priority: .normal)
+        let homework = TodoItem(text: "Copy It", deadline: Date().addingTimeInterval(3600), priority: .high)
+        let cookLunch = TodoItem(text: "Cook yourself!", priority: .normal)
+        let eatLunch = TodoItem(text: "Enjoy", priority: .normal)
+        let goSleep = TodoItem(text: "Sleeping is essential", deadline: Date().addingTimeInterval(3600 * 5), priority: .high)
+        file.addTask(buyFood)
+        file.addTask(goRun)
+        file.addTask(homework)
+        file.addTask(cookLunch)
+        file.addTask(eatLunch)
+        file.addTask(goSleep)
+        return file
+    }()
 }

@@ -131,6 +131,10 @@ extension TaskListViewController: UITableViewDelegate {
         configuration.performsFirstActionWithFullSwipe = true
         return configuration
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("Selected Row number: \(indexPath.row)")
+    }
 }
 
 #if DEBUG

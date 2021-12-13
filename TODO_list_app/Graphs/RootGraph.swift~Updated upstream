@@ -7,7 +7,7 @@ class RootGraph {
     
     init() {
         let taskListController = TaskListViewController()
-        self.rootViewController = UINavigationController(rootViewController)
+        self.rootViewController = UINavigationController(rootViewController:)
         self.taskListGraph = TaskListGraph(with: taskListController)
         
        // let editTaskViewController = EditTaskViewController(strings: EditTaskViewController.Strings(

@@ -82,3 +82,19 @@ fileprivate extension EditTaskViewController.LayoutStyle {
     static let defaultStyle = Self.init(contentInsets: UIEdgeInsets(top: 16, left: 16, bottom: 32, right: 16))
 }
 
+#if DEBUG
+import SwiftUI
+
+@available(iOS 13, *)
+struct EditTaskViewControllerPreview: PreviewProvider {
+    
+    static var previews: some View {
+        // view controller using programmatic UI
+        EditTaskViewController(strings: EditTaskViewController.Strings(
+            leftNavigationBarText: NSLocalizedString("Cancel", comment: ""),
+            rightNavigationBarText: NSLocalizedString("Save", comment: ""),
+            titleNavigationBarText: NSLocalizedString("Task", comment: "")
+        )).toPreview()
+    }
+}
+#endif

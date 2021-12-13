@@ -37,7 +37,18 @@ class TaskListViewController: UIViewController {
         tableView.register(ToDoCell.self, forCellReuseIdentifier: ToDoCell.identifier)
         return tableView
     }()
-
+    
+    typealias TransitionAction = (IndexPath) -> Void
+    private var transitionAction: TransitionAction
+    init(transitionToEdit: @escaping TransitionAction) {
+        self.transitionAction = transitionToEdit
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -134,6 +145,7 @@ extension TaskListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("Selected Row number: \(indexPath.row)")
+        transitionAction(indexPath)
     }
 }
 
@@ -141,11 +153,12 @@ extension TaskListViewController: UITableViewDelegate {
 import SwiftUI
 
 @available(iOS 13, *)
-struct InfoVCPreview: PreviewProvider {
+struct TaskListViewControllerPreview: PreviewProvider {
     
     static var previews: some View {
         // view controller using programmatic UI
-        TaskListViewController().toPreview()
+        let dummyTransition = { (index: IndexPath) in}
+        TaskListViewController(transitionToEdit: dummyTransition).toPreview()
     }
 }
 #endif

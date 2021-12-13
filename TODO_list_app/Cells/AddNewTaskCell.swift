@@ -6,26 +6,26 @@
 //
 
 import UIKit
+import SwiftUI
 
 class AddNewTaskCell: UITableViewCell {
     
-    private struct PlusIcon {
-        static let rightOffset: CGFloat = 16
-        static let topOffset: CGFloat = 16
-        static let width: CGFloat = 24
-        static let height: CGFloat = 24
+    private let labelStyle: LabelStyle = .defaultStyle
+    private let plusIconLayoutStyle: PlusIconLayoutStyle = .defaultStyle
+    static let defaultReuseIdentifier = "AddNewTaskCellReuseIdentifier"
+    
+    public struct PlusIconLayoutStyle {
+        let rightOffset: CGFloat
+        let topOffset: CGFloat
+        let width: CGFloat
+        let height: CGFloat
     }
     
-    private struct Label {
-        static let plusButtonRightOffset: CGFloat = 12
-        static let topOffset: CGFloat = 17
-        static let width: CGFloat = 51
-        static let height: CGFloat = 22
-    }
-    
-    private struct Cell {
-        static let width: CGFloat = 375
-        static let height: CGFloat = 56
+    public struct LabelStyle {
+        let plusButtonRightOffset: CGFloat
+        let topOffset: CGFloat
+        let width: CGFloat
+        let height: CGFloat
     }
     
     private lazy var label: UILabel = {
@@ -38,32 +38,48 @@ class AddNewTaskCell: UITableViewCell {
             alpha: 1)
         label.font = UIFont(name: "SFProText-Regular", size: 17)
         label.frame = CGRect(
-            x: PlusIcon.rightOffset + PlusIcon.width + Label.plusButtonRightOffset,
-            y: PlusIcon.topOffset,
-            width: Label.width,
-            height: Label.height)
+            x: plusIconLayoutStyle.rightOffset + plusIconLayoutStyle.width + labelStyle.plusButtonRightOffset,
+            y: plusIconLayoutStyle.topOffset,
+            width: labelStyle.width,
+            height: labelStyle.height)
         return label
     }()
     
     private lazy var plusIcon: UIImageView = {
-        let icon = UIImage(named: "addNewTaskCellButton")
-        let iconView = UIImageView(image: icon)
+        let iconView = UIImageView(image: UIImage(named: "addNewTaskCellButton"))
         iconView.contentMode = .scaleAspectFit
         iconView.frame = CGRect(
-            x: PlusIcon.rightOffset,
-            y: PlusIcon.topOffset,
-            width: PlusIcon.width,
-            height: PlusIcon.height)
+            x: plusIconLayoutStyle.rightOffset,
+            y: plusIconLayoutStyle.topOffset,
+            width: plusIconLayoutStyle.width,
+            height: plusIconLayoutStyle.height)
         return iconView
     }()
     
-    func configure() {
-        contentView.frame = CGRect(
-            x: 0,
-            y: 0,
-            width: Cell.width,
-            height: Cell.height)
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.addSubview(plusIcon)
         contentView.addSubview(label)
     }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+fileprivate extension AddNewTaskCell.PlusIconLayoutStyle {
+    static let defaultStyle = Self.init (
+        rightOffset: 16,
+        topOffset: 16,
+        width: 24,
+        height: 24)
+}
+
+fileprivate extension AddNewTaskCell.LabelStyle {
+    static let defaultStyle = Self.init (
+        plusButtonRightOffset: 12,
+        topOffset: 17,
+        width: 51,
+        height: 22
+    )
 }

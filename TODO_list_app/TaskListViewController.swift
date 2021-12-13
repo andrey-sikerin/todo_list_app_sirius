@@ -35,16 +35,15 @@ class TaskListViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-
-    private static let numberOfRows = 20
-
+    
     private lazy var taskTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
+        tableView.register(AddNewTaskCell.self, forCellReuseIdentifier: AddNewTaskCell.defaultReuseIdentifier)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
         return tableView
     }()
-private lazy var plusButton: UIButton = {
+    
+    private lazy var plusButton: UIButton = {
         let button = UIButton()
         button.setBackgroundImage(UIImage(named: "plusButton"), for: .normal)
         button.layer.shadowColor = UIColor.black.cgColor
@@ -54,6 +53,7 @@ private lazy var plusButton: UIButton = {
         button.addTarget(self, action: #selector(plusButtonTriggered), for: .touchUpInside)
         return button
     }()
+    
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         taskTableView.frame = view.bounds
@@ -88,18 +88,28 @@ private lazy var plusButton: UIButton = {
 
 extension TaskListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        TaskListViewController.numberOfRows
+        numberOfRows
     }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        defaultHeight
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        guard let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as? ToDoCell else { return UITableViewCell() }
-
-        if indexPath.row == TaskListViewController.numberOfRows - 1 {
-            let newTaskCell = AddNewTaskCell()
-            newTaskCell.configure()
+        if indexPath.row == numberOfRows - 1 {
+            guard let newTaskCell = tableView.dequeueReusableCell(withIdentifier: AddNewTaskCell.defaultReuseIdentifier) as? AddNewTaskCell else {
+                print("Unable to dequeue a cell with Identifier: \(reuseIdentifier)")
+                return UITableViewCell()
+            }
             return newTaskCell
         }
+        
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) else {
+            print("Unable to dequeue a cell with Identifier: \(reuseIdentifier)")
+            return UITableViewCell()
+        }
 
-        return UITableViewCell()
+        return cell
     }
 }
 
@@ -110,3 +120,5 @@ extension TaskListViewController: UITableViewDelegate {
 }
 
 fileprivate let reuseIdentifier = "test"
+fileprivate let numberOfRows = 20
+fileprivate let defaultHeight: CGFloat = 56

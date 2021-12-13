@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		36EBC72333D4B3694D87E61D /* EditTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBC6A7CDDA5E43F286147C /* EditTaskViewController.swift */; };
 		813FC6DB2766A4AA001518A1 /* AddNewTaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813FC6DA2766A4AA001518A1 /* AddNewTaskCell.swift */; };
 		8150DB2A2764C59300BA3FF1 /* TaskListGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8150DB292764C59300BA3FF1 /* TaskListGraph.swift */; };
 		8150DB382764F18C00BA3FF1 /* TodoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8150DB372764F18C00BA3FF1 /* TodoItem.swift */; };
@@ -35,6 +36,7 @@
 		CE9652B9276242D000932C06 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE9652B127623CB600932C06 /* XCTest.framework */; };
 		CE9652BE2762473400932C06 /* RxTest in Frameworks */ = {isa = PBXBuildFile; productRef = CE9652BD2762473400932C06 /* RxTest */; };
 		CE9652BF2762473900932C06 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE9652B127623CB600932C06 /* XCTest.framework */; };
+		CEC8FADC27639A1C0048F291 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEC8FADE27639A1C0048F291 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +57,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		36EBC6A7CDDA5E43F286147C /* EditTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditTaskViewController.swift; sourceTree = "<group>"; };
 		813FC6DA2766A4AA001518A1 /* AddNewTaskCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewTaskCell.swift; sourceTree = "<group>"; };
 		8150DB292764C59300BA3FF1 /* TaskListGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListGraph.swift; sourceTree = "<group>"; };
 		8150DB372764F18C00BA3FF1 /* TodoItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoItem.swift; sourceTree = "<group>"; };
@@ -78,6 +81,9 @@
 		CE3CD63B2760FF1200365472 /* TODO_list_appUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TODO_list_appUITests.swift; sourceTree = "<group>"; };
 		CE3CD63D2760FF1200365472 /* TODO_list_appUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TODO_list_appUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		CE9652B127623CB600932C06 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		CEC8FAD92763996C0048F291 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		CEC8FADF27639A2B0048F291 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		CEC8FAE12763A0850048F291 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,6 +175,8 @@
 				CE3CD6232760FF1200365472 /* Assets.xcassets */,
 				CE3CD6252760FF1200365472 /* LaunchScreen.storyboard */,
 				CE3CD6282760FF1200365472 /* Info.plist */,
+				36EBC6A7CDDA5E43F286147C /* EditTaskViewController.swift */,
+				CEC8FADE27639A1C0048F291 /* Localizable.strings */,
 			);
 			path = TODO_list_app;
 			sourceTree = "<group>";
@@ -300,6 +308,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = CE3CD60E2760FF1000365472;
 			packageReferences = (
@@ -324,6 +333,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE3CD6272760FF1200365472 /* LaunchScreen.storyboard in Resources */,
+				CEC8FADC27639A1C0048F291 /* Localizable.strings in Resources */,
 				CE3CD6242760FF1200365472 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -360,6 +370,7 @@
 				8CAC85BA2766A06F00963E09 /* UIViewController+Preview.swift in Sources */,
 				8150DB382764F18C00BA3FF1 /* TodoItem.swift in Sources */,
 				8CAC85B627661DA900963E09 /* TaskListViewController.swift in Sources */,
+				36EBC72333D4B3694D87E61D /* EditTaskViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -402,8 +413,18 @@
 			isa = PBXVariantGroup;
 			children = (
 				CE3CD6262760FF1200365472 /* Base */,
+				CEC8FAD92763996C0048F291 /* ru */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		CEC8FADE27639A1C0048F291 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEC8FADF27639A2B0048F291 /* en */,
+				CEC8FAE12763A0850048F291 /* ru */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -413,6 +434,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
@@ -474,6 +496,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";

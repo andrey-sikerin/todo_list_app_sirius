@@ -90,6 +90,7 @@ fastlane/test_output
 iOSInjectionProject/
 
 # Added custom ingnoring
+.idea
 .DS_Store
 .Trashes
 *.swp

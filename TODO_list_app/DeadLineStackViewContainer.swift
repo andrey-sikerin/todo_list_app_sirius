@@ -1,28 +1,90 @@
 import UIKit
 
 class DeadLineStackViewContainer: UIView {
-    private let deadLineStackView = UIStackView()
+    private let stackView = UIStackView()
     private let itemBorderRadius = AppStyles.borderRadius
+    private let labelsStack = UIStackView()
+    private let primaryLabel = UILabel()
+    let switcher = UISwitch()
+    let secondaryLabel = UILabel()
+    
+    private let layoutStyles: EditTaskViewController.LayoutStyles = .defaultStyle
+    private let strings = EditTaskViewController.Strings(
+        leftNavigationBarText: NSLocalizedString("Cancel", comment: ""),
+        rightNavigationBarText: NSLocalizedString("Save", comment: ""),
+        titleNavigationBarText: NSLocalizedString("Task", comment: ""),
+        textViewPlaceholder: NSLocalizedString("TaskDescriptionPlaceholder", comment: ""),
+        buttonText: NSLocalizedString("Delete", comment: ""),
+        doBeforeText: NSLocalizedString("Make up", comment: "")
+    )
+    
+    private var switcherTapped: (Bool) -> Void
 
+    required init(switcherTapped: @escaping (Bool) -> Void) {
+        self.switcherTapped = switcherTapped
+        super.init(frame: .zero)
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        addSubview(deadLineStackView)
-        setDeadLineStackView()
+        addSubview(stackView)
+        self.setupDeadLineStackView()
+        self.setupPrimaryLabel()
+        self.setupSecondaryLabel()
+        self.setupLabelsStack()
+        self.setupSwitcher()
+    }
+
+    required override init(frame: CGRect) {
+        fatalError("init(frame:) has not been implemented")
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    @objc func switcherTap(sender: UISwitch) {
+        switcherTapped(sender.isOn)
+    }
+    
+    private func setupSwitcher() {
+        switcher.preferredStyle = .sliding
+        switcher.addTarget(self, action: #selector(switcherTap), for: .allTouchEvents)
+    }
+    
+    private func setupLabelsStack() {
+        labelsStack.axis = .vertical
+        labelsStack.alignment = .leading
+        labelsStack.spacing = 0
+        labelsStack.distribution = .fillProportionally
+        labelsStack.addArrangedSubview(primaryLabel)
+        labelsStack.addArrangedSubview(secondaryLabel)
+    }
+    
+    private func setupPrimaryLabel() {
+        primaryLabel.text = strings.doBeforeText
+        primaryLabel.font = .systemFont(ofSize: layoutStyles.primaryLabelFontSize)
+    }
+    
+    private func setupSecondaryLabel() {
+        secondaryLabel.text = ""
+        secondaryLabel.font = .boldSystemFont(ofSize: layoutStyles.secondaryLabelFontSize)
+        secondaryLabel.textColor = .systemBlue
+    }
 
-
-    private func setDeadLineStackView() {
-        deadLineStackView.backgroundColor = .yellow
-        deadLineStackView.translatesAutoresizingMaskIntoConstraints = false
-        deadLineStackView.layer.cornerRadius = itemBorderRadius
-        deadLineStackView.leftAnchor.constraint(equalTo: leftAnchor, constant: 0).isActive = true
-        deadLineStackView.rightAnchor.constraint(equalTo: rightAnchor, constant: 0).isActive = true
-        deadLineStackView.topAnchor.constraint(equalTo: topAnchor, constant: 0).isActive = true
-        deadLineStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
+    private func setupDeadLineStackView() {
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .horizontal
+        stackView.distribution = .fill
+        stackView.alignment = .center
+        stackView.addArrangedSubview(labelsStack)
+        stackView.addArrangedSubview(switcher)
+        stackView.axis = .horizontal
+        stackView.distribution = .fill
+        stackView.alignment = .center
+        stackView.addArrangedSubview(labelsStack)
+        stackView.addArrangedSubview(switcher)
+        stackView.layer.cornerRadius = layoutStyles.itemsBorderRadius
+        stackView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        stackView.leftAnchor.constraint(equalTo: leftAnchor, constant: layoutStyles.labelsLeadingOffset).isActive = true
+        stackView.rightAnchor.constraint(equalTo: rightAnchor, constant: -layoutStyles.switcherTrailingOffset).isActive = true
+        stackView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true 
     }
 }

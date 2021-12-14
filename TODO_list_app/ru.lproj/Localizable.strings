@@ -3,4 +3,8 @@
 "Task" = "Дело";
 "TaskDescriptionPlaceholder" = "Что надо сделать?";
 "Tasks" = "Мои дела";
+"Show" = "Показать";
+"Hide" = "Скрыть";
+"Completed" = "Выполнено";
+
 "Delete" = "Удалить";

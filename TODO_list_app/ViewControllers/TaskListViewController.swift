@@ -45,6 +45,9 @@ private static let numberOfRows = 20
 
     struct Strings {
         let titleNavigationBarText: String
+        let doneAmountLabelText: String
+        let showDoneButtonText: String
+        let hideDoneButtonText: String
     }
 
     private let strings: Strings
@@ -83,9 +86,9 @@ private static let numberOfRows = 20
         super.viewWillLayoutSubviews()
         taskTableView.frame = view.bounds
         plusButton.frame = CGRect(
-                origin: CGPoint(x: view.bounds.midX - PlusButton.dimension / 2,
-                        y: view.bounds.maxY - (PlusButton.bottomOffset + PlusButton.dimension)),
-                size: PlusButton.size)
+            origin: CGPoint(x: view.bounds.midX - PlusButton.dimension / 2,
+                y: view.bounds.maxY - (PlusButton.bottomOffset + PlusButton.dimension)),
+            size: PlusButton.size)
 
         taskTableView.frame = view.bounds
     }
@@ -166,11 +169,19 @@ extension TaskListViewController: UITableViewDataSource {
     }
 }
 
-fileprivate let reuseIdentifier = "test"
-fileprivate let numberOfRows = 20
-fileprivate let defaultHeight: CGFloat = 56
-
 extension TaskListViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+
+        let headerView = HeaderView()
+        headerView.configureHeader(
+            doneAmount: 5,
+            labelText: strings.doneAmountLabelText,
+            showDoneButtonText: strings.showDoneButtonText,
+            hideDoneButtonText: strings.hideDoneButtonText)
+
+        return headerView
+    }
 
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         guard !isLastRow(indexPath) else {
@@ -221,4 +232,7 @@ extension TaskListViewController: UITableViewDelegate {
     }
 }
 
+fileprivate let reuseIdentifier = "test"
+fileprivate let numberOfRows = 20
+fileprivate let defaultHeight: CGFloat = 56
 

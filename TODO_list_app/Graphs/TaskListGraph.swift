@@ -39,8 +39,11 @@ class TaskListGraph {
         }
         self.viewController = TaskListViewController(
                 strings: TaskListViewController.Strings (
-                        titleNavigationBarText: NSLocalizedString("Tasks", comment: "")
-                ),
+                        titleNavigationBarText: NSLocalizedString("Tasks", comment: ""),
+                doneAmountLabelText: NSLocalizedString("Completed", comment: ""),
+                showDoneButtonText: NSLocalizedString("Show", comment: ""),
+                hideDoneButtonText: NSLocalizedString("Hide", comment: "")
+            ),
                 transitionToEdit: transitionToEditVC)
     }
 }

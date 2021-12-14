@@ -1,4 +1,5 @@
 "Cancel" = "Отмена";
 "Save" = "Сохранить";
 "Task" = "Дело";
+"TaskDescriptionPlaceholder" = "Что надо сделать?";
 "Tasks" = "Мои дела";

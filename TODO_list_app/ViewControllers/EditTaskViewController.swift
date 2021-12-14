@@ -5,6 +5,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     private let textView = UITextView()
 
     private let styles: Styles
+    private let layoutStyles: LayoutStyles = .defaultStyle
     private let strings: Strings
 
     private var showPlaceholder = true
@@ -16,17 +17,20 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         let textViewPlaceholder: String
     }
 
-    public struct Styles {
-        let contentInsets: UIEdgeInsets = UIEdgeInsets(top: 16, left: 16, bottom: 32, right: 16)
+    fileprivate struct LayoutStyles {
+        let contentInsets: UIEdgeInsets
         let borderRadius: CGFloat
-        let itemsBackground: UIColor
-        let backgroundColor: UIColor
         let textSize: CGFloat
 
-        let textViewDefaultHeight: CGFloat = 120
-        let textViewInnerPadding: CGFloat = 16
-        let textViewTextColor: UIColor
-        let textViewPlaceholderColor: UIColor
+        let textViewDefaultHeight: CGFloat
+        let textViewInnerPadding: CGFloat
+    }
+
+    public struct Styles {
+        var itemsBackground: UIColor
+        var backgroundColor: UIColor
+        var textViewTextColor: UIColor
+        var textViewPlaceholderColor: UIColor
     }
 
     init(strings: Strings, styles: Styles) {
@@ -58,14 +62,13 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         )
         navigationItem.title = strings.titleNavigationBarText
 
-        // Text View
-        let innerPadding = styles.textViewInnerPadding
+        let innerPadding = layoutStyles.textViewInnerPadding
         textView.textContainerInset = UIEdgeInsets(
                 top: innerPadding, left: innerPadding, bottom: innerPadding, right: innerPadding
         )
         textView.text = strings.textViewPlaceholder
-        textView.font = .systemFont(ofSize: styles.textSize)
-        textView.layer.cornerRadius = styles.borderRadius
+        textView.font = .systemFont(ofSize: layoutStyles.textSize)
+        textView.layer.cornerRadius = layoutStyles.borderRadius
         textView.backgroundColor = styles.itemsBackground
         textView.textColor = styles.textViewPlaceholderColor
         textView.isScrollEnabled = false
@@ -82,7 +85,6 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
 
     @objc func onRightBarButtonClicked() {
         textView.resignFirstResponder()
-        print("Right button pressed")
     }
 
     @objc func onLeftBarButtonClicked() {
@@ -90,7 +92,6 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     }
 
     func textViewDidBeginEditing(_ textView: UITextView) {
-        print("Begin editing")
         textView.textColor = styles.textViewTextColor
         if (showPlaceholder) {
             textView.text = ""
@@ -99,13 +100,12 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     }
 
     func textViewDidChange(_ textView: UITextView) {
-        // Change textView height
         let fixedWidth = textView.frame.size.width
         let newSize = textView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
         var newFrame = textView.frame
         newFrame.size = CGSize(
                 width: max(newSize.width, fixedWidth),
-                height: max(newSize.height, styles.textViewDefaultHeight)
+                height: max(newSize.height, layoutStyles.textViewDefaultHeight)
         )
         textView.frame = newFrame
     }
@@ -127,7 +127,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
                 height: view.frame.height)
         var customSafeAreaInsets = view.safeAreaInsets
         customSafeAreaInsets.top = 0
-        let sumInsets = customSafeAreaInsets + styles.contentInsets
+        let sumInsets = customSafeAreaInsets + layoutStyles.contentInsets
 
         scrollView.contentInset = sumInsets
         scrollView.contentSize = CGSize(
@@ -137,7 +137,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
 
         textView.frame = CGRect(
                 origin: .zero,
-                size: CGSize(width: scrollView.contentSize.width, height: styles.textViewDefaultHeight)
+                size: CGSize(width: scrollView.contentSize.width, height: layoutStyles.textViewDefaultHeight)
         )
     }
 }
@@ -148,3 +148,12 @@ fileprivate extension UIEdgeInsets {
     }
 }
 
+fileprivate extension EditTaskViewController.LayoutStyles {
+    static let defaultStyle = Self.init(
+            contentInsets: UIEdgeInsets(top: 16, left: 16, bottom: 32, right: 16),
+            borderRadius: AppStyles.borderRadius,
+            textSize: 17,
+            textViewDefaultHeight: 120,
+            textViewInnerPadding: 16
+    )
+}

@@ -15,16 +15,13 @@ class RootGraph {
                         textViewPlaceholder: NSLocalizedString("TaskDescriptionPlaceholder", comment: "")
                 ),
                 styles: EditTaskViewController.Styles(
-                        borderRadius: AppStyles.borderRadius,
-                        itemsBackground: Color.backgroundSecondary,
-                        backgroundColor: Color.backgroundPrimary,
-                        textSize: 17,
-                        textViewTextColor: Color.labelPrimary,
-                        textViewPlaceholderColor: Color.labelTertiary
+                        itemsBackground: .white,
+                        backgroundColor: .lightGray,
+                        textViewTextColor: .black,
+                        textViewPlaceholderColor: .gray
                 )
         )
-        let navigationController = UINavigationController(rootViewController: editTaskViewController)
-        rootViewController = navigationController
+        rootViewController = UINavigationController(rootViewController: editTaskViewController)
         */
         self.taskListGraph = TaskListGraph()
         self.rootViewController = UINavigationController(rootViewController: taskListGraph.viewController)

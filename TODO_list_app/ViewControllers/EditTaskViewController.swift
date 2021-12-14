@@ -28,7 +28,7 @@ class EditTaskViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = Color.backgroundPrimary
         navigationItem.leftBarButtonItem = UIBarButtonItem(
                 title: strings.leftNavigationBarText,
                 style: .plain,

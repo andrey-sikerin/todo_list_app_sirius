@@ -35,14 +35,14 @@ class TaskListViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     private lazy var taskTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.register(AddNewTaskCell.self, forCellReuseIdentifier: AddNewTaskCell.defaultReuseIdentifier)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
         return tableView
     }()
-    
+
     private lazy var plusButton: UIButton = {
         let button = UIButton()
         button.setBackgroundImage(UIImage(named: "plusButton"), for: .normal)
@@ -53,7 +53,7 @@ class TaskListViewController: UIViewController {
         button.addTarget(self, action: #selector(plusButtonTriggered), for: .touchUpInside)
         return button
     }()
-    
+
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         taskTableView.frame = view.bounds
@@ -90,11 +90,11 @@ extension TaskListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         numberOfRows
     }
-    
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         defaultHeight
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == numberOfRows - 1 {
             guard let newTaskCell = tableView.dequeueReusableCell(withIdentifier: AddNewTaskCell.defaultReuseIdentifier) as? AddNewTaskCell else {
@@ -103,12 +103,13 @@ extension TaskListViewController: UITableViewDataSource {
             }
             return newTaskCell
         }
-        
+
         guard let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) else {
             print("Unable to dequeue a cell with Identifier: \(reuseIdentifier)")
             return UITableViewCell()
         }
-
+        
+        cell.backgroundColor = Color.backgroundSecondary
         return cell
     }
 }

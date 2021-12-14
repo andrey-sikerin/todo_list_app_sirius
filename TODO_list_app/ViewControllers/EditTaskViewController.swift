@@ -5,10 +5,43 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     private let textView = UITextView()
     private let stackView = UIStackView()
     private let button = UIButton()
+    private let datePicker = UIDatePicker()
+    private let labelsStack = UIStackView()
+    private let primaryLabel = UILabel()
+    private let secondaryLabel = UILabel()
+    private let switcher = UISwitch()
+    private let line = UIView()
+    private let line2 = UIView()
+    private let deadLineStackView = UIStackView()
+    private let priorityStackView = UIStackView()
 
     private let styles: Styles
     private let layoutStyles: LayoutStyles = .defaultStyle
     private let strings: Strings
+
+    private var showingDatePicker = false {
+        didSet {
+            datePicker.isHidden = !showingDatePicker
+        }
+    }
+
+    private var selectedDate: Date? {
+        didSet {
+            secondaryLabel.text = selectedDateString
+        }
+    }
+    private var selectedDateString: String {
+        if let date = selectedDate {
+            return dateFormatter.string(from: date)
+        }
+        return ""
+    }
+    private lazy var dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeZone = .none
+        return formatter
+    }()
 
     private var showPlaceholder = true
     private var keyboardHeight: CGFloat = 0
@@ -19,6 +52,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         let titleNavigationBarText: String
         let textViewPlaceholder: String
         let buttonText: String
+        let doBeforeText: String
     }
 
     fileprivate struct LayoutStyles {
@@ -33,6 +67,17 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         let itemsVerticalMargin: CGFloat = 16
         let stackViewHeight: CGFloat = 113
         let buttonHeight: CGFloat
+
+        let lineLeftPadding : CGFloat = 16
+        let lineRightPadding : CGFloat = -16
+        let lineHeight: CGFloat = 0.5
+        let lineOpacity: CGFloat = 0.2
+
+        let labelsLeadingOffset: CGFloat = 16
+        let switcherTrailingOffset: CGFloat = 12
+        let primaryLabelFontSize: CGFloat = 17
+        let secondaryLabelFontSize: CGFloat = 13
+        let datePickerHeight: CGFloat = 340
     }
 
     public struct Styles {
@@ -57,7 +102,8 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(onTouchScreen))
-        view.addGestureRecognizer(gestureRecognizer)
+        gestureRecognizer.cancelsTouchesInView = false
+        view.addGestureRecognizer(gestureRecognizer) // not working with this
         view.backgroundColor = styles.backgroundColor
         navigationItem.leftBarButtonItem = UIBarButtonItem(
                 title: strings.leftNavigationBarText,
@@ -85,9 +131,68 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         textView.isScrollEnabled = false
         textView.delegate = self
 
+        let smallStackViewHeight: CGFloat = (layoutStyles.stackViewHeight - layoutStyles.lineHeight) / 2
+
+        // Set datePicker
+        datePicker.preferredDatePickerStyle = .inline
+        datePicker.datePickerMode = .date
+        datePicker.calendar = .autoupdatingCurrent
+        datePicker.isHidden = !showingDatePicker
+        datePicker.addTarget(self, action: #selector(datePicked), for: .allEvents)
+
+        // Set primaryLabel
+        primaryLabel.text = strings.doBeforeText
+        primaryLabel.font = .systemFont(ofSize: layoutStyles.primaryLabelFontSize)
+
+        // Set secondaryLabel
+        secondaryLabel.text = selectedDateString
+        secondaryLabel.font = .boldSystemFont(ofSize: layoutStyles.secondaryLabelFontSize)
+        secondaryLabel.textColor = .systemBlue
+
+        // Set labelsStack
+        labelsStack.axis = .vertical
+        labelsStack.alignment = .leading
+        labelsStack.spacing = 0
+        labelsStack.distribution = .fillProportionally
+        labelsStack.addArrangedSubview(primaryLabel)
+        labelsStack.addArrangedSubview(secondaryLabel)
+
+        // Set switcher
+        switcher.isOn = showingDatePicker
+        switcher.preferredStyle = .sliding
+        switcher.addTarget(self, action: #selector(switcherTapped), for: .allTouchEvents)
+
+        // Set deadLineStackView
+        deadLineStackView.axis = .horizontal
+        deadLineStackView.distribution = .fill
+        deadLineStackView.alignment = .center
+        deadLineStackView.addArrangedSubview(labelsStack)
+        deadLineStackView.addArrangedSubview(switcher)
+
+
         stackView.autoresizingMask = []
         stackView.layer.cornerRadius = layoutStyles.itemsBorderRadius
+        // calculates height of smallStackViews
+        
+
+        // Set deadLineStackView
+        deadLineStackView.axis = .horizontal
+        deadLineStackView.distribution = .fill
+        deadLineStackView.alignment = .center
+        deadLineStackView.addArrangedSubview(labelsStack)
+        deadLineStackView.addArrangedSubview(switcher)
+
+        // Stack View
+        stackView.axis = .vertical
+        stackView.alignment = .center
+        stackView.distribution = .fillProportionally
+        stackView.layer.cornerRadius = layoutStyles.itemsBorderRadius
         stackView.backgroundColor = styles.itemsBackground
+        stackView.addArrangedSubview(priorityStackView)
+        stackView.addArrangedSubview(line)
+        stackView.addArrangedSubview(deadLineStackView)
+        stackView.addArrangedSubview(datePicker)
+        stackView.addArrangedSubview(line2)
 
         // Button
         button.addTarget(self, action: #selector(onButtonPress), for: .touchUpInside)
@@ -104,6 +209,13 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         scrollView.addSubview(button)
         view.addSubview(scrollView)
 
+        // Setup elements
+        setPriorityStackView(smallStackViewHeight)
+        setDeadLineStackView(smallStackViewHeight)
+        setLine(line)
+        setLine(line2)
+
+
         NotificationCenter.default.addObserver(self,
                 selector: #selector(onKeyboardOpened(keyboardShowNotification:)),
                 name: UIResponder.keyboardDidShowNotification,
@@ -113,6 +225,20 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
                 selector: #selector(onKeyboardClosed(keyboardShowNotification:)),
                 name: UIResponder.keyboardDidHideNotification,
                 object: nil)
+    }
+
+    @objc func datePicked(sender: UIDatePicker) {
+        selectedDate = datePicker.date
+    }
+
+    @objc func switcherTapped(sender: UISwitch) {
+        showingDatePicker = sender.isOn
+        if showingDatePicker {
+            selectedDate = datePicker.date
+        } else {
+            selectedDate = nil
+        }
+        setItemsLayout()
     }
 
     @objc func onKeyboardOpened(keyboardShowNotification notification: Notification) {
@@ -156,6 +282,28 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         }
     }
 
+
+    private func setPriorityStackView(_ smallStackViewHeight : CGFloat){
+        priorityStackView.backgroundColor = .brown
+        priorityStackView.layer.cornerRadius = layoutStyles.itemsBorderRadius
+        priorityStackView.heightAnchor.constraint(equalToConstant: smallStackViewHeight).isActive = true
+        priorityStackView.leftAnchor.constraint(equalTo: stackView.leftAnchor, constant: 0).isActive = true
+        priorityStackView.rightAnchor.constraint(equalTo: stackView.rightAnchor, constant: 0).isActive = true
+    }
+
+    private func setDeadLineStackView(_ smallStackViewHeight : CGFloat) {
+        deadLineStackView.layer.cornerRadius = layoutStyles.itemsBorderRadius
+        deadLineStackView.heightAnchor.constraint(equalToConstant: smallStackViewHeight).isActive = true
+        deadLineStackView.leftAnchor.constraint(equalTo: stackView.leftAnchor, constant: layoutStyles.labelsLeadingOffset).isActive = true
+        deadLineStackView.rightAnchor.constraint(equalTo: stackView.rightAnchor, constant: -layoutStyles.switcherTrailingOffset).isActive = true
+    }
+
+    private func setLine(_ line: UIView) {
+        line.backgroundColor = UIColor.black.withAlphaComponent(layoutStyles.lineOpacity)
+        line.heightAnchor.constraint(equalToConstant: layoutStyles.lineHeight).isActive = true
+        line.leftAnchor.constraint(equalTo: stackView.leftAnchor, constant: layoutStyles.lineLeftPadding).isActive = true
+        line.rightAnchor.constraint(equalTo: stackView.rightAnchor, constant: layoutStyles.lineRightPadding).isActive = true
+    }
     private func changeTextViewSize(canStretchIndefinitely: Bool, withAnimation: Bool = false) {
         let textViewAvailableHeight = view.frame.height - scrollView.contentInset.bottom -
                 scrollView.contentInset.top - keyboardHeight - 2 * layoutStyles.itemsVerticalMargin
@@ -209,10 +357,16 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         }
     }
 
+//    private func setItemsLayout() {
+//        stackView.frame = CGRect(
+//                origin: CGPoint(x: 0, y: textView.bounds.height + layoutStyles.itemsVerticalMargin),
+//                size: CGSize(width: scrollView.contentSize.width, height: layoutStyles.stackViewHeight)
+//    }
     private func setItemsLayout() {
-        stackView.frame = CGRect(
+        let stackViewHeight = layoutStyles.stackViewHeight + (showingDatePicker ? layoutStyles.datePickerHeight : 0)
+        stackView.frame = CGRect (
                 origin: CGPoint(x: 0, y: textView.bounds.height + layoutStyles.itemsVerticalMargin),
-                size: CGSize(width: scrollView.contentSize.width, height: layoutStyles.stackViewHeight)
+                size: CGSize(width: scrollView.contentSize.width, height: stackViewHeight)
         )
 
         let buttonOriginY = stackView.frame.maxY + layoutStyles.itemsVerticalMargin

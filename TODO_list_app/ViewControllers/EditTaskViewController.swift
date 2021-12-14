@@ -3,27 +3,36 @@ import UIKit
 class EditTaskViewController: UIViewController, UITextViewDelegate {
     private let scrollView = UIScrollView()
     private let textView = UITextView()
+    private let stackView = UIStackView()
+    private let button = UIButton()
 
     private let styles: Styles
     private let layoutStyles: LayoutStyles = .defaultStyle
     private let strings: Strings
 
     private var showPlaceholder = true
+    private var keyboardHeight: CGFloat = 0
 
     public struct Strings {
         let leftNavigationBarText: String
         let rightNavigationBarText: String
         let titleNavigationBarText: String
         let textViewPlaceholder: String
+        let buttonText: String
     }
 
     fileprivate struct LayoutStyles {
         let contentInsets: UIEdgeInsets
-        let borderRadius: CGFloat
         let textSize: CGFloat
 
-        let textViewDefaultHeight: CGFloat
-        let textViewInnerPadding: CGFloat
+        let textViewDefaultHeight: CGFloat = 120
+        let textViewInnerPadding: CGFloat = 16
+
+        let itemsBorderRadius: CGFloat
+        let itemsBackgroundColor: UIColor
+        let itemsVerticalMargin: CGFloat = 16
+        let stackViewHeight: CGFloat = 113
+        let buttonHeight: CGFloat
     }
 
     public struct Styles {
@@ -31,6 +40,8 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         var backgroundColor: UIColor
         var textViewTextColor: UIColor
         var textViewPlaceholderColor: UIColor
+        let buttonTextColor: UIColor
+        let buttonPressedTextColor: UIColor
     }
 
     init(strings: Strings, styles: Styles) {
@@ -68,14 +79,60 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         )
         textView.text = strings.textViewPlaceholder
         textView.font = .systemFont(ofSize: layoutStyles.textSize)
-        textView.layer.cornerRadius = layoutStyles.borderRadius
+        textView.layer.cornerRadius = layoutStyles.itemsBorderRadius
         textView.backgroundColor = styles.itemsBackground
         textView.textColor = styles.textViewPlaceholderColor
         textView.isScrollEnabled = false
         textView.delegate = self
 
+        stackView.autoresizingMask = []
+        stackView.layer.cornerRadius = layoutStyles.itemsBorderRadius
+        stackView.backgroundColor = styles.itemsBackground
+
+        // Button
+        button.addTarget(self, action: #selector(onButtonPress), for: .touchUpInside)
+        button.layer.cornerRadius = layoutStyles.itemsBorderRadius
+        button.backgroundColor = styles.itemsBackground
+        button.setTitleColor(styles.buttonTextColor, for: .normal)
+        button.setTitleColor(styles.buttonPressedTextColor, for: .highlighted)
+        button.titleLabel?.font = .systemFont(ofSize: layoutStyles.textSize)
+        button.setTitle(strings.buttonText, for: .normal)
+
+        scrollView.showsHorizontalScrollIndicator = false
         scrollView.addSubview(textView)
+        scrollView.addSubview(stackView)
+        scrollView.addSubview(button)
         view.addSubview(scrollView)
+
+        NotificationCenter.default.addObserver(self,
+                selector: #selector(onKeyboardOpened(keyboardShowNotification:)),
+                name: UIResponder.keyboardDidShowNotification,
+                object: nil)
+
+        NotificationCenter.default.addObserver(self,
+                selector: #selector(onKeyboardClosed(keyboardShowNotification:)),
+                name: UIResponder.keyboardDidHideNotification,
+                object: nil)
+    }
+
+    @objc func onKeyboardOpened(keyboardShowNotification notification: Notification) {
+        print("Keyboard opened")
+        changeTextViewSize(canStretchIndefinitely: false, withAnimation: true)
+
+        if let userInfo = notification.userInfo,
+           let keyboardRectangle = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
+            keyboardHeight = keyboardRectangle.height
+        }
+    }
+
+    @objc func onButtonPress() {
+        print("Button pressed")
+    }
+
+    @objc func onKeyboardClosed(keyboardShowNotification notification: Notification) {
+        print("Keyboard closed")
+        changeTextViewSize(canStretchIndefinitely: true, withAnimation: true)
+        setItemsLayout()
     }
 
     @objc func onTouchScreen(_ sender: UITapGestureRecognizer) {
@@ -99,15 +156,46 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         }
     }
 
-    func textViewDidChange(_ textView: UITextView) {
+    private func changeTextViewSize(canStretchIndefinitely: Bool, withAnimation: Bool = false) {
+        let textViewAvailableHeight = view.frame.height - scrollView.contentInset.bottom -
+                scrollView.contentInset.top - keyboardHeight - 2 * layoutStyles.itemsVerticalMargin
+
         let fixedWidth = textView.frame.size.width
         let newSize = textView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
         var newFrame = textView.frame
+        let currentTextViewHeight = max(newSize.height, layoutStyles.textViewDefaultHeight)
+
+        var height: CGFloat
+        if currentTextViewHeight > textViewAvailableHeight && !canStretchIndefinitely {
+            print("Text view doesn't have enough space, start scrolling")
+            height = textViewAvailableHeight
+            textView.isScrollEnabled = true
+        } else {
+            print("Text view has enough space, extends")
+            textView.isScrollEnabled = false
+            height = currentTextViewHeight
+        }
+
         newFrame.size = CGSize(
                 width: max(newSize.width, fixedWidth),
-                height: max(newSize.height, layoutStyles.textViewDefaultHeight)
+                height: height
         )
-        textView.frame = newFrame
+        newFrame.origin = .zero
+
+        UIView.animateKeyframes(
+                withDuration: withAnimation ? 0.5 : 0,
+                delay: 0,
+                options: [],
+                animations: {
+                    self.textView.frame = newFrame
+                }, completion: nil)
+        textView.scrollRangeToVisible(textView.selectedRange)
+        setItemsLayout()
+    }
+
+
+    func textViewDidChange(_ textView: UITextView) {
+        changeTextViewSize(canStretchIndefinitely: false)
     }
 
     func textViewDidEndEditing(_ textView: UITextView) {
@@ -119,6 +207,19 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         } else {
             showPlaceholder = false
         }
+    }
+
+    private func setItemsLayout() {
+        stackView.frame = CGRect(
+                origin: CGPoint(x: 0, y: textView.bounds.height + layoutStyles.itemsVerticalMargin),
+                size: CGSize(width: scrollView.contentSize.width, height: layoutStyles.stackViewHeight)
+        )
+
+        let buttonOriginY = stackView.frame.maxY + layoutStyles.itemsVerticalMargin
+        button.frame = CGRect(
+                origin: CGPoint(x: 0, y: buttonOriginY),
+                size: CGSize(width: scrollView.contentSize.width, height: layoutStyles.buttonHeight)
+        )
     }
 
     override func viewWillLayoutSubviews() {
@@ -135,10 +236,13 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
                 height: 2 * view.frame.height
         )
 
+        let itemsWidth = scrollView.contentSize.width
+
         textView.frame = CGRect(
                 origin: .zero,
-                size: CGSize(width: scrollView.contentSize.width, height: layoutStyles.textViewDefaultHeight)
+                size: CGSize(width: itemsWidth, height: layoutStyles.textViewDefaultHeight)
         )
+        setItemsLayout()
     }
 }
 
@@ -150,10 +254,10 @@ fileprivate extension UIEdgeInsets {
 
 fileprivate extension EditTaskViewController.LayoutStyles {
     static let defaultStyle = Self.init(
-            contentInsets: UIEdgeInsets(top: 16, left: 16, bottom: 32, right: 16),
-            borderRadius: AppStyles.borderRadius,
-            textSize: 17,
-            textViewDefaultHeight: 120,
-            textViewInnerPadding: 16
+      contentInsets: UIEdgeInsets(top: 16, left: 16, bottom: 32, right: 16),
+      textSize: 17,
+      itemsBorderRadius: AppStyles.borderRadius,
+      itemsBackgroundColor: Color.backgroundPrimary,
+      buttonHeight: 56
     )
 }

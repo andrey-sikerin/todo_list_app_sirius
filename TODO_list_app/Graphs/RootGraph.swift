@@ -6,24 +6,27 @@ class RootGraph {
     private(set) var taskListGraph: TaskListGraph
 
     init() {
-        /*
+
         let editTaskViewController = EditTaskViewController(
                 strings: EditTaskViewController.Strings(
-                        leftNavigationBarText: NSLocalizedString("Cancel", comment: ""),
-                        rightNavigationBarText: NSLocalizedString("Save", comment: ""),
-                        titleNavigationBarText: NSLocalizedString("Task", comment: ""),
-                        textViewPlaceholder: NSLocalizedString("TaskDescriptionPlaceholder", comment: "")
+                  leftNavigationBarText: NSLocalizedString("Cancel", comment: ""),
+                  rightNavigationBarText: NSLocalizedString("Save", comment: ""),
+                  titleNavigationBarText: NSLocalizedString("Task", comment: ""),
+                  textViewPlaceholder: NSLocalizedString("TaskDescriptionPlaceholder", comment: ""),
+                  buttonText: NSLocalizedString("Delete", comment: "")
                 ),
                 styles: EditTaskViewController.Styles(
-                        itemsBackground: .white,
-                        backgroundColor: .lightGray,
-                        textViewTextColor: .black,
-                        textViewPlaceholderColor: .gray
+                  itemsBackground: Color.backgroundSecondary,
+                  backgroundColor: Color.backgroundPrimary,
+                  textViewTextColor: Color.labelPrimary,
+                  textViewPlaceholderColor: Color.labelSecondary,
+                  buttonTextColor: Color.labelTertiary,
+                  buttonPressedTextColor: .black
                 )
         )
         rootViewController = UINavigationController(rootViewController: editTaskViewController)
-        */
+
         self.taskListGraph = TaskListGraph()
-        self.rootViewController = UINavigationController(rootViewController: taskListGraph.viewController)
+//        self.rootViewController = UINavigationController(rootViewController: taskListGraph.viewController)
     }
 }

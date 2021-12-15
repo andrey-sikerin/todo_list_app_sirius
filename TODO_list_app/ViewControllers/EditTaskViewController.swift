@@ -5,6 +5,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     private let textView = UITextView()
     private let stackView = UIStackView()
     private let button = UIButton()
+    private let notificationCenter: NotificationCenter
 
     private let styles: Styles
     private let layoutStyles: LayoutStyles = .defaultStyle
@@ -44,9 +45,10 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         let buttonPressedTextColor: UIColor
     }
 
-    init(strings: Strings, styles: Styles) {
+    init(notificationCenter: NotificationCenter, strings: Strings, styles: Styles) {
         self.strings = strings
         self.styles = styles
+        self.notificationCenter = notificationCenter
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -89,7 +91,6 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         stackView.layer.cornerRadius = layoutStyles.itemsBorderRadius
         stackView.backgroundColor = styles.itemsBackground
 
-        // Button
         button.addTarget(self, action: #selector(onButtonPress), for: .touchUpInside)
         button.layer.cornerRadius = layoutStyles.itemsBorderRadius
         button.backgroundColor = styles.itemsBackground
@@ -104,19 +105,18 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         scrollView.addSubview(button)
         view.addSubview(scrollView)
 
-        NotificationCenter.default.addObserver(self,
+        notificationCenter.addObserver(self,
                 selector: #selector(onKeyboardOpened(keyboardShowNotification:)),
                 name: UIResponder.keyboardDidShowNotification,
                 object: nil)
 
-        NotificationCenter.default.addObserver(self,
+        notificationCenter.addObserver(self,
                 selector: #selector(onKeyboardClosed(keyboardShowNotification:)),
                 name: UIResponder.keyboardDidHideNotification,
                 object: nil)
     }
 
     @objc func onKeyboardOpened(keyboardShowNotification notification: Notification) {
-        print("Keyboard opened")
         changeTextViewSize(canStretchIndefinitely: false, withAnimation: true)
 
         if let userInfo = notification.userInfo,
@@ -130,13 +130,11 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     }
 
     @objc func onKeyboardClosed(keyboardShowNotification notification: Notification) {
-        print("Keyboard closed")
         changeTextViewSize(canStretchIndefinitely: true, withAnimation: true)
         setItemsLayout()
     }
 
     @objc func onTouchScreen(_ sender: UITapGestureRecognizer) {
-        print("Screen touched")
         textView.resignFirstResponder()
     }
 
@@ -167,11 +165,9 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
 
         var height: CGFloat
         if currentTextViewHeight > textViewAvailableHeight && !canStretchIndefinitely {
-            print("Text view doesn't have enough space, start scrolling")
             height = textViewAvailableHeight
             textView.isScrollEnabled = true
         } else {
-            print("Text view has enough space, extends")
             textView.isScrollEnabled = false
             height = currentTextViewHeight
         }
@@ -199,7 +195,6 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     }
 
     func textViewDidEndEditing(_ textView: UITextView) {
-        print("End editing")
         if textView.text.isEmpty {
             showPlaceholder = true
             textView.text = strings.textViewPlaceholder
@@ -254,10 +249,10 @@ fileprivate extension UIEdgeInsets {
 
 fileprivate extension EditTaskViewController.LayoutStyles {
     static let defaultStyle = Self.init(
-      contentInsets: UIEdgeInsets(top: 16, left: 16, bottom: 32, right: 16),
-      textSize: 17,
-      itemsBorderRadius: AppStyles.borderRadius,
-      itemsBackgroundColor: Color.backgroundPrimary,
-      buttonHeight: 56
+            contentInsets: UIEdgeInsets(top: 16, left: 16, bottom: 32, right: 16),
+            textSize: 17,
+            itemsBorderRadius: AppStyles.borderRadius,
+            itemsBackgroundColor: Color.backgroundPrimary,
+            buttonHeight: 56
     )
 }

@@ -10,7 +10,7 @@ import Foundation
 class EditTaskGraph {
     private(set) var viewController: EditTaskViewController
     private var todoItem: TodoItem
-    
+
     init(viewController: EditTaskViewController, item: TodoItem) {
         self.viewController = viewController
         self.todoItem = item

@@ -12,10 +12,22 @@ class TaskListGraph {
     private(set) var viewController: UIViewController
     private var tasks: FileCache = FileCache.test
     private var currentEdit: EditTaskGraph?
+    private var rootRouter: RootRouter
 
-    init() {
-        self.viewController = UIViewController()
-        let transitionToEditVC: (IndexPath) -> Void = { [weak self] index in
+    init(rootRouter: RootRouter) {
+        self.rootRouter = rootRouter
+        let transitionToEditVC: (TransitionMode, UIViewController) -> Void = { mode, vc in
+
+            let transitionToTaskListVC: PopAction
+            switch mode {
+            case .push: transitionToTaskListVC = {
+                    rootRouter.popAction()
+                }
+            case .present: transitionToTaskListVC = {
+                    rootRouter.dismissAction(vc)
+                }
+            }
+
             let editTaskVC = EditTaskViewController(
                 notificationCenter: .default,
                 strings: EditTaskViewController.Strings(
@@ -32,19 +44,25 @@ class TaskListGraph {
                     textViewPlaceholderColor: Color.labelTertiary,
                     buttonTextColor: .black,
                     buttonPressedTextColor: .black
-                )
+                ),
+                transitionToTaskList: transitionToTaskListVC
             )
-            let navController = UINavigationController(rootViewController: editTaskVC)
-            self?.viewController.present(navController, animated: true)
+
+            switch mode {
+            case .push: rootRouter.pushAction(editTaskVC)
+            case .present: rootRouter.presentAction(UINavigationController(rootViewController: editTaskVC))
+            }
+
         }
+
         self.viewController = TaskListViewController(
-                strings: TaskListViewController.Strings (
-                        titleNavigationBarText: NSLocalizedString("Tasks", comment: ""),
+            strings: TaskListViewController.Strings (
+                titleNavigationBarText: NSLocalizedString("Tasks", comment: ""),
                 doneAmountLabelText: NSLocalizedString("Completed", comment: ""),
                 showDoneButtonText: NSLocalizedString("Show", comment: ""),
                 hideDoneButtonText: NSLocalizedString("Hide", comment: "")
             ),
-                transitionToEdit: transitionToEditVC)
+            transitionToEdit: transitionToEditVC)
     }
 }
 
@@ -53,8 +71,8 @@ fileprivate extension FileCache {
         let manager = FileCache.FileManager(write: { data, url in
             try data.write(to: url)
         }, read: { url in
-            try Data(contentsOf: url)
-        })
+                try Data(contentsOf: url)
+            })
         let file = FileCache(manager: manager)
         let buyFood = TodoItem(id: "BuyFoodIdString", text: "Working for food", priority: .low)
         let goRun = TodoItem(text: "Running is good", priority: .normal)

@@ -10,7 +10,8 @@ import UIKit
 import RxSwift
 
 class TaskListViewController: UIViewController {
-    public static let numberOfRows = 20
+    public static let numberOfRows = 3
+    private var todoItems: [TodoItem] = []
 
     private struct SwipeIcons {
         static let doneIconName = "doneIcon"
@@ -65,9 +66,11 @@ class TaskListViewController: UIViewController {
 
     typealias TransitionAction = (TransitionMode, UIViewController) -> Void
     private var transitionAction: TransitionAction
-    init(strings: Strings, transitionToEdit: @escaping TransitionAction) {
+
+    init(strings: Strings, transitionToEdit: @escaping TransitionAction, todoItems: [TodoItem]) {
         self.strings = strings
         self.transitionAction = transitionToEdit
+        self.todoItems = todoItems
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -86,15 +89,16 @@ class TaskListViewController: UIViewController {
         super.viewWillLayoutSubviews()
         taskTableView.frame = view.bounds
         plusButton.frame = CGRect(
-            origin: CGPoint(x: view.bounds.midX - PlusButton.dimension / 2,
-                y: view.bounds.maxY - (PlusButton.bottomOffset + PlusButton.dimension)),
-            size: PlusButton.size)
+                origin: CGPoint(x: view.bounds.midX - PlusButton.dimension / 2,
+                        y: view.bounds.maxY - (PlusButton.bottomOffset + PlusButton.dimension)),
+                size: PlusButton.size)
 
         taskTableView.frame = view.bounds
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.navigationBar.prefersLargeTitles = false
 
         navigationItem.largeTitleDisplayMode = .always
         title = strings.titleNavigationBarText
@@ -134,13 +138,13 @@ class TaskListViewController: UIViewController {
     }
 
     private func isLastRow(_ indexPath: IndexPath) -> Bool {
-        indexPath.row == Self.numberOfRows - 1
+        indexPath.row == todoItems.count
     }
 }
 
 extension TaskListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        Self.numberOfRows
+        todoItems.count + 1
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -155,17 +159,19 @@ extension TaskListViewController: UITableViewDataSource {
             }
             newTaskCell.backgroundColor = Color.backgroundSecondary
             return newTaskCell
+        } else {
+
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: ToDoCell.identifier) as? ToDoCell else {
+                print("Unable to dequeue a cell with Identifier: \(reuseIdentifier)")
+                return UITableViewCell()
+            }
+            let currentItem = todoItems[indexPath.row];
+            cell.backgroundColor = Color.backgroundSecondary
+            cell.configureCell(todoItem: currentItem)
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 52, bottom: 0, right: 0)
+
+            return cell
         }
-
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ToDoCell.identifier) else {
-            print("Unable to dequeue a cell with Identifier: \(reuseIdentifier)")
-            return UITableViewCell()
-        }
-
-        cell.backgroundColor = Color.backgroundSecondary
-        cell.separatorInset = UIEdgeInsets(top: 0, left: 52, bottom: 0, right: 0)
-
-        return cell
     }
 }
 
@@ -175,10 +181,10 @@ extension TaskListViewController: UITableViewDelegate {
 
         let headerView = HeaderView()
         headerView.configureHeader(
-            doneAmount: 5,
-            labelText: strings.doneAmountLabelText,
-            showDoneButtonText: strings.showDoneButtonText,
-            hideDoneButtonText: strings.hideDoneButtonText)
+                doneAmount: 5,
+                labelText: strings.doneAmountLabelText,
+                showDoneButtonText: strings.showDoneButtonText,
+                hideDoneButtonText: strings.hideDoneButtonText)
 
         return headerView
     }

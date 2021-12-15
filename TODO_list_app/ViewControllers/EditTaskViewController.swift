@@ -53,10 +53,14 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         let buttonPressedTextColor: UIColor
     }
 
-    init(notificationCenter: NotificationCenter, strings: Strings, styles: Styles) {
+    typealias TransitionAction = () -> Void
+    private var transitionAction: TransitionAction
+
+    init(notificationCenter: NotificationCenter, strings: Strings, styles: Styles, transitionToTaskList: @escaping TransitionAction) {
         self.strings = strings
         self.styles = styles
         self.notificationCenter = notificationCenter
+        self.transitionAction = transitionToTaskList
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -70,22 +74,22 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         view.addGestureRecognizer(gestureRecognizer)
         view.backgroundColor = styles.backgroundColor
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-                title: strings.leftNavigationBarText,
-                style: .plain,
-                target: self,
-                action: #selector(onLeftBarButtonClicked)
+            title: strings.leftNavigationBarText,
+            style: .plain,
+            target: self,
+            action: #selector(onLeftBarButtonClicked)
         )
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-                title: strings.rightNavigationBarText,
-                style: .plain,
-                target: self,
-                action: #selector(onRightBarButtonClicked)
+            title: strings.rightNavigationBarText,
+            style: .plain,
+            target: self,
+            action: #selector(onRightBarButtonClicked)
         )
         navigationItem.title = strings.titleNavigationBarText
 
         let innerPadding = layoutStyles.textViewInnerPadding
         textView.textContainerInset = UIEdgeInsets(
-                top: innerPadding, left: innerPadding, bottom: innerPadding, right: innerPadding
+            top: innerPadding, left: innerPadding, bottom: innerPadding, right: innerPadding
         )
 
         textView.text = strings.textViewPlaceholder
@@ -118,21 +122,21 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         view.addSubview(scrollView)
 
         notificationCenter.addObserver(self,
-                selector: #selector(onKeyboardOpened(keyboardShowNotification:)),
-                name: UIResponder.keyboardDidShowNotification,
-                object: nil)
+            selector: #selector(onKeyboardOpened(keyboardShowNotification:)),
+            name: UIResponder.keyboardDidShowNotification,
+            object: nil)
 
         notificationCenter.addObserver(self,
-                selector: #selector(onKeyboardClosed(keyboardShowNotification:)),
-                name: UIResponder.keyboardDidHideNotification,
-                object: nil)
+            selector: #selector(onKeyboardClosed(keyboardShowNotification:)),
+            name: UIResponder.keyboardDidHideNotification,
+            object: nil)
     }
 
     @objc func onKeyboardOpened(keyboardShowNotification notification: Notification) {
         changeTextViewSize(canStretchIndefinitely: false, withAnimation: true)
 
         if let userInfo = notification.userInfo,
-           let keyboardRectangle = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
+            let keyboardRectangle = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
             keyboardHeight = keyboardRectangle.height
         }
     }
@@ -155,7 +159,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     }
 
     @objc func onLeftBarButtonClicked() {
-        print("Left button pressed")
+        transitionAction()
     }
 
     func textViewDidBeginEditing(_ textView: UITextView) {
@@ -168,7 +172,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
 
 
 
-    private func setupStackView(){
+    private func setupStackView() {
         stackView.axis = .vertical
         stackView.alignment = .center
         stackView.distribution = .equalCentering
@@ -205,7 +209,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
 
     private func changeTextViewSize(canStretchIndefinitely: Bool, withAnimation: Bool = false) {
         let textViewAvailableHeight = view.frame.height - scrollView.contentInset.bottom -
-                scrollView.contentInset.top - keyboardHeight - 2 * layoutStyles.itemsVerticalMargin
+            scrollView.contentInset.top - keyboardHeight - 2 * layoutStyles.itemsVerticalMargin
 
         let fixedWidth = textView.frame.size.width
         let newSize = textView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
@@ -222,18 +226,18 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         }
 
         newFrame.size = CGSize(
-                width: max(newSize.width, fixedWidth),
-                height: height
+            width: max(newSize.width, fixedWidth),
+            height: height
         )
         newFrame.origin = .zero
 
         UIView.animateKeyframes(
-                withDuration: withAnimation ? 0.5 : 0,
-                delay: 0,
-                options: [],
-                animations: {
-                    self.textView.frame = newFrame
-                }, completion: nil)
+            withDuration: withAnimation ? 0.5 : 0,
+            delay: 0,
+            options: [],
+            animations: {
+                self.textView.frame = newFrame
+            }, completion: nil)
         textView.scrollRangeToVisible(textView.selectedRange)
         setItemsLayout()
     }
@@ -255,58 +259,57 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
 
     private func setItemsLayout() {
         stackView.frame = CGRect(
-                origin: CGPoint(x: 0, y: textView.bounds.height + layoutStyles.itemsVerticalMargin),
-                size: CGSize(width: scrollView.contentSize.width, height: layoutStyles.stackViewHeight)
+            origin: CGPoint(x: 0, y: textView.bounds.height + layoutStyles.itemsVerticalMargin),
+            size: CGSize(width: scrollView.contentSize.width, height: layoutStyles.stackViewHeight)
         )
 
         let buttonOriginY = stackView.frame.maxY + layoutStyles.itemsVerticalMargin
         button.frame = CGRect(
-                origin: CGPoint(x: 0, y: buttonOriginY),
-                size: CGSize(width: scrollView.contentSize.width, height: layoutStyles.buttonHeight)
+            origin: CGPoint(x: 0, y: buttonOriginY),
+            size: CGSize(width: scrollView.contentSize.width, height: layoutStyles.buttonHeight)
         )
     }
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         scrollView.frame = CGRect(x: .zero, y: .zero, width: view.frame.width,
-                height: view.frame.height)
+            height: view.frame.height)
         var customSafeAreaInsets = view.safeAreaInsets
         customSafeAreaInsets.top = 0
         let sumInsets = customSafeAreaInsets + layoutStyles.contentInsets
 
         scrollView.contentInset = sumInsets
         scrollView.contentSize = CGSize(
-                width: view.frame.width - sumInsets.left - sumInsets.right,
-                height: 2 * view.frame.height
+            width: view.frame.width - sumInsets.left - sumInsets.right,
+            height: 2 * view.frame.height
         )
 
         let itemsWidth = scrollView.contentSize.width
 
         textView.frame = CGRect(
-                origin: .zero,
-                size: CGSize(width: itemsWidth, height: layoutStyles.textViewDefaultHeight)
+            origin: .zero,
+            size: CGSize(width: itemsWidth, height: layoutStyles.textViewDefaultHeight)
         )
         setItemsLayout()
     }
 }
 
 fileprivate extension UIEdgeInsets {
-    static func +(lhs: UIEdgeInsets, rhs: UIEdgeInsets) -> UIEdgeInsets {
+    static func + (lhs: UIEdgeInsets, rhs: UIEdgeInsets) -> UIEdgeInsets {
         UIEdgeInsets(top: lhs.top + rhs.top, left: lhs.left + rhs.left, bottom: lhs.bottom + rhs.bottom, right: lhs.right + rhs.right)
     }
 }
 
 fileprivate extension EditTaskViewController.LayoutStyles {
     static let defaultStyle = Self.init(
-
-            contentInsets: UIEdgeInsets(top: 16, left: 16, bottom: 32, right: 16),
-            textSize: 17,
-            itemsBorderRadius: AppStyles.borderRadius,
-            itemsBackgroundColor: Color.backgroundPrimary,
-            buttonHeight: 56,
-            stackViewHeight: 112.5,
-            lineLeftPadding: 16,
-            lineRightPadding: -16,
-            lineHeight : 0.5
+        contentInsets: UIEdgeInsets(top: 16, left: 16, bottom: 32, right: 16),
+        textSize: 17,
+        itemsBorderRadius: AppStyles.borderRadius,
+        itemsBackgroundColor: Color.backgroundPrimary,
+        buttonHeight: 56,
+        stackViewHeight: 112.5,
+        lineLeftPadding: 16,
+        lineRightPadding: -16,
+        lineHeight: 0.5
     )
 }

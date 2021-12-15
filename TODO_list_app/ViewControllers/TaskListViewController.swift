@@ -10,7 +10,7 @@ import UIKit
 import RxSwift
 
 class TaskListViewController: UIViewController {
-private static let numberOfRows = 20
+    public static let numberOfRows = 20
 
     private struct SwipeIcons {
         static let doneIconName = "doneIcon"
@@ -63,7 +63,7 @@ private static let numberOfRows = 20
         return tableView
     }()
 
-    typealias TransitionAction = (IndexPath) -> Void
+    typealias TransitionAction = (TransitionMode, UIViewController) -> Void
     private var transitionAction: TransitionAction
     init(strings: Strings, transitionToEdit: @escaping TransitionAction) {
         self.strings = strings
@@ -118,7 +118,7 @@ private static let numberOfRows = 20
     }
 
     @objc func plusButtonTriggered(sender: Any) {
-        print("Button Pressed")
+        transitionAction(.present, self)
     }
 
     private func handleMarkAsDone(at indexPath: IndexPath) {
@@ -170,7 +170,7 @@ extension TaskListViewController: UITableViewDataSource {
 }
 
 extension TaskListViewController: UITableViewDelegate {
-    
+
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 
         let headerView = HeaderView()
@@ -228,7 +228,11 @@ extension TaskListViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("Selected Row number: \(indexPath.row)")
-        transitionAction(indexPath)
+        if isLastRow(indexPath) {
+            transitionAction(.present, self)
+        } else {
+            transitionAction(.push, self)
+        }
     }
 }
 

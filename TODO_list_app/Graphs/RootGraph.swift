@@ -2,7 +2,10 @@ import Foundation
 import UIKit
 
 class RootGraph {
-    private(set) var rootViewController: UINavigationController
+    var rootViewController: UIViewController {
+        return navigationController
+    }
+    private let navigationController: UINavigationController
     private(set) var taskListGraph: TaskListGraph
 
     init() {
@@ -25,8 +28,27 @@ class RootGraph {
 //                )
 //        )
 //        rootViewController = UINavigationController(rootViewController: editTaskViewController)
+        var aNavigationController: UINavigationController?
 
-        self.taskListGraph = TaskListGraph()
-        self.rootViewController = UINavigationController(rootViewController: taskListGraph.viewController)
+        taskListGraph = TaskListGraph(
+            rootRouter: RootRouter(
+                pushAction: {
+                    aNavigationController?.pushViewController($0, animated: true)
+                },
+                popAction: {
+                    aNavigationController?.popViewController(animated: true)
+                },
+                presentAction: {
+                    aNavigationController?.present($0, animated: true, completion: nil)
+                },
+                dismissAction: {
+                    $0.dismiss(animated: true, completion: nil)
+                }
+
+            )
+        )
+        navigationController = UINavigationController(
+            rootViewController: taskListGraph.viewController)
+        aNavigationController = navigationController
     }
 }

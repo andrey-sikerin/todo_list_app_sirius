@@ -25,6 +25,7 @@
 		8C5A4BB22768CE1800EF1655 /* ToDoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C5A4BB12768CE1800EF1655 /* ToDoCell.swift */; };
 		8C5A4BB42768CE2600EF1655 /* ToDoCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C5A4BB32768CE2600EF1655 /* ToDoCellViewModel.swift */; };
 		8C5A4BB62769D5F200EF1655 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C5A4BB52769D5F200EF1655 /* HeaderView.swift */; };
+		8C947994276A35B000CD28E0 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C947993276A35B000CD28E0 /* Router.swift */; };
 		CE3CD61B2760FF1000365472 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3CD61A2760FF1000365472 /* AppDelegate.swift */; };
 		CE3CD61D2760FF1000365472 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3CD61C2760FF1000365472 /* SceneDelegate.swift */; };
 		CE3CD6242760FF1200365472 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE3CD6232760FF1200365472 /* Assets.xcassets */; };
@@ -79,6 +80,7 @@
 		8C5A4BB12768CE1800EF1655 /* ToDoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ToDoCell.swift; path = TODO_list_app/ToDoCell.swift; sourceTree = SOURCE_ROOT; };
 		8C5A4BB32768CE2600EF1655 /* ToDoCellViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ToDoCellViewModel.swift; path = TODO_list_app/ToDoCellViewModel.swift; sourceTree = SOURCE_ROOT; };
 		8C5A4BB52769D5F200EF1655 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
+		8C947993276A35B000CD28E0 /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 		CE3CD6172760FF1000365472 /* TODO_list_app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TODO_list_app.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE3CD61A2760FF1000365472 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CE3CD61C2760FF1000365472 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 				81BD8ACA2768CA72009500D0 /* FileCache.swift */,
 				81BD8AC82768C9E1009500D0 /* Color.swift */,
 				8C5A4BB52769D5F200EF1655 /* HeaderView.swift */,
+				8C947993276A35B000CD28E0 /* Router.swift */,
 				81BD8ABE2768C9D1009500D0 /* Graphs */,
 				81BD8AC12768C9D1009500D0 /* ViewControllers */,
 				8C5A4BB32768CE2600EF1655 /* ToDoCellViewModel.swift */,
@@ -343,9 +346,9 @@
 			);
 			mainGroup = CE3CD60E2760FF1000365472;
 			packageReferences = (
-				CE9652A22762345300932C06 /* XCRemoteSwiftPackageReference "PromiseKit.git" */,
-				CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */,
-				8150DB3F2764F22E00BA3FF1 /* XCRemoteSwiftPackageReference "swift-collections.git" */,
+				CE9652A22762345300932C06 /* XCRemoteSwiftPackageReference "PromiseKit" */,
+				CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */,
+				8150DB3F2764F22E00BA3FF1 /* XCRemoteSwiftPackageReference "swift-collections" */,
 			);
 			productRefGroup = CE3CD6182760FF1000365472 /* Products */;
 			projectDirPath = "";
@@ -394,6 +397,7 @@
 				813FC6DB2766A4AA001518A1 /* AddNewTaskCell.swift in Sources */,
 				81BD8AC52768C9D1009500D0 /* RootGraph.swift in Sources */,
 				CE3CD61B2760FF1000365472 /* AppDelegate.swift in Sources */,
+				8C947994276A35B000CD28E0 /* Router.swift in Sources */,
 				8C5A4BB42768CE2600EF1655 /* ToDoCellViewModel.swift in Sources */,
 				8C5A4BB22768CE1800EF1655 /* ToDoCell.swift in Sources */,
 				CE3CD61D2760FF1000365472 /* SceneDelegate.swift in Sources */,
@@ -774,7 +778,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		8150DB3F2764F22E00BA3FF1 /* XCRemoteSwiftPackageReference "swift-collections.git" */ = {
+		8150DB3F2764F22E00BA3FF1 /* XCRemoteSwiftPackageReference "swift-collections" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-collections.git";
 			requirement = {
@@ -782,7 +786,7 @@
 				minimumVersion = 1.0.0;
 			};
 		};
-		CE9652A22762345300932C06 /* XCRemoteSwiftPackageReference "PromiseKit.git" */ = {
+		CE9652A22762345300932C06 /* XCRemoteSwiftPackageReference "PromiseKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mxcl/PromiseKit.git";
 			requirement = {
@@ -790,7 +794,7 @@
 				version = 6.16.2;
 			};
 		};
-		CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */ = {
+		CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ReactiveX/RxSwift.git";
 			requirement = {
@@ -803,42 +807,42 @@
 /* Begin XCSwiftPackageProductDependency section */
 		8150DB402764F22E00BA3FF1 /* OrderedCollections */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 8150DB3F2764F22E00BA3FF1 /* XCRemoteSwiftPackageReference "swift-collections.git" */;
+			package = 8150DB3F2764F22E00BA3FF1 /* XCRemoteSwiftPackageReference "swift-collections" */;
 			productName = OrderedCollections;
 		};
 		CE9652A32762345300932C06 /* PromiseKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CE9652A22762345300932C06 /* XCRemoteSwiftPackageReference "PromiseKit.git" */;
+			package = CE9652A22762345300932C06 /* XCRemoteSwiftPackageReference "PromiseKit" */;
 			productName = PromiseKit;
 		};
 		CE9652A6276234C800932C06 /* RxBlocking */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxBlocking;
 		};
 		CE9652A8276234C800932C06 /* RxCocoa */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxCocoa;
 		};
 		CE9652AA276234C800932C06 /* RxRelay */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxRelay;
 		};
 		CE9652AC276234C800932C06 /* RxSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxSwift;
 		};
 		CE9652B7276242C800932C06 /* RxTest */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxTest;
 		};
 		CE9652BD2762473400932C06 /* RxTest */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift.git" */;
+			package = CE9652A5276234C800932C06 /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxTest;
 		};
 /* End XCSwiftPackageProductDependency section */

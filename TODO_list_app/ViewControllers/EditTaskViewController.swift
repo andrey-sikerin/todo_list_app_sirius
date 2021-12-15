@@ -6,6 +6,9 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     private let stackView = UIStackView()
     private let button = UIButton()
     private let notificationCenter: NotificationCenter
+    private let priorityStackViewContainer = PriorityStackViewContainer()
+    private let deadLineStackViewContainer = DeadLineStackViewContainer()
+    private let line = UIView()
 
     private let styles: Styles
     private let layoutStyles: LayoutStyles = .defaultStyle
@@ -32,11 +35,16 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         let itemsBorderRadius: CGFloat
         let itemsBackgroundColor: UIColor
         let itemsVerticalMargin: CGFloat = 16
-        let stackViewHeight: CGFloat = 113
         let buttonHeight: CGFloat
+        let stackViewHeight: CGFloat
+
+        let lineLeftPadding: CGFloat
+        let lineRightPadding: CGFloat
+        let lineHeight: CGFloat
     }
 
     public struct Styles {
+        let lineOpacity: CGFloat = 0.2
         var itemsBackground: UIColor
         var backgroundColor: UIColor
         var textViewTextColor: UIColor
@@ -79,6 +87,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         textView.textContainerInset = UIEdgeInsets(
                 top: innerPadding, left: innerPadding, bottom: innerPadding, right: innerPadding
         )
+
         textView.text = strings.textViewPlaceholder
         textView.font = .systemFont(ofSize: layoutStyles.textSize)
         textView.layer.cornerRadius = layoutStyles.itemsBorderRadius
@@ -87,9 +96,12 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         textView.isScrollEnabled = false
         textView.delegate = self
 
-        stackView.autoresizingMask = []
-        stackView.layer.cornerRadius = layoutStyles.itemsBorderRadius
-        stackView.backgroundColor = styles.itemsBackground
+        let smallStackViewHeight: CGFloat = (layoutStyles.stackViewHeight - layoutStyles.lineHeight) / 2
+
+        setupStackView()
+        setupPriorityStackViewContainer(smallStackViewHeight)
+        setupDeadLineStackViewContainer(smallStackViewHeight)
+        setupLine()
 
         button.addTarget(self, action: #selector(onButtonPress), for: .touchUpInside)
         button.layer.cornerRadius = layoutStyles.itemsBorderRadius
@@ -152,6 +164,43 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
             textView.text = ""
             textView.textColor = styles.textViewTextColor
         }
+    }
+
+
+
+    private func setupStackView(){
+        stackView.axis = .vertical
+        stackView.alignment = .center
+        stackView.distribution = .equalCentering
+        stackView.layer.cornerRadius = layoutStyles.itemsBorderRadius
+        stackView.backgroundColor = styles.itemsBackground
+        stackView.addArrangedSubview(priorityStackViewContainer)
+        stackView.addArrangedSubview(line)
+        stackView.addArrangedSubview(deadLineStackViewContainer)
+    }
+
+    private func setupPriorityStackViewContainer(_ smallStackViewHeight: CGFloat) {
+        priorityStackViewContainer.backgroundColor = .brown
+        priorityStackViewContainer.translatesAutoresizingMaskIntoConstraints = false
+        priorityStackViewContainer.layer.cornerRadius = layoutStyles.itemsBorderRadius
+        priorityStackViewContainer.heightAnchor.constraint(equalToConstant: smallStackViewHeight).isActive = true
+        priorityStackViewContainer.leftAnchor.constraint(equalTo: stackView.leftAnchor, constant: 0).isActive = true
+        priorityStackViewContainer.rightAnchor.constraint(equalTo: stackView.rightAnchor, constant: 0).isActive = true
+    }
+
+    private func setupDeadLineStackViewContainer(_ smallStackViewHeight: CGFloat) {
+        deadLineStackViewContainer.backgroundColor = .green
+        deadLineStackViewContainer.layer.cornerRadius = layoutStyles.itemsBorderRadius
+        deadLineStackViewContainer.heightAnchor.constraint(equalToConstant: smallStackViewHeight).isActive = true
+        deadLineStackViewContainer.leftAnchor.constraint(equalTo: stackView.leftAnchor, constant: 0).isActive = true
+        deadLineStackViewContainer.rightAnchor.constraint(equalTo: stackView.rightAnchor, constant: 0).isActive = true
+    }
+
+    private func setupLine() {
+        line.backgroundColor = UIColor.black.withAlphaComponent(styles.lineOpacity)
+        line.heightAnchor.constraint(equalToConstant: layoutStyles.lineHeight).isActive = true
+        line.leftAnchor.constraint(equalTo: stackView.leftAnchor, constant: layoutStyles.lineLeftPadding).isActive = true
+        line.rightAnchor.constraint(equalTo: stackView.rightAnchor, constant: layoutStyles.lineRightPadding).isActive = true
     }
 
     private func changeTextViewSize(canStretchIndefinitely: Bool, withAnimation: Bool = false) {
@@ -249,10 +298,15 @@ fileprivate extension UIEdgeInsets {
 
 fileprivate extension EditTaskViewController.LayoutStyles {
     static let defaultStyle = Self.init(
+
             contentInsets: UIEdgeInsets(top: 16, left: 16, bottom: 32, right: 16),
             textSize: 17,
             itemsBorderRadius: AppStyles.borderRadius,
             itemsBackgroundColor: Color.backgroundPrimary,
-            buttonHeight: 56
+            buttonHeight: 56,
+            stackViewHeight: 112.5,
+            lineLeftPadding: 16,
+            lineRightPadding: -16,
+            lineHeight : 0.5
     )
 }

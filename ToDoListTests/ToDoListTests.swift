@@ -8,7 +8,7 @@
 import XCTest
 @testable import TODO_list_app
 
-class TODO_list_appTests: XCTestCase {
+class ToDoListTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.

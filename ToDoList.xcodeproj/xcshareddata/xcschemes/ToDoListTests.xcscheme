@@ -17,9 +17,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CE3CD62C2760FF1200365472"
-               BuildableName = "TODO_list_appTests.xctest"
-               BlueprintName = "TODO_list_appTests"
-               ReferencedContainer = "container:TODO_list_app.xcodeproj">
+               BuildableName = "ToDoListtTests.xctest"
+               BlueprintName = "ToDoListTests"
+               ReferencedContainer = "container:ToDoList.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>

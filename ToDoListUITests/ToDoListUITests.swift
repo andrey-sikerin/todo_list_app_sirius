@@ -7,7 +7,7 @@
 
 import XCTest
 
-class TODO_list_appUITests: XCTestCase {
+class ToDoListUITests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.

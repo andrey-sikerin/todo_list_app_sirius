@@ -10,9 +10,10 @@ import UIKit
 
 class TaskListGraph {
     private(set) var viewController: UIViewController
-    private var tasks: FileCache = FileCache.test
     private var currentEdit: EditTaskGraph?
     private var rootRouter: RootRouter
+    private let cacheFilename = "brawl_stars.txt"
+
 
     init(rootRouter: RootRouter) {
         self.rootRouter = rootRouter
@@ -36,7 +37,7 @@ class TaskListGraph {
                             titleNavigationBarText: NSLocalizedString("Task", comment: ""),
                             textViewPlaceholder: NSLocalizedString("TaskDescriptionPlaceholder", comment: ""),
                             buttonText: NSLocalizedString("Delete", comment: ""),
-                    doBeforeText: NSLocalizedString("Make up", comment: "")),
+                            doBeforeText: NSLocalizedString("Make up", comment: "")),
                     styles: EditTaskViewController.Styles(
                             itemsBackground: Color.backgroundSecondary,
                             backgroundColor: Color.backgroundPrimary,
@@ -55,6 +56,33 @@ class TaskListGraph {
 
         }
 
+        let fileCache = FileCache(
+                manager: FileCache.FileManager(write: { data, url in
+                    try data.write(to: url)
+                }, read: { url in
+                    return try Data(contentsOf: url)
+                })
+        )
+
+        let todoListSubscription = try? QueryService.getTodoList()
+        let cacheFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+                .first?.appendingPathComponent(cacheFilename)
+
+        let _ = todoListSubscription?.subscribe { event in
+            switch event {
+            case .success(let todoItemsArray):
+                // Write all items in cache, duplicates will be merged automatically
+                todoItemsArray.forEach { item in
+                    fileCache.addTask(item)
+                }
+                fileCache.save(to: cacheFilePath!)
+            case .failure(let error):
+                print("Error: ", error)
+            }
+        }
+
+        fileCache.load(from: cacheFilePath!)
+
         viewController = TaskListViewController(
                 strings: TaskListViewController.Strings(
                         titleNavigationBarText: NSLocalizedString("Tasks", comment: ""),
@@ -63,7 +91,8 @@ class TaskListGraph {
                         hideDoneButtonText: NSLocalizedString("Hide", comment: "")
                 ),
                 transitionToEdit: transitionToEditVC,
-                todoItems: FileCache.test.todoItems
+                cachedItems: fileCache.todoItems,
+                todoItemsSubscription: todoListSubscription
         )
     }
 }

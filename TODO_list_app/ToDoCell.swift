@@ -64,9 +64,7 @@ class ToDoCell: UITableViewCell {
 
     private lazy var completeButton: UIButton = {
         let button = UIButton()
-
-
-        // TODO copy to configure function
+// TODO copy to configure function
         let image: () = viewModel.completeButtonImage.subscribe(onNext: {
                     [weak self] image in
                     button.setImage(image, for: .normal)
@@ -141,6 +139,7 @@ class ToDoCell: UITableViewCell {
         guard let image = viewModel.deadline?.icon
                 else {
             return UIImageView(image: nil)
+
 }
         let imageView = UIImageView(image: image.withTintColor(Color.labelTertiary))
         imageView.widthAnchor.constraint(equalToConstant: 12).isActive = true

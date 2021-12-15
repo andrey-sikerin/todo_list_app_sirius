@@ -6,21 +6,20 @@
 //
 
 import UIKit
-import SwiftUI
 
 class AddNewTaskCell: UITableViewCell {
-    
+
     private let labelStyle: LabelStyle = .defaultStyle
     private let plusIconLayoutStyle: PlusIconLayoutStyle = .defaultStyle
     static let defaultReuseIdentifier = "AddNewTaskCellReuseIdentifier"
-    
+
     public struct PlusIconLayoutStyle {
         let rightOffset: CGFloat
         let topOffset: CGFloat
         let width: CGFloat
         let height: CGFloat
     }
-    
+
     public struct LabelStyle {
         let plusButtonRightOffset: CGFloat
         let topOffset: CGFloat
@@ -55,13 +54,13 @@ class AddNewTaskCell: UITableViewCell {
             height: plusIconLayoutStyle.height)
         return iconView
     }()
-    
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.addSubview(plusIcon)
         contentView.addSubview(label)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

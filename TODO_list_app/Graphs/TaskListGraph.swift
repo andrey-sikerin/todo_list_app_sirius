@@ -17,17 +17,22 @@ class TaskListGraph {
         self.viewController = UIViewController()
         let transitionToEditVC: (IndexPath) -> Void = { [weak self] index in
             let editTaskVC = EditTaskViewController(
+                notificationCenter: .default,
                 strings: EditTaskViewController.Strings(
                     leftNavigationBarText: NSLocalizedString("Cancel", comment: ""),
                     rightNavigationBarText: NSLocalizedString("Save", comment: ""),
                     titleNavigationBarText: NSLocalizedString("Task", comment: ""),
-                    textViewPlaceholder: NSLocalizedString("TaskDescriptionPlaceholder", comment: "")
-            ),
+                    textViewPlaceholder: NSLocalizedString("TaskDescriptionPlaceholder", comment: ""),
+                    buttonText: NSLocalizedString("Delete", comment: "")
+                ),
                 styles: EditTaskViewController.Styles(
                     itemsBackground: Color.backgroundSecondary,
                     backgroundColor: Color.backgroundPrimary,
                     textViewTextColor: Color.labelPrimary,
-                    textViewPlaceholderColor: Color.labelTertiary)
+                    textViewPlaceholderColor: Color.labelTertiary,
+                    buttonTextColor: .black,
+                    buttonPressedTextColor: .black
+                )
             )
             let navController = UINavigationController(rootViewController: editTaskVC)
             self?.viewController.present(navController, animated: true)

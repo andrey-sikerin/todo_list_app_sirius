@@ -28,17 +28,19 @@ class ToDoCell: UITableViewCell {
 
     private lazy var completeButton: UIButton = {
         let button = UIButton()
-        
+
+
         let image: () = viewModel.completeButtonImage.subscribe (onNext: {
             [weak self] image in
             button.setImage(image, for: .normal)
         }, onError: nil, onCompleted: nil, onDisposed: nil)
             .disposed(by: disposeBag)
-  
+
         button.rx.tap.subscribe(onNext: { [weak self] in
             self?.viewModel.buttonPressed()
         })
             .disposed(by: disposeBag)
+
 
         return button
     }()
@@ -100,11 +102,11 @@ class ToDoCell: UITableViewCell {
     private lazy var calendarImageView: UIImageView = {
         guard let image = viewModel.deadline?.icon
             else { return UIImageView(image: nil) }
-        
+
         let imageView = UIImageView(image: image.withRenderingMode(.alwaysTemplate))
         imageView.widthAnchor.constraint(equalToConstant: 12).isActive = true
         imageView.heightAnchor.constraint(equalToConstant: 13).isActive = true
-        imageView.tintColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
+        imageView.tintColor = Color.labelTertiary
         return imageView
     }()
 
@@ -112,13 +114,13 @@ class ToDoCell: UITableViewCell {
         let label = UILabel()
         label.numberOfLines = 1
         label.font = UIFont.systemFont(ofSize: 15)
-        label.textColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
-        
+        label.textColor = Color.labelTertiary
+
         guard let text = viewModel.deadline?.date
-        else { return UILabel() }
-        
+            else { return UILabel() }
+
         label.text = text
-        
+
         return label
     }()
 
@@ -152,18 +154,10 @@ class ToDoCell: UITableViewCell {
         super.layoutSubviews()
     }
 
-    override func prepareForReuse() {
-        deadlineLabel.text = nil
-        calendarImageView.image = nil
-        taskLabel.text = nil
-        priorityImageView.image = nil
-        completeButton.setImage(nil, for: .normal)
-    }
-    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        
-        
+
+
     }
 
 }

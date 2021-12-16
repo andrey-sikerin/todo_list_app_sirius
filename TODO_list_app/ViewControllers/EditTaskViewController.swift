@@ -72,10 +72,9 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         let buttonTextColor: UIColor
         let buttonPressedTextColor: UIColor
     }
-
+    
     private lazy var deadLineStackViewContainer: DeadLineStackViewContainer = {
         let container = DeadLineStackViewContainer { [weak self] isOn in
-
             self?.showingDatePicker = isOn
             if isOn {
                 self?.selectedDate = self?.datePicker.date
@@ -83,6 +82,12 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
                 self?.selectedDate = nil
             }
             self?.setItemsLayout()
+        } toggleCalendar: { [weak self] in
+            guard let self = self else { return }
+            self.showingDatePicker.toggle()
+            self.deadLineStackViewContainer.switcher.isOn += self.showingDatePicker
+            self.selectedDate = self.datePicker.date
+            self.setItemsLayout()
         }
         container.translatesAutoresizingMaskIntoConstraints = false
         return container
@@ -396,4 +401,10 @@ extension EditTaskViewController.LayoutStyles {
         segmentControlHeight : 36,
         segmentControlWidth : 150
     )
+}
+
+fileprivate extension Bool {
+    static func += (left: inout Bool, right: Bool) {
+        left = left || right
+    }
 }

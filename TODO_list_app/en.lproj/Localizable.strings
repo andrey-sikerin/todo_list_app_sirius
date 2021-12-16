@@ -6,5 +6,6 @@
 "Show" = "Show";
 "Hide" = "Hide";
 "Completed" = "Completed";
-
+"LabelImportanceText" = "Importance";
+"SegmentControlNoneText" = "None";
 "Delete" = "Delete";

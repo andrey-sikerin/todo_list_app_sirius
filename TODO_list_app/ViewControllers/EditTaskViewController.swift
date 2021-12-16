@@ -6,7 +6,13 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     private let stackView = UIStackView()
     private let button = UIButton()
     private let notificationCenter: NotificationCenter
-    private let priorityStackViewContainer = PriorityStackViewContainer()
+
+    private let priorityStackViewContainer = PriorityStackViewContainer(frame: .zero,
+            layout: PriorityStackViewContainer.LayoutStyles(itemCornerRadius: LayoutStyles.defaultStyle.itemsBorderRadius,
+                    labelLeftPadding: LayoutStyles.defaultStyle.labelLeftPadding,
+                    segmentControlRightPadding: LayoutStyles.defaultStyle.segmentControlRightPadding,
+                    segmentControlHeight: LayoutStyles.defaultStyle.segmentControlHeight,
+                    segmentControlWidth: LayoutStyles.defaultStyle.segmentControlWidth))
     private let deadLineStackViewContainer = DeadLineStackViewContainer()
     private let line = UIView()
 
@@ -41,6 +47,12 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         let lineLeftPadding: CGFloat
         let lineRightPadding: CGFloat
         let lineHeight: CGFloat
+
+        let labelLeftPadding: CGFloat
+
+        let segmentControlRightPadding: CGFloat
+        let segmentControlHeight : CGFloat
+        let segmentControlWidth : CGFloat
     }
 
     public struct Styles {
@@ -106,7 +118,6 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         setupPriorityStackViewContainer(smallStackViewHeight)
         setupDeadLineStackViewContainer(smallStackViewHeight)
         setupLine()
-
         button.addTarget(self, action: #selector(onButtonPress), for: .touchUpInside)
         button.layer.cornerRadius = layoutStyles.itemsBorderRadius
         button.backgroundColor = styles.itemsBackground
@@ -310,6 +321,10 @@ fileprivate extension EditTaskViewController.LayoutStyles {
         stackViewHeight: 112.5,
         lineLeftPadding: 16,
         lineRightPadding: -16,
-        lineHeight: 0.5
+        lineHeight: 0.5,
+        labelLeftPadding : 16,
+        segmentControlRightPadding: -12,
+        segmentControlHeight : 36,
+        segmentControlWidth : 150
     )
 }

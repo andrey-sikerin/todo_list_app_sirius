@@ -35,7 +35,8 @@ class TaskListGraph {
                     rightNavigationBarText: NSLocalizedString("Save", comment: ""),
                     titleNavigationBarText: NSLocalizedString("Task", comment: ""),
                     textViewPlaceholder: NSLocalizedString("TaskDescriptionPlaceholder", comment: ""),
-                    buttonText: NSLocalizedString("Delete", comment: "")
+                    buttonText: NSLocalizedString("Delete", comment: ""),
+                    doBeforeText: NSLocalizedString("Make up", comment: "")
                 ),
                 styles: EditTaskViewController.Styles(
                     itemsBackground: Color.backgroundSecondary,

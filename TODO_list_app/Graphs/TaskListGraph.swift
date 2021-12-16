@@ -44,7 +44,8 @@ class TaskListGraph {
                     textViewTextColor: Color.labelPrimary,
                     textViewPlaceholderColor: Color.labelTertiary,
                     buttonTextColor: .black,
-                    buttonPressedTextColor: .black
+                    buttonPressedTextColor: .black,
+                    showingCancelButton: mode == .push ? false : true 
                 ),
                 transitionToTaskList: transitionToTaskListVC
             )

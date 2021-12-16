@@ -47,7 +47,6 @@ class PriorityStackViewContainer: UIView {
         priorityStackView.axis = .horizontal
         priorityStackView.distribution = .equalCentering
         priorityStackView.alignment = .center
-        priorityStackView.backgroundColor = .white
         priorityStackView.translatesAutoresizingMaskIntoConstraints = false
         priorityStackView.layer.cornerRadius = layoutStyles.itemCornerRadius
         priorityStackView.topAnchor.constraint(equalTo: topAnchor, constant: 0).isActive = true

@@ -165,7 +165,6 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
 
         let smallStackViewHeight: CGFloat = (layoutStyles.stackViewHeight - layoutStyles.lineHeight) / 2
 
-        setupButton()
         setupScrollView()
         setupStackView()
         setupPriorityStackViewContainer(smallStackViewHeight)

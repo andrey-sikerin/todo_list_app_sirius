@@ -11,11 +11,10 @@ import RxSwift
 import RxCocoa
 
 class ToDoCellViewModel {
-
     var completeButtonImage: Observable<UIImage>
 
     struct PriorityImageViewModel {
-        let icon: UIImage
+        let icon: UIImage?
         let spacing: CGFloat
     }
 
@@ -24,7 +23,7 @@ class ToDoCellViewModel {
     let taskText: String
 
     struct DeadlineViewModel {
-        let icon: UIImage
+        let icon: UIImage?
         let date: String
     }
 
@@ -32,19 +31,16 @@ class ToDoCellViewModel {
 
     func buttonPressed() {
         print("button pressed")
-        
     }
 
-    init() {
-        completeButtonImage = Observable.just(UIImage(named: "notDoneState")!)
-        priorityImage = PriorityImageViewModel(
-            icon: UIImage(named: "lowPriorityIcon")!,
-            spacing: 5)
-        taskText = "Text"
-        deadline = nil
+    init(text: String = "default text", deadline: DeadlineViewModel?, completeButtonImage: UIImage?, priorityImage: PriorityImageViewModel?) {
+        if let img = completeButtonImage {
+            self.completeButtonImage = Observable.just(img)
+        } else {
+            self.completeButtonImage = Observable.just(UIImage(named: "notDoneState")!)
+        }
+        self.priorityImage = priorityImage
+        taskText = text
+        self.deadline = deadline
     }
-
-
-
-
 }

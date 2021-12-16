@@ -11,9 +11,45 @@ import RxSwift
 
 class ToDoCell: UITableViewCell {
 
-    private lazy var viewModel = ToDoCellViewModel()
+    private lazy var viewModel = ToDoCellViewModel(text: "", deadline: nil, completeButtonImage: nil, priorityImage: nil)
 
     static let identifier = "toDoCellIdentifier"
+
+    public func configureCell(todoItem: TodoItem) {
+        taskLabel.text = todoItem.text
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeStyle = .none
+        dateFormatter.dateStyle = .short
+
+        var deadlineViewModel: ToDoCellViewModel.DeadlineViewModel? = nil
+        if let date = todoItem.deadline {
+            let stringDate = dateFormatter.string(from: date)
+            let icon = UIImage(systemName: "calendar")!
+            deadlineViewModel = ToDoCellViewModel.DeadlineViewModel(icon: icon, date: stringDate)
+            deadlineLabel.text = stringDate
+            calendarImageView.image = icon
+        }
+
+        var imageName: String = ""
+        var spacing: CGFloat = 0
+        switch todoItem.priority {
+        case .high:
+            imageName = "highPriorityIcon"
+            spacing = 5
+        case .normal:
+            imageName = ""
+            spacing = 0
+        case .low:
+            imageName = "lowPriorityIcon"
+            spacing = 5
+        }
+        priorityImageView.image = UIImage(named: imageName)
+        taskStackView.spacing = spacing
+        let priorityImage = ToDoCellViewModel.PriorityImageViewModel(icon: UIImage(named: imageName), spacing: 5)
+
+        viewModel = ToDoCellViewModel(text: todoItem.text, deadline: deadlineViewModel,
+                completeButtonImage: UIImage(named: "notDoneState")!, priorityImage: priorityImage)
+    }
 
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView()
@@ -30,16 +66,16 @@ class ToDoCell: UITableViewCell {
         let button = UIButton()
 
 
-        let image: () = viewModel.completeButtonImage.subscribe (onNext: {
-            [weak self] image in
-            button.setImage(image, for: .normal)
-        }, onError: nil, onCompleted: nil, onDisposed: nil)
-            .disposed(by: disposeBag)
-
+        // TODO copy to configure function
+        let image: () = viewModel.completeButtonImage.subscribe(onNext: {
+                    [weak self] image in
+                    button.setImage(image, for: .normal)
+                }, onError: nil, onCompleted: nil, onDisposed: nil)
+                .disposed(by: disposeBag)
         button.rx.tap.subscribe(onNext: { [weak self] in
-            self?.viewModel.buttonPressed()
-        })
-            .disposed(by: disposeBag)
+                    self?.viewModel.buttonPressed()
+                })
+                .disposed(by: disposeBag)
 
 
         return button
@@ -82,7 +118,9 @@ class ToDoCell: UITableViewCell {
 
     private lazy var priorityImageView: UIImageView = {
         guard let image = viewModel.priorityImage?.icon
-            else { return UIImageView(image: nil) }
+                else {
+            return UIImageView(image: nil)
+        }
 
         let imageView = UIImageView(image: image)
         imageView.widthAnchor.constraint(equalToConstant: 12).isActive = true
@@ -101,9 +139,10 @@ class ToDoCell: UITableViewCell {
 
     private lazy var calendarImageView: UIImageView = {
         guard let image = viewModel.deadline?.icon
-            else { return UIImageView(image: nil) }
-
-        let imageView = UIImageView(image: image.withRenderingMode(.alwaysTemplate))
+                else {
+            return UIImageView(image: nil)
+}
+        let imageView = UIImageView(image: image.withTintColor(Color.labelTertiary))
         imageView.widthAnchor.constraint(equalToConstant: 12).isActive = true
         imageView.heightAnchor.constraint(equalToConstant: 13).isActive = true
         imageView.tintColor = Color.labelTertiary
@@ -115,10 +154,10 @@ class ToDoCell: UITableViewCell {
         label.numberOfLines = 1
         label.font = UIFont.systemFont(ofSize: 15)
         label.textColor = Color.labelTertiary
-
         guard let text = viewModel.deadline?.date
-            else { return UILabel() }
-
+                else {
+            return UILabel()
+}
         label.text = text
 
         return label
@@ -128,10 +167,10 @@ class ToDoCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.addSubview(stackView)
         stackView.frame = CGRect(
-            x: 16,
-            y: 0,
-            width: contentView.bounds.width,
-            height: 56
+                x: 16,
+                y: 0,
+                width: contentView.bounds.width,
+                height: 56
         )
         stackView.addArrangedSubview(completeButton)
         stackView.addArrangedSubview(cellStackView)

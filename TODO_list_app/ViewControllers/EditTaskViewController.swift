@@ -166,7 +166,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         setupStackView()
         setupPriorityStackViewContainer(smallStackViewHeight)
         setupDeadLineStackViewContainer(smallStackViewHeight)
-
+        setupButton()
         setupDatePicker()
         setupLine()
         notificationCenter.addObserver(self,

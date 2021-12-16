@@ -21,33 +21,31 @@ class TaskListGraph {
             let transitionToTaskListVC: PopAction
             switch mode {
             case .push: transitionToTaskListVC = {
-                    rootRouter.popAction()
-                }
+                rootRouter.popAction()
+            }
             case .present: transitionToTaskListVC = {
-                    rootRouter.dismissAction(vc)
-                }
+                rootRouter.dismissAction(vc)
+            }
             }
 
             let editTaskVC = EditTaskViewController(
-                notificationCenter: .default,
-                strings: EditTaskViewController.Strings(
-                    leftNavigationBarText: NSLocalizedString("Cancel", comment: ""),
-                    rightNavigationBarText: NSLocalizedString("Save", comment: ""),
-                    titleNavigationBarText: NSLocalizedString("Task", comment: ""),
-                    textViewPlaceholder: NSLocalizedString("TaskDescriptionPlaceholder", comment: ""),
-                    buttonText: NSLocalizedString("Delete", comment: ""),
-                    doBeforeText: NSLocalizedString("Make up", comment: "")
-                ),
-                styles: EditTaskViewController.Styles(
-                    itemsBackground: Color.backgroundSecondary,
-                    backgroundColor: Color.backgroundPrimary,
-                    textViewTextColor: Color.labelPrimary,
-                    textViewPlaceholderColor: Color.labelTertiary,
-                    buttonTextColor: Color.labelTertiary,
-                    buttonPressedTextColor: Color.labelPrimary,
-                    showingCancelButton: mode == .push ? false : true 
-                ),
-                transitionToTaskList: transitionToTaskListVC
+                    notificationCenter: .default,
+                    strings: EditTaskViewController.Strings(
+                            leftNavigationBarText: NSLocalizedString("Cancel", comment: ""),
+                            rightNavigationBarText: NSLocalizedString("Save", comment: ""),
+                            titleNavigationBarText: NSLocalizedString("Task", comment: ""),
+                            textViewPlaceholder: NSLocalizedString("TaskDescriptionPlaceholder", comment: ""),
+                            buttonText: NSLocalizedString("Delete", comment: ""),
+                    doBeforeText: NSLocalizedString("Make up", comment: "")),
+                    styles: EditTaskViewController.Styles(
+                            itemsBackground: Color.backgroundSecondary,
+                            backgroundColor: Color.backgroundPrimary,
+                            textViewTextColor: Color.labelPrimary,
+                            textViewPlaceholderColor: Color.labelTertiary,
+                            buttonTextColor: Color.labelTertiary,
+                            buttonPressedTextColor: Color.labelPrimary,
+                    showingCancelButton: mode == .push ? false : true),
+                    transitionToTaskList: transitionToTaskListVC
             )
 
             switch mode {
@@ -57,14 +55,16 @@ class TaskListGraph {
 
         }
 
-        self.viewController = TaskListViewController(
-            strings: TaskListViewController.Strings (
-                titleNavigationBarText: NSLocalizedString("Tasks", comment: ""),
-                doneAmountLabelText: NSLocalizedString("Completed", comment: ""),
-                showDoneButtonText: NSLocalizedString("Show", comment: ""),
-                hideDoneButtonText: NSLocalizedString("Hide", comment: "")
-            ),
-            transitionToEdit: transitionToEditVC)
+        viewController = TaskListViewController(
+                strings: TaskListViewController.Strings(
+                        titleNavigationBarText: NSLocalizedString("Tasks", comment: ""),
+                        doneAmountLabelText: NSLocalizedString("Completed", comment: ""),
+                        showDoneButtonText: NSLocalizedString("Show", comment: ""),
+                        hideDoneButtonText: NSLocalizedString("Hide", comment: "")
+                ),
+                transitionToEdit: transitionToEditVC,
+                todoItems: FileCache.test.todoItems
+        )
     }
 }
 
@@ -73,8 +73,8 @@ fileprivate extension FileCache {
         let manager = FileCache.FileManager(write: { data, url in
             try data.write(to: url)
         }, read: { url in
-                try Data(contentsOf: url)
-            })
+            try Data(contentsOf: url)
+        })
         let file = FileCache(manager: manager)
         let buyFood = TodoItem(id: "BuyFoodIdString", text: "Working for food", priority: .low)
         let goRun = TodoItem(text: "Running is good", priority: .normal)

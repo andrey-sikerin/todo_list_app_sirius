@@ -72,17 +72,12 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         let buttonTextColor: UIColor
         let buttonPressedTextColor: UIColor
     }
-
+    
     private lazy var deadLineStackViewContainer: DeadLineStackViewContainer = {
         let container = DeadLineStackViewContainer { [weak self] isOn in
-
-            self?.showingDatePicker = isOn
-            if isOn {
-                self?.selectedDate = self?.datePicker.date
-            } else {
-                self?.selectedDate = nil
-            }
-            self?.setItemsLayout()
+            self?.switcherTapped(isOn)
+        } toggleCalendar: { [weak self] in
+            self?.toggleCalendar()
         }
         container.translatesAutoresizingMaskIntoConstraints = false
         return container
@@ -134,6 +129,8 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         view.addGestureRecognizer(gestureRecognizer)
 
         view.backgroundColor = styles.backgroundColor
+        
+        navigationItem.largeTitleDisplayMode = .never
 
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             title: strings.leftNavigationBarText,
@@ -222,6 +219,23 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
             textView.text = ""
             textView.textColor = styles.textViewTextColor
         }
+    }
+    
+    private func toggleCalendar() {
+        showingDatePicker.toggle()
+        deadLineStackViewContainer.switcher.isOn = deadLineStackViewContainer.switcher.isOn || showingDatePicker
+        selectedDate = datePicker.date
+        setItemsLayout()
+    }
+    
+    private func switcherTapped(_ isOn: Bool) {
+        showingDatePicker = isOn
+        if isOn {
+            selectedDate = datePicker.date
+        } else {
+            selectedDate = nil
+        }
+        setItemsLayout()
     }
 
     private func setupDatePicker() {

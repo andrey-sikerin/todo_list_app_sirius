@@ -11,7 +11,6 @@
 		36EBCB3A895C172A41138235 /* PriorityStackViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBCD329FBA4F10A178A78A /* PriorityStackViewContainer.swift */; };
 		36EBCBDE5CDC738819973462 /* DeadLineStackViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBC38C77FC169E47E42A68 /* DeadLineStackViewContainer.swift */; };
 		813FC6DB2766A4AA001518A1 /* AddNewTaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813FC6DA2766A4AA001518A1 /* AddNewTaskCell.swift */; };
-		36EBC7FE7C762AD1875F66FD /* AppStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBC184EC2EB3F6F9A4F6BF /* AppStyles.swift */; };
 		8150DB382764F18C00BA3FF1 /* TodoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8150DB372764F18C00BA3FF1 /* TodoItem.swift */; };
 		8150DB3D2764F1D700BA3FF1 /* CacheFileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8150DB3B2764F1D700BA3FF1 /* CacheFileTests.swift */; };
 		8150DB3E2764F1D700BA3FF1 /* TodoItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8150DB3C2764F1D700BA3FF1 /* TodoItemTests.swift */; };
@@ -68,8 +67,6 @@
 		36EBC38C77FC169E47E42A68 /* DeadLineStackViewContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeadLineStackViewContainer.swift; sourceTree = "<group>"; };
 		36EBCD329FBA4F10A178A78A /* PriorityStackViewContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PriorityStackViewContainer.swift; sourceTree = "<group>"; };
 		813FC6DA2766A4AA001518A1 /* AddNewTaskCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewTaskCell.swift; sourceTree = "<group>"; };
-		36EBC184EC2EB3F6F9A4F6BF /* AppStyles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStyles.swift; sourceTree = "<group>"; };
-		36EBC6A7CDDA5E43F286147C /* EditTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditTaskViewController.swift; sourceTree = "<group>"; };
 		8150DB372764F18C00BA3FF1 /* TodoItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoItem.swift; sourceTree = "<group>"; };
 		8150DB3B2764F1D700BA3FF1 /* CacheFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CacheFileTests.swift; sourceTree = "<group>"; };
 		8150DB3C2764F1D700BA3FF1 /* TodoItemTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoItemTests.swift; sourceTree = "<group>"; };
@@ -211,7 +208,6 @@
 				CE3CD6252760FF1200365472 /* LaunchScreen.storyboard */,
 				CE3CD6282760FF1200365472 /* Info.plist */,
 				CEC8FADE27639A1C0048F291 /* Localizable.strings */,
-				36EBC184EC2EB3F6F9A4F6BF /* AppStyles.swift */,
 				36EBCD329FBA4F10A178A78A /* PriorityStackViewContainer.swift */,
 				36EBC38C77FC169E47E42A68 /* DeadLineStackViewContainer.swift */,
 				36EBC184EC2EB3F6F9A4F6BF /* AppStyles.swift */,
@@ -415,7 +411,6 @@
 				8C5A4BB62769D5F200EF1655 /* HeaderView.swift in Sources */,
 				36EBCB3A895C172A41138235 /* PriorityStackViewContainer.swift in Sources */,
 				36EBCBDE5CDC738819973462 /* DeadLineStackViewContainer.swift in Sources */,
-				36EBC7FE7C762AD1875F66FD /* AppStyles.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

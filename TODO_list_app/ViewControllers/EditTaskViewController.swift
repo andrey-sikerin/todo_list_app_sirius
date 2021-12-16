@@ -12,10 +12,13 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
                     labelLeftPadding: LayoutStyles.defaultStyle.labelLeftPadding,
                     segmentControlRightPadding: LayoutStyles.defaultStyle.segmentControlRightPadding,
                     segmentControlHeight: LayoutStyles.defaultStyle.segmentControlHeight,
-                    segmentControlWidth: LayoutStyles.defaultStyle.segmentControlWidth))
+                    segmentControlWidth: LayoutStyles.defaultStyle.segmentControlWidth
+        )
+    )
     private let line = UIView()
     private let secondaryLabel = UILabel()
     private let datePicker = UIDatePicker()
+    private let datePickerContainer = UIView()
 
     private let styles: Styles
     private let layoutStyles: LayoutStyles = .defaultStyle
@@ -61,6 +64,8 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         let primaryLabelFontSize: CGFloat = 17
         let secondaryLabelFontSize: CGFloat = 13
         let datePickerHeight: CGFloat = 340
+        
+        let animationDuration: TimeInterval = 0.5
     }
 
     public struct Styles {
@@ -110,7 +115,30 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
 
     private var showingDatePicker = false {
         didSet {
-            datePicker.isHidden = !showingDatePicker
+            let animator = UIViewPropertyAnimator(duration: layoutStyles.animationDuration, curve: .easeIn) { [weak self] in
+                guard let self = self else { return }
+                self.stackView.layoutIfNeeded()
+                self.datePickerContainer.isHidden = !self.showingDatePicker
+            }
+           // animator.isReversed = true
+            animator.startAnimation()
+            
+//            UIView.animate(
+//                withDuration: layoutStyles.animationDuration,
+//                delay: 0,
+//                options: [.layoutSubviews, .showHideTransitionViews]) { [weak self] in
+//                    guard let self = self else { return }
+//                    //self.datePicker.isHidden = !self.showingDatePicker
+//                    self.datePickerContainer.isHidden = !self.showingDatePicker
+//                    self.datePickerContainer.alpha = 1
+//                    self.stackView.layoutIfNeeded()
+//
+//                   // self.datePicker.alpha = 1
+//                  //  self.setItemsLayout()
+////                    self.datePicker.isHidden = !self.showingDatePicker
+//            }
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [unowned self] in
+//            }
         }
     }
 
@@ -174,7 +202,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         setupStackView()
         setupPriorityStackViewContainer(smallStackViewHeight)
         setupDeadLineStackViewContainer(smallStackViewHeight)
-
+        setupButton()
         setupDatePicker()
         setupLine()
         notificationCenter.addObserver(self,
@@ -232,9 +260,20 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     private func setupDatePicker() {
         datePicker.preferredDatePickerStyle = .inline
         datePicker.datePickerMode = .date
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
         datePicker.calendar = .autoupdatingCurrent
-        datePicker.isHidden = !showingDatePicker
         datePicker.addTarget(self, action: #selector(datePicked), for: .allEvents)
+        datePickerContainer.isHidden = !showingDatePicker
+        datePickerContainer.clipsToBounds = true
+        
+        datePickerContainer.addSubview(datePicker)
+        datePickerContainer.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            datePickerContainer.heightAnchor.constraint(equalToConstant: 332),
+            datePicker.leadingAnchor.constraint(equalTo: datePickerContainer.leadingAnchor),
+            datePicker.trailingAnchor.constraint(equalTo: datePickerContainer.trailingAnchor),
+            datePicker.centerYAnchor.constraint(equalTo: datePickerContainer.centerYAnchor)
+        ])
     }
 
     private func setupScrollView() {
@@ -263,8 +302,9 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     }
 
     private func setupStackView() {
+      //  stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.autoresizingMask = [.flexibleHeight, .flexibleBottomMargin]
         stackView.axis = .vertical
-        stackView.autoresizingMask = []
         stackView.alignment = .center
         stackView.distribution = .fillProportionally
         stackView.layer.cornerRadius = layoutStyles.itemsBorderRadius
@@ -272,7 +312,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         stackView.addArrangedSubview(priorityStackViewContainer)
         stackView.addArrangedSubview(line)
         stackView.addArrangedSubview(deadLineStackViewContainer)
-        stackView.addArrangedSubview(datePicker)
+        stackView.addArrangedSubview(datePickerContainer)
     }
 
     private func setupPriorityStackViewContainer(_ smallStackViewHeight: CGFloat) {
@@ -285,6 +325,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     }
 
     private func setupLine() {
+      //  line.translatesAutoresizingMaskIntoConstraints = false
         line.backgroundColor = UIColor.black.withAlphaComponent(styles.lineOpacity)
         line.heightAnchor.constraint(equalToConstant: layoutStyles.lineHeight).isActive = true
         line.leftAnchor.constraint(equalTo: stackView.leftAnchor, constant: layoutStyles.lineLeftPadding).isActive = true

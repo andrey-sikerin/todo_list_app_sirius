@@ -15,7 +15,7 @@ class HeaderView: UIView {
 
     private let doneAmountLabel: UILabel = {
         let label = UILabel()
-        label.textColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
+        label.textColor = Color.labelTertiary
         label.font = UIFont.systemFont(ofSize: 15)
         label.sizeToFit()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -24,7 +24,7 @@ class HeaderView: UIView {
 
     private let showDoneButton: UIButton = {
         let button = UIButton()
-        button.setTitleColor(UIColor(red: 0, green: 0.478, blue: 1, alpha: 1), for: .normal)
+        button.setTitleColor(Color.blue, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 15)
         button.sizeToFit()
         button.translatesAutoresizingMaskIntoConstraints = false

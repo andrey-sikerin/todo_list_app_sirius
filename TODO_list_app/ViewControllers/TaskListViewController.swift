@@ -17,19 +17,19 @@ class TaskListViewController: UIViewController {
         static let doneIconPosition = CGPoint(x: 20, y: 20)
         static let doneIconSize = CGSize(width: 27, height: 26)
         static let doneContainerSize = CGSize(width: 67, height: 66)
-        static let doneIconColor = UIColor(red: 0.204, green: 0.78, blue: 0.349, alpha: 1)
+        static let doneIconColor = Color.green
 
         static let infoIconName = "infoIcon"
         static let infoIconPosition = CGPoint(x: 20, y: 20)
         static let infoIconSize = CGSize(width: 27, height: 26)
         static let infoContainerSize = CGSize(width: 67, height: 66)
-        static let infoIconColor = UIColor(red: 0.82, green: 0.82, blue: 0.839, alpha: 1)
+        static let infoIconColor = Color.lightGray
 
         static let deleteIconName = "deleteIcon"
         static let deleteIconPosition = CGPoint(x: 20, y: 20)
         static let deleteIconSize = CGSize(width: 26, height: 26)
         static let deleteContainerSize = CGSize(width: 66, height: 66)
-        static let deleteIconColor = UIColor(red: 1, green: 0.231, blue: 0.188, alpha: 1)
+        static let deleteIconColor = Color.red
     }
 
     private struct PlusButton {
@@ -101,7 +101,7 @@ class TaskListViewController: UIViewController {
         setUpTableView()
         view.addSubview(plusButton)
     }
-    
+
     func setUpTableView() {
         taskTableView.autoresizingMask = []
         taskTableView.delegate = self
@@ -153,17 +153,17 @@ extension TaskListViewController: UITableViewDataSource {
                 print("Unable to dequeue a cell with Identifier: \(reuseIdentifier)")
                 return UITableViewCell()
             }
+            newTaskCell.backgroundColor = Color.backgroundSecondary
             return newTaskCell
         }
 
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ToDoCell.identifier) else {
             print("Unable to dequeue a cell with Identifier: \(reuseIdentifier)")
             return UITableViewCell()
         }
 
         cell.backgroundColor = Color.backgroundSecondary
-
-
+        cell.separatorInset = UIEdgeInsets(top: 0, left: 52, bottom: 0, right: 0)
 
         return cell
     }

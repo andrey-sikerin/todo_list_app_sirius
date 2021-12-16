@@ -29,6 +29,7 @@ class RootGraph {
         )
         navigationController = UINavigationController(
             rootViewController: taskListGraph.viewController)
+        navigationController.navigationBar.prefersLargeTitles = true 
         aNavigationController = navigationController
     }
 }

@@ -96,12 +96,12 @@ class TaskListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
         title = strings.titleNavigationBarText
         setUpTableView()
         view.addSubview(plusButton)
     }
-
+    
     func setUpTableView() {
         taskTableView.autoresizingMask = []
         taskTableView.delegate = self

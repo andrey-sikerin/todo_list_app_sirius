@@ -1,6 +1,9 @@
 import UIKit
 
 class DeadLineStackViewContainer: UIView {
+    typealias ToggleCalendar = () -> Void
+    typealias OnSwitcherTapped = (Bool) -> Void
+    
     private let stackView = UIStackView()
     private let itemBorderRadius = AppStyles.borderRadius
     private let labelsStack = UIStackView()
@@ -18,13 +21,19 @@ class DeadLineStackViewContainer: UIView {
         doBeforeText: NSLocalizedString("Make up", comment: "")
     )
     
-    private var switcherTapped: (Bool) -> Void
-
-    required init(switcherTapped: @escaping (Bool) -> Void) {
+    private var switcherTapped: OnSwitcherTapped
+    private var toggleCalendar: ToggleCalendar
+    required init(
+        switcherTapped: @escaping OnSwitcherTapped,
+        toggleCalendar: @escaping ToggleCalendar)
+    {
         self.switcherTapped = switcherTapped
+        self.toggleCalendar = toggleCalendar
         super.init(frame: .zero)
-
         addSubview(stackView)
+        let recognizer = UITapGestureRecognizer(target: self, action: #selector(tapTriggered))
+        recognizer.cancelsTouchesInView = true 
+        addGestureRecognizer(recognizer)
         self.setupDeadLineStackView()
         self.setupPrimaryLabel()
         self.setupSecondaryLabel()
@@ -38,6 +47,10 @@ class DeadLineStackViewContainer: UIView {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc private func tapTriggered(sender: UITapGestureRecognizer) {
+        toggleCalendar()
     }
     
     @objc func switcherTap(sender: UISwitch) {

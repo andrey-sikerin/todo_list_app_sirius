@@ -18,7 +18,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     private let datePicker = UIDatePicker()
 
     private let styles: Styles
-    private let layoutStyles: LayoutStyles = .defaultStyle
+    private let layoutStyles: LayoutStyles
     private let strings: Strings
 
     private var showPlaceholder = true
@@ -71,6 +71,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         var textViewPlaceholderColor: UIColor
         let buttonTextColor: UIColor
         let buttonPressedTextColor: UIColor
+        let showingCancelButton: Bool
     }
 
     private lazy var deadLineStackViewContainer: DeadLineStackViewContainer = {
@@ -86,9 +87,10 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     typealias TransitionAction = () -> Void
     private var transitionAction: TransitionAction
 
-    init(notificationCenter: NotificationCenter, strings: Strings, styles: Styles, transitionToTaskList: @escaping TransitionAction) {
+    init(notificationCenter: NotificationCenter, strings: Strings, styles: Styles, layoutStyles: LayoutStyles = .defaultStyle, transitionToTaskList: @escaping TransitionAction) {
         self.strings = strings
         self.styles = styles
+        self.layoutStyles = layoutStyles
         self.notificationCenter = notificationCenter
         self.transitionAction = transitionToTaskList
         super.init(nibName: nil, bundle: nil)
@@ -132,12 +134,15 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
 
         navigationItem.largeTitleDisplayMode = .never
 
-        navigationItem.leftBarButtonItem = UIBarButtonItem(
+        if styles.showingCancelButton {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(
                 title: strings.leftNavigationBarText,
                 style: .plain,
                 target: self,
                 action: #selector(onLeftBarButtonClicked)
-        )
+            )
+        }
+
         navigationItem.rightBarButtonItem = UIBarButtonItem(
                 title: strings.rightNavigationBarText,
                 style: .plain,
@@ -145,7 +150,6 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
                 action: #selector(onRightBarButtonClicked)
         )
         navigationItem.title = strings.titleNavigationBarText
-
 
         let innerPadding = layoutStyles.textViewInnerPadding
         textView.textContainerInset = UIEdgeInsets(

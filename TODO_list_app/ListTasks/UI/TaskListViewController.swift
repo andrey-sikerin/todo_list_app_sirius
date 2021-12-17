@@ -67,11 +67,23 @@ class TaskListViewController: UIViewController {
     typealias TransitionAction = (TransitionMode, UIViewController) -> Void
     private var transitionAction: TransitionAction
 
-    init(strings: Strings, transitionToEdit: @escaping TransitionAction, todoItems: [TodoItem]) {
+    init(strings: Strings, transitionToEdit: @escaping TransitionAction, cachedItems: [TodoItem], todoItemsSubscription: Single<[TodoItem]>?) {
         self.strings = strings
-        self.transitionAction = transitionToEdit
-        self.todoItems = todoItems
+        transitionAction = transitionToEdit
+        todoItems = cachedItems
         super.init(nibName: nil, bundle: nil)
+
+        todoItemsSubscription?.subscribe { event in
+            switch event {
+            case .success(let arr):
+                self.todoItems = arr
+                DispatchQueue.main.async {
+                    self.taskTableView.reloadData()
+                }
+            case .failure(let error):
+                print("Updating data error: ", error)
+            }
+        }
     }
 
     private lazy var plusButton: UIButton = {
@@ -165,7 +177,7 @@ extension TaskListViewController: UITableViewDataSource {
                 print("Unable to dequeue a cell with Identifier: \(reuseIdentifier)")
                 return UITableViewCell()
             }
-            let currentItem = todoItems[indexPath.row];
+            let currentItem = todoItems[indexPath.row]
             cell.backgroundColor = Color.backgroundSecondary
             cell.configureCell(todoItem: currentItem)
             cell.separatorInset = UIEdgeInsets(top: 0, left: 52, bottom: 0, right: 0)

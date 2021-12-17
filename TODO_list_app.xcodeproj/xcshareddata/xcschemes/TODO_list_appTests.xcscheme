@@ -21,6 +21,11 @@
                BlueprintName = "TODO_list_appTests"
                ReferencedContainer = "container:TODO_list_app.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "SnapshotTests/testMyViewController()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

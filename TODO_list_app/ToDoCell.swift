@@ -27,7 +27,12 @@ class ToDoCell: UITableViewCell {
             let icon = UIImage(systemName: "calendar")!
             deadlineViewModel = ToDoCellViewModel.DeadlineViewModel(icon: icon, date: stringDate)
             deadlineLabel.text = stringDate
-            calendarImageView.image = icon
+            deadlineLabel.font = UIFont.systemFont(ofSize: 15)
+            deadlineLabel.textColor = Color.labelTertiary
+            calendarImageView.image = icon.withTintColor(Color.labelTertiary, renderingMode: .alwaysTemplate)
+            calendarImageView.tintColor = Color.labelTertiary
+            calendarImageView.heightAnchor.constraint(equalToConstant: 16).isActive = true
+            calendarImageView.widthAnchor.constraint(equalToConstant: 15).isActive = true
         }
 
         var imageName: String = ""

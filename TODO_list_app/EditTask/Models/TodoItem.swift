@@ -14,6 +14,7 @@ struct TodoItem {
     var createdAt: Double = NSDate().timeIntervalSince1970
     var updatedAt: Double?
     var done: Bool = false
+    var isDirty: Bool = false
 }
 
 extension TodoItem: Codable {

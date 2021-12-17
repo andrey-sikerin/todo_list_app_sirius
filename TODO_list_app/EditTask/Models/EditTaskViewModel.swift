@@ -111,7 +111,7 @@ class EditTaskViewModel {
     }
 
     func switcherTapped(isOn: Bool, date: Date) {
-        showingDatePicker.on(.next(!isOn))
+        showingDatePicker.on(.next(isOn))
         if isOn {
             selectNewDate(date)
         } else {

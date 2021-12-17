@@ -112,3 +112,43 @@ class QueryService {
         }
     }
 }
+
+
+
+extension QueryService {
+    public func handleNetwork(fileCache: FileCache){
+        var requestArrayOfSingle: [Single<TodoItem>] = []
+        fileCache.todoItems.forEach { item in
+            if item.isDirty {
+                if let query = try? changeTodo(payload: item) {
+                    requestArrayOfSingle.append(query)
+                }
+            }
+        }
+        
+        fileCache.deleted.forEach { tombstone in
+            if let query = try? deleteTodo(itemId: tombstone.itemId) {
+                requestArrayOfSingle.append(query)
+            }
+        }
+        let requestsSequence: Observable = Observable.from(requestArrayOfSingle).flatMap {
+            return $0
+        }.materialize()
+
+        let _ = requestsSequence.subscribe(onNext: { event in
+            switch event {
+            case .next(let dictionary):
+                print("onNext:", dictionary)
+            case .error(let error as QueryService.APIError):
+                print("Api error handled:", error)
+            case .error(_):
+                print("Strange error, not API")
+            case .completed:
+                print("on Completed")
+            }
+        }, onCompleted: {
+            print("Sequence of cached requests successfully completed!")
+            // TODO set tasks dirty=false, remove tombstone
+        })
+    }
+}

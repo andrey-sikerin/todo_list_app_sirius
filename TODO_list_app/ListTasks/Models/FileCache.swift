@@ -14,6 +14,9 @@ class FileCache {
         let read: (URL) throws -> Data
     }
     
+    private static let tombstonesSaveKey = "DeletedItems"
+    
+    private(set) var deleted: [Tombstone] = []
     private var items: OrderedDictionary<String, TodoItem> = [:]
     var todoItems: [TodoItem] {
         items.values.elements
@@ -38,7 +41,24 @@ class FileCache {
     /// if not, return `nil`
     @discardableResult
     func removeTask(id: String) -> TodoItem? {
+        if items[id] != nil {
+            deleted.append(
+                Tombstone(
+                    itemId: id,
+                    deletedAt: Date()
+                )
+            )
+        }
         return items.removeValue(forKey: id)
+    }
+    
+    @discardableResult
+    func removeTombstone(id: String) -> Bool {
+        if let tombIndex = deleted.firstIndex(where: {$0.itemId == id}) {
+            deleted.remove(at: tombIndex)
+            return true
+        }
+        return false
     }
     
     func save(to file: URL) {
@@ -47,6 +67,11 @@ class FileCache {
             return
         }
         do {
+            if let tombstonesEncoded = try? JSONEncoder().encode(deleted) {
+                UserDefaults.standard.set(tombstonesEncoded, forKey: Self.tombstonesSaveKey)
+            } else {
+                print("Unable to save tombstones")
+            }
             try manager.write(encoded, file)
         } catch(let error) {
             print("Failed saving items to file: \(file)\ndescription: \(error.localizedDescription)")
@@ -54,6 +79,13 @@ class FileCache {
     }
     
     func load(from file: URL) {
+        if let tombstonesData = UserDefaults.standard.data(forKey: Self.tombstonesSaveKey),
+           let tombstoneDecoded = try? JSONDecoder().decode([Tombstone].self, from: tombstonesData)
+        {
+            deleted = tombstoneDecoded
+        } else {
+            print("Unable to load tombstones")
+        }
         do {
             let itemsData = try manager.read(file)
             let decoded = try JSONDecoder().decode([TodoItem].self, from: itemsData)
@@ -64,4 +96,5 @@ class FileCache {
             print("Failed loading items from file: \(file)\ndescription: \(error.localizedDescription)")
         }
     }
+    
 }

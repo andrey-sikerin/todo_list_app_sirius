@@ -15,41 +15,8 @@ class TaskListGraph {
     private let cacheFilename = "brawl_stars.txt"
     private var todoItemsBehaviorSubject: BehaviorSubject<[TodoItem]>
     private let disposeBag = DisposeBag()
-
-    // Todo change func name
-    private func handleNetwork(queryService: QueryService, fileCache: FileCache){
-        var requestArrayOfSingle: [Single<TodoItem>] = []
-        fileCache.todoItems.forEach { item in
-            if item.isDirty {
-                if let query = try? queryService.changeTodo(payload: item) {
-                    requestArrayOfSingle.append(query)
-                }
-            }
-        }
-        // TODO ticket 93 load from cache
-        let tasksToDelete: [Tombstone] = []
-        tasksToDelete.forEach { tombstone in
-            if let query = try? queryService.deleteTodo(itemId: tombstone.itemId) {
-                requestArrayOfSingle.append(query)
-            }
-        }
-        let requestsSequence: Observable = Observable.from(requestArrayOfSingle).flatMap {
-            return $0
-        }.catchAndReturn(TodoItem(id: "-1", text: "nil", priority: .low))
-        // TODO handle error normally, now on error creates stub TodoItem with id=-1, check filtering
-        let _ = requestsSequence.subscribe(onNext: { todoItem in
-            if todoItem.id != "-1" {
-                print("Task completed successfully", todoItem)
-            } else {
-                print("Fuck, error occurred")
-            }
-        }, onCompleted: {
-            print("Sequence of cached requests successfully completed!")
-            // TODO set tasks dirty=false, remove tombstone
-        })
-    }
-
-
+    
+    
     init(rootRouter: RootRouter) {
         let todoItemsBehaviorSubject = BehaviorSubject<[TodoItem]>(value: [])
         self.rootRouter = rootRouter
@@ -127,10 +94,8 @@ class TaskListGraph {
                     return try Data(contentsOf: url)
                 }))
 
-//        let todoListSubscription = QueryService().getTodoList()
         let cacheFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
             .first?.appendingPathComponent(cacheFilename)
-        fileCache.load(from: cacheFilePath!)
         todoItemsBehaviorSubject.on(.next(fileCache.todoItems))
 
         if let url = cacheFilePath {
@@ -139,7 +104,7 @@ class TaskListGraph {
             print("Unable to load files, invalid path")
         }
         todoItemsBehaviorSubject.on(.next(fileCache.todoItems))
-        todoItemsBehaviorSubject.subscribe (onNext: { items in
+        todoItemsBehaviorSubject.subscribe (onNext: {items in
             items.forEach { item in
                 fileCache.addTask(item)
             }
@@ -153,16 +118,20 @@ class TaskListGraph {
             } else {
                 print("Unable to save files, invalid path")
             }
+            queryService.handleNetwork(fileCache: fileCache)
         })
             .disposed(by: disposeBag)
-
-//        handleNetwork(queryService: queryService, fileCache: fileCache)
 
         let todoListSubscription = queryService.getTodoList()
         todoListSubscription.subscribe { event in
                     switch event {
-                    case .success(let todoItemsArray): 
-                        todoItemsBehaviorSubject.on(.next(todoItemsArray))
+                    case .success(let todoItemsArray):
+                        let filtered = todoItemsArray.filter{item in
+                            return !fileCache.deleted.contains(where: {tombstone in
+                                item.id == tombstone.itemId
+                            })
+                        }
+                        todoItemsBehaviorSubject.on(.next(filtered))
                     case .failure(let error):
                         print("Error: ", error)
                     }
@@ -182,7 +151,8 @@ class TaskListGraph {
                 }
             }
 
-            return resultedItems.map { ToDoCellViewModel(todoItem: $0, updateAction: updateAction, editAction: editAction,
+            return resultedItems.map {
+                ToDoCellViewModel(todoItem: $0,updateAction: updateAction, editAction: editAction,
                     deleteAction: deleteAction
                 )
             }

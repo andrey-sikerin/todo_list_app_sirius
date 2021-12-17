@@ -1,4 +1,5 @@
 import UIKit
+import RxSwift
 
 class EditTaskViewController: UIViewController, UITextViewDelegate {
     private let scrollView = UIScrollView()
@@ -7,12 +8,18 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     private let button = UIButton()
     private let notificationCenter: NotificationCenter
 
-    private let priorityStackViewContainer = PriorityStackViewContainer(frame: .zero,
-            layout: PriorityStackViewContainer.LayoutStyles(itemCornerRadius: LayoutStyles.defaultStyle.itemsBorderRadius,
-                    labelLeftPadding: LayoutStyles.defaultStyle.labelLeftPadding,
-                    segmentControlRightPadding: LayoutStyles.defaultStyle.segmentControlRightPadding,
-                    segmentControlHeight: LayoutStyles.defaultStyle.segmentControlHeight,
-                    segmentControlWidth: LayoutStyles.defaultStyle.segmentControlWidth))
+    private lazy var priorityStackViewContainer: PriorityStackViewContainer = {
+        PriorityStackViewContainer(
+            viewModel: viewModel.priorityContainer,
+            frame: .zero,
+            layout: PriorityStackViewContainer.LayoutStyles(
+                itemCornerRadius: LayoutStyles.defaultStyle.itemsBorderRadius,
+                labelLeftPadding: LayoutStyles.defaultStyle.labelLeftPadding,
+                segmentControlRightPadding: LayoutStyles.defaultStyle.segmentControlRightPadding,
+                segmentControlHeight: LayoutStyles.defaultStyle.segmentControlHeight,
+                segmentControlWidth: LayoutStyles.defaultStyle.segmentControlWidth)
+        )
+    }()
     private let line = UIView()
     private let secondaryLabel = UILabel()
     private let datePicker = UIDatePicker()
@@ -75,7 +82,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     }
 
     private lazy var deadLineStackViewContainer: DeadLineStackViewContainer = {
-        let container = DeadLineStackViewContainer { [weak self] isOn in
+        let container = DeadLineStackViewContainer(viewModel: viewModel.deadlineContainer) { [weak self] isOn in
             self?.switcherTapped(isOn)
         } toggleCalendar: { [weak self] in
             self?.toggleCalendar()
@@ -83,47 +90,22 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         container.translatesAutoresizingMaskIntoConstraints = false
         return container
     }()
+    
+    private var viewModel: EditTaskViewModel
 
-    typealias TransitionAction = () -> Void
-    private var transitionAction: TransitionAction
-
-    init(notificationCenter: NotificationCenter, strings: Strings, styles: Styles, layoutStyles: LayoutStyles = .defaultStyle, transitionToTaskList: @escaping TransitionAction) {
+    init(viewModel: EditTaskViewModel, notificationCenter: NotificationCenter, strings: Strings, styles: Styles, layoutStyles: LayoutStyles = .defaultStyle) {
+        self.viewModel = viewModel
         self.strings = strings
         self.styles = styles
         self.layoutStyles = layoutStyles
         self.notificationCenter = notificationCenter
-        self.transitionAction = transitionToTaskList
         super.init(nibName: nil, bundle: nil)
     }
-
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    private var showingDatePicker = false {
-        didSet {
-            datePicker.isHidden = !showingDatePicker
-        }
-    }
-
-    private var selectedDate: Date? {
-        didSet {
-            deadLineStackViewContainer.secondaryLabel.text = selectedDateString
-        }
-    }
-    private var selectedDateString: String {
-        if let date = selectedDate {
-            return dateFormatter.string(from: date)
-        }
-        return ""
-    }
-    private lazy var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeZone = .none
-        return formatter
-    }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(onTouchScreen))
@@ -133,6 +115,11 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         view.backgroundColor = styles.backgroundColor
 
         navigationItem.largeTitleDisplayMode = .never
+        
+        viewModel.showPlaceholder.subscribe(onNext: { [weak self] showPlaceholder in
+            self?.showPlaceholder = showPlaceholder
+        }, onError: nil, onCompleted: nil, onDisposed: nil)
+            .disposed(by: disposeBag)
 
         if styles.showingCancelButton {
             navigationItem.leftBarButtonItem = UIBarButtonItem(
@@ -155,11 +142,16 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         textView.textContainerInset = UIEdgeInsets(
                 top: innerPadding, left: innerPadding, bottom: innerPadding, right: innerPadding
         )
-        textView.text = strings.textViewPlaceholder
+        
+        viewModel.text.subscribe(onNext: { [weak self] text in
+            self?.textView.text = text
+        }, onError: nil, onCompleted: nil, onDisposed: nil)
+            .disposed(by: disposeBag)
+        textView.text = try! viewModel.showPlaceholder.value() ? strings.textViewPlaceholder : viewModel.text.value()
         textView.font = .systemFont(ofSize: layoutStyles.textSize)
         textView.layer.cornerRadius = layoutStyles.itemsBorderRadius
         textView.backgroundColor = styles.itemsBackground
-        textView.textColor = styles.textViewPlaceholderColor
+        textView.textColor = try! viewModel.showPlaceholder.value() ? styles.textViewPlaceholderColor : styles.textViewTextColor
         textView.isScrollEnabled = false
         textView.delegate = self
 
@@ -180,7 +172,8 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     }
 
     @objc func datePicked(sender: UIDatePicker) {
-        selectedDate = datePicker.date
+        viewModel.selectNewDate(datePicker.date)
+//        selectedDate = datePicker.date
     }
 
     @objc func onKeyboardOpened(keyboardShowNotification notification: Notification) {
@@ -206,7 +199,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     }
 
     @objc func onLeftBarButtonClicked() {
-        transitionAction()
+        viewModel.transitionAction()
     }
 
     func textViewDidBeginEditing(_ textView: UITextView) {
@@ -218,27 +211,28 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     }
 
     private func toggleCalendar() {
-        showingDatePicker.toggle()
-        deadLineStackViewContainer.switcher.isOn = deadLineStackViewContainer.switcher.isOn || showingDatePicker
-        selectedDate = datePicker.date
+//        deadLineStackViewContainer.switcher.isOn = deadLineStackViewContainer.switcher.isOn || showingDatePicker
+        viewModel.toggleCalendar(with: datePicker.date)
         setItemsLayout()
     }
 
     private func switcherTapped(_ isOn: Bool) {
-        showingDatePicker = isOn
-        if isOn {
-            selectedDate = datePicker.date
-        } else {
-            selectedDate = nil
-        }
+        viewModel.switcherTapped(isOn: isOn, date: datePicker.date)
         setItemsLayout()
     }
-
+    
+    private let disposeBag = DisposeBag()
     private func setupDatePicker() {
         datePicker.preferredDatePickerStyle = .inline
         datePicker.datePickerMode = .date
         datePicker.calendar = .autoupdatingCurrent
-        datePicker.isHidden = !showingDatePicker
+        datePicker.isHidden = true
+        viewModel.showingDatePicker.subscribe(onNext: {
+            [weak self] showDatePicker in
+            self?.datePicker.isHidden = !showDatePicker
+        }, onError: nil, onCompleted: nil, onDisposed: nil)
+            .disposed(by: disposeBag)
+        
         datePicker.addTarget(self, action: #selector(datePicked), for: .allEvents)
     }
 
@@ -351,7 +345,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
                 stackViewHeight: layoutStyles.stackViewHeight,
                 buttonHeight: layoutStyles.buttonHeight,
                 textViewHeight: textView.bounds.height,
-                datePickerHeight: showingDatePicker ? layoutStyles.datePickerHeight : 0,
+                datePickerHeight: !datePicker.isHidden ? layoutStyles.datePickerHeight : 0,
                 itemsMargin: layoutStyles.itemsVerticalMargin,
                 boundsMinX: scrollView.bounds.minX,
                 boundsHeight: scrollView.bounds.size.height,
@@ -384,7 +378,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
                 stackViewHeight: layoutStyles.stackViewHeight,
                 buttonHeight: layoutStyles.buttonHeight,
                 textViewHeight: textView.bounds.height,
-                datePickerHeight: showingDatePicker ? layoutStyles.datePickerHeight : 0,
+                datePickerHeight: !datePicker.isHidden ? layoutStyles.datePickerHeight : 0,
                 itemsMargin: layoutStyles.itemsVerticalMargin,
                 boundsMinX: scrollView.bounds.minX,
                 boundsHeight: scrollView.bounds.size.height,

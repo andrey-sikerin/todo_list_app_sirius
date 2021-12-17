@@ -1,4 +1,5 @@
 import UIKit
+import RxSwift
 
 
 class PriorityStackViewContainer: UIView {
@@ -9,6 +10,7 @@ class PriorityStackViewContainer: UIView {
     )
     private let layoutStyles : LayoutStyles
 
+    private var viewModel: EditTaskViewModel.PriorityContainer
 
     struct LayoutStyles{
         let itemCornerRadius: CGFloat
@@ -27,13 +29,13 @@ class PriorityStackViewContainer: UIView {
         }
     }
 
+//    override required init(frame : CGRect){
+//        fatalError("init(frame:) has not been implemented")
+//    }
 
-    override required init(frame : CGRect){
-        fatalError("init(frame:) has not been implemented")
-    }
-
-    required init(frame : CGRect, layout : LayoutStyles){
+    required init(viewModel: EditTaskViewModel.PriorityContainer, frame : CGRect, layout : LayoutStyles){
         layoutStyles = layout
+        self.viewModel = viewModel
         super.init(frame: frame)
         addSubview(priorityStackView)
         setupPriorityStackView()
@@ -65,8 +67,12 @@ class PriorityStackViewContainer: UIView {
         labelImportance.leftAnchor.constraint(equalTo: priorityStackView.leftAnchor, constant: layoutStyles.labelLeftPadding).isActive = true
     }
 
+    private let disposeBag = DisposeBag()
     private func setupSegmentControl() {
-        segmentControl.selectedSegmentIndex = 1
+        viewModel.segmentedIndex.subscribe(onNext: { [weak self] index in
+            self?.segmentControl.selectedSegmentIndex = index
+        }, onError: nil, onCompleted: nil, onDisposed: nil)
+            .disposed(by: disposeBag)
         segmentControl.heightAnchor.constraint(equalToConstant: layoutStyles.segmentControlHeight).isActive = true
         segmentControl.widthAnchor.constraint(equalToConstant: layoutStyles.segmentControlWidth).isActive = true
         segmentControl.rightAnchor.constraint(equalTo: rightAnchor,

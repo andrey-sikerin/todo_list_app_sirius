@@ -11,13 +11,17 @@ import RxSwift
 
 class ToDoCell: UITableViewCell {
 
-    private var viewModel: ToDoCellViewModel!
+    private var viewModel: ToDoCellViewModel?
 
     static let identifier = "toDoCellIdentifier"
 
     public func configureCell(viewModel: ToDoCellViewModel) {
         compositeDisposableBag.dispose()
         self.viewModel = viewModel
+        
+        guard let viewModel = self.viewModel else {
+            return
+        }
 
         taskLabel.text = viewModel.taskText
         if let deadline = viewModel.deadline {
@@ -35,13 +39,21 @@ class ToDoCell: UITableViewCell {
             taskStackView.spacing = viewModel.priorityImage?.spacing ?? 0
         }
 
-        let subscription = viewModel.completeButtonImage.subscribe(onNext: { [weak self] image in
+        let subscription = viewModel.compleButtonImage.subscribe(onNext: { [weak self] image in
             self?.completeButton.setImage(image, for: .normal)
         }, onError: nil, onCompleted: nil, onDisposed: nil)
 
         _ = compositeDisposableBag.insert(subscription)
-
-
+        
+        completeButton.rx.tap.subscribe(onNext: { [weak self] in
+            self?.viewModel?.buttonPressed()
+        })
+            .disposed(by: disposeBag)
+        
+        viewModel.compleButtonImage.subscribe(onNext: { [weak self] image in
+            self?.completeButton.setImage(image, for: .normal)
+        }, onError: nil, onCompleted: nil, onDisposed: nil)
+            .disposed(by: disposeBag)
     }
 
     private lazy var stackView: UIStackView = {
@@ -58,12 +70,6 @@ class ToDoCell: UITableViewCell {
 
     private lazy var completeButton: UIButton = {
         let button = UIButton()
-        button.rx.tap.subscribe(onNext: { [weak self] in
-            self?.viewModel.buttonPressed()
-        })
-            .disposed(by: disposeBag)
-
-
         return button
     }()
 

@@ -130,7 +130,6 @@ class TaskListViewController: UIViewController {
         view.addSubview(taskTableView)
         taskTableView.frame = view.bounds
         taskTableView.rowHeight = 56
-
     }
 
     override func viewDidLayoutSubviews() {
@@ -144,10 +143,12 @@ class TaskListViewController: UIViewController {
 
     private func handleMarkAsDone(at indexPath: IndexPath) {
         print("task is done")
+        let taskViewModel = todoItemViewModels[indexPath.row]
     }
 
     private func handleDeleteTask(at indexPath: IndexPath) {
-        print("task deleted")
+        self.todoItemViewModels.remove(at: indexPath.row)
+        self.taskTableView.deleteRows(at: [indexPath], with: .automatic)
     }
 
     private func isLastRow(_ indexPath: IndexPath) -> Bool {
@@ -227,8 +228,6 @@ extension TaskListViewController: UITableViewDelegate {
     private func deleteItemAction(indexPath: IndexPath) -> UIContextualAction {
         let deleteAction = UIContextualAction(style: .normal, title: nil) { (action, sourceView, completion) in
             self.handleDeleteTask(at: indexPath)
-            self.todoItemViewModels.remove(at: indexPath.row)
-            self.taskTableView.deleteRows(at: [indexPath], with: .automatic)
             completion(true)
         }
         deleteAction.image = UIGraphicsImageRenderer(size: SwipeIcons.doneContainerSize).image { _ in

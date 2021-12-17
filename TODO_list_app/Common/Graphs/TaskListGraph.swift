@@ -94,7 +94,13 @@ class TaskListGraph {
         //        }
 
 
-
+        let updateAction: (TodoItem) -> Void = { item in
+            var value = try! todoItemsBehaviorSubject.value()
+            if let index = value.firstIndex(where: {$0.id == item.id}) {
+                value[index] = item
+            }
+            todoItemsBehaviorSubject.on(.next(value))
+        }
         let viewModelsObservable: Observable<[ToDoCellViewModel]> =
         Observable.combineLatest(todoItemsBehaviorSubject, modeSubject).map { (items: [TodoItem], mode: HeaderViewModel.Mode) in
             var resultedItems: [TodoItem]
@@ -105,7 +111,7 @@ class TaskListGraph {
                 resultedItems = items.filter { !$0.done }
             }
 
-            return resultedItems.map { ToDoCellViewModel(todoItem: $0, editAction: editAction) }
+            return resultedItems.map { ToDoCellViewModel(todoItem: $0, updateAction: updateAction, editAction: editAction) }
         }
 
         fileCache.load(from: cacheFilePath!)

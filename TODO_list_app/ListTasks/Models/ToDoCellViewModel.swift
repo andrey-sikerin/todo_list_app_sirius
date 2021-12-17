@@ -11,7 +11,10 @@ import RxSwift
 import RxCocoa
 
 class ToDoCellViewModel {
-    var completeButtonImage: Observable<UIImage>
+    private let completeButtonImageSubject: BehaviorSubject<UIImage>
+    var compleButtonImage: Observable<UIImage> {
+        completeButtonImageSubject
+    }
 
     struct PriorityImageViewModel {
         let icon: UIImage?
@@ -30,13 +33,20 @@ class ToDoCellViewModel {
     let deadline: DeadlineViewModel?
 
     func buttonPressed() {
-        print("button pressed")
+        var item = todoItem
+        item.done.toggle()
+        updateAction(item)
+        completeButtonImageSubject.on(.next(todoItem.done ? UIImage(named: "doneState")! : UIImage(named: "notDoneState")!))
     }
 
     private let editAction: TransitionAction
     private let todoItem: TodoItem
+    
+    typealias UpdateAction = (TodoItem) -> Void
+    private let updateAction: UpdateAction
 
-    init(todoItem: TodoItem, editAction: @escaping TransitionAction) {
+    init(todoItem: TodoItem, updateAction: @escaping UpdateAction, editAction: @escaping TransitionAction) {
+        self.updateAction = updateAction
         self.todoItem = todoItem
         self.editAction = editAction
         if let date = todoItem.deadline {
@@ -60,9 +70,9 @@ class ToDoCellViewModel {
         taskText = todoItem.text
 
         if todoItem.done {
-            completeButtonImage = Observable.just(UIImage(named: "doneState")!)
+            completeButtonImageSubject = BehaviorSubject(value: UIImage(named: "doneState")!)
         } else {
-            completeButtonImage = Observable.just(UIImage(named: "notDoneState")!)
+            completeButtonImageSubject = BehaviorSubject(value: UIImage(named: "notDoneState")!)
         }
     }
 

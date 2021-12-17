@@ -33,8 +33,12 @@ class ToDoCellViewModel {
         print("button pressed")
     }
 
-    init(todoItem: TodoItem) {
+    private let editAction: TransitionAction
+    private let todoItem: TodoItem
 
+    init(todoItem: TodoItem, editAction: @escaping TransitionAction) {
+        self.todoItem = todoItem
+        self.editAction = editAction
         if let date = todoItem.deadline {
             deadline = DeadlineViewModel(
                 icon: UIImage(systemName: "calendar")!,
@@ -60,6 +64,10 @@ class ToDoCellViewModel {
         } else {
             completeButtonImage = Observable.just(UIImage(named: "notDoneState")!)
         }
+    }
+
+    func select(mode: TransitionMode, viewController: UIViewController) {
+      editAction(mode, viewController, todoItem)
     }
 }
 

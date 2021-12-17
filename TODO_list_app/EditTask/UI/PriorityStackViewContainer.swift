@@ -29,9 +29,9 @@ class PriorityStackViewContainer: UIView {
         }
     }
 
-//    override required init(frame : CGRect){
-//        fatalError("init(frame:) has not been implemented")
-//    }
+    override required init(frame : CGRect){
+        fatalError("init(frame:) has not been implemented")
+    }
 
     required init(viewModel: EditTaskViewModel.PriorityContainer, frame : CGRect, layout : LayoutStyles){
         layoutStyles = layout

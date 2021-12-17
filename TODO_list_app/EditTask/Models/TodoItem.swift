@@ -81,3 +81,17 @@ fileprivate extension DateFormatter {
         return formatter
     }()
 }
+
+
+extension TodoItem {
+  static let emptyItem = {
+    TodoItem(id: UUID().uuidString,
+             text: "",
+             deadline: nil,
+             priority: .normal,
+             createdAt: NSDate().timeIntervalSince1970,
+             updatedAt: nil,
+             done: false)
+
+  }()
+}

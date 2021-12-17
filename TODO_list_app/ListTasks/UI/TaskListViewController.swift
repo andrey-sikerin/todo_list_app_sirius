@@ -10,8 +10,8 @@ import UIKit
 import RxSwift
 
 class TaskListViewController: UIViewController {
-    private var todoItemViewModels: [ToDoCellViewModel] = []
-    //private var todoItemViewModelsDone: [TodoItem] = []
+    private let todoItemViewModelsObservale: Observable<[ToDoCellViewModel]>
+    private var todoItemViewModels: [ToDoCellViewModel]
 
     private struct SwipeIcons {
         static let doneIconName = "doneIcon"
@@ -52,6 +52,7 @@ class TaskListViewController: UIViewController {
     }
 
     private let strings: Strings
+    private let disposeBag = DisposeBag()
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -64,31 +65,32 @@ class TaskListViewController: UIViewController {
         return tableView
     }()
 
-    typealias TransitionAction = (TransitionMode, UIViewController) -> Void
-    private var transitionAction: TransitionAction
+
+    private var makeNewItemAction: PresentAction
 
     init(
         strings: Strings,
-        transitionToEdit: @escaping TransitionAction,
-        todoItemViewModels: [ToDoCellViewModel],
-        todoItemsSubscription: Single<[ToDoCellViewModel]>?
+        todoItemViewModelsObservale: Observable<[ToDoCellViewModel]>,
+        makeNewItemAction: @escaping PresentAction
     ) {
         self.strings = strings
-        transitionAction = transitionToEdit
-        self.todoItemViewModels = todoItemViewModels
+        self.makeNewItemAction = makeNewItemAction
+        self.todoItemViewModels = []
+        self.todoItemViewModelsObservale = todoItemViewModelsObservale
+
         super.init(nibName: nil, bundle: nil)
 
-        todoItemsSubscription?.subscribe { event in
-            switch event {
-            case .success(let arr):
-                self.todoItemViewModels = arr
-                DispatchQueue.main.async {
-                    self.taskTableView.reloadData()
-                }
-            case .failure(let error):
-                print("Updating data error: ", error)
-            }
-        }
+      todoItemViewModelsObservale.subscribe(
+        onNext: { [weak self] viewModels in
+          self?.todoItemViewModels = viewModels
+          DispatchQueue.main.async {
+              self?.taskTableView.reloadData()
+          }
+        },
+        onError: nil,
+        onCompleted: nil,
+        onDisposed: nil
+      ).disposed(by: disposeBag)
     }
 
     private lazy var plusButton: UIButton = {
@@ -138,15 +140,11 @@ class TaskListViewController: UIViewController {
     }
 
     @objc func plusButtonTriggered(sender: Any) {
-        transitionAction(.present, self)
+        makeNewItemAction(self)
     }
 
     private func handleMarkAsDone(at indexPath: IndexPath) {
         print("task is done")
-    }
-
-    private func handleInfoTask(at indexPath: IndexPath) {
-        print("task is redacting")
     }
 
     private func handleDeleteTask(at indexPath: IndexPath) {
@@ -224,12 +222,14 @@ extension TaskListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("Selected Row number: \(indexPath.row)")
-        if isLastRow(indexPath) {
-            transitionAction(.present, self)
-        } else {
-            transitionAction(.push, self)
-        }
+      if !isLastRow(indexPath) {
+        todoItemViewModels[indexPath.row].select(
+            mode: isLastRow(indexPath) ? .present : .push ,
+            viewController: self
+        )
+      } else {
+        makeNewItemAction(self)
+      }
     }
 
     private func deleteItemAction(indexPath: IndexPath) -> UIContextualAction {
@@ -247,9 +247,12 @@ extension TaskListViewController: UITableViewDelegate {
     }
 
     private func infoItemAction(indexPath: IndexPath) -> UIContextualAction {
-        let infoAction = UIContextualAction(style: .normal, title: nil) { (action, sourceView, completion) in
-            self.handleInfoTask(at: indexPath)
-            self.transitionAction(.push, self)
+        let mode: TransitionMode = isLastRow(indexPath) ? .present : .push
+        let infoAction = UIContextualAction(style: .normal, title: nil) { [unowned self] (action, sourceView, completion) in
+            todoItemViewModels[indexPath.row].select(
+                mode: mode,
+                viewController: self
+            )
             completion(true)
         }
         infoAction.image = UIGraphicsImageRenderer(size: SwipeIcons.infoContainerSize).image { _ in
@@ -271,9 +274,6 @@ extension TaskListViewController: UITableViewDelegate {
         doneAction.backgroundColor = SwipeIcons.doneIconColor
         return doneAction
     }
-
-
-
 }
 
 

@@ -11,9 +11,8 @@ import UIKit
 class TaskListGraph {
     private(set) var viewController: UIViewController
     private var currentEdit: EditTaskGraph?
-    private var rootRouter: RootRouter
+    public var rootRouter: RootRouter
     private let cacheFilename = "brawl_stars.txt"
-
 
     init(rootRouter: RootRouter) {
         self.rootRouter = rootRouter

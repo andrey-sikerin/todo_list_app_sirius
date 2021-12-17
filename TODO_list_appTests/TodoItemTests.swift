@@ -19,7 +19,7 @@ class TodoItemTests: XCTestCase {
     func testExample() throws {
         XCTAssertNil(buyFood.deadline)
         XCTAssertEqual(buyFood.id, "BuyFoodIdString")
-        XCTAssertEqual(goRun.priority.rawValue, "normal")
+        XCTAssertEqual(goRun.priority.rawValue, TodoItem.Priority.normal.rawValue)
         XCTAssertEqual(homework.deadline, date)
         
         for item in [buyFood, goRun, homework] {

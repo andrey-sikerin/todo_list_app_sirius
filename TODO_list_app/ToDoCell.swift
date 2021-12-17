@@ -44,7 +44,7 @@ class ToDoCell: UITableViewCell {
             self?.taskLabel.attributedText = components.attributedText
             self?.completeButton.setImage(components.buttonImage, for: .normal)
         }, onError: nil, onCompleted: nil, onDisposed: nil)
-                .disposed(by: disposeBag)
+            .disposed(by: disposeBag)
     }
 
     private lazy var stackView: UIStackView = {

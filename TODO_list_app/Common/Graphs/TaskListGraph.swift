@@ -14,6 +14,7 @@ class TaskListGraph {
     public var rootRouter: RootRouter
     private let cacheFilename = "brawl_stars.txt"
     private var todoItemsBehaviorSubject: BehaviorSubject<[TodoItem]>
+    private let disposeBag = DisposeBag()
 
     // Todo change func name
     private func handleNetwork(queryService: QueryService, fileCache: FileCache){
@@ -67,7 +68,6 @@ class TaskListGraph {
         }
         let editAction: TransitionAction = { mode, vc, item in
             let transitionToTaskListVC: PopAction
-
             switch mode {
                 case .push: transitionToTaskListVC = {
                     rootRouter.popAction()
@@ -76,7 +76,6 @@ class TaskListGraph {
                     rootRouter.dismissAction(vc)
                 }
             }
-
             let editTaskVC = EditTaskViewController(
                 viewModel: EditTaskViewModel(
                     item: item,
@@ -114,29 +113,49 @@ class TaskListGraph {
                 try data.write(to: url)
             }, read: { url in
                     return try Data(contentsOf: url)
-                })
-        )
+                }))
+
+//        let todoListSubscription = QueryService().getTodoList()
         let cacheFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
             .first?.appendingPathComponent(cacheFilename)
         fileCache.load(from: cacheFilePath!)
         todoItemsBehaviorSubject.on(.next(fileCache.todoItems))
 
+        if let url = cacheFilePath {
+            fileCache.load(from: url)
+        } else {
+            print("Unable to load files, invalid path")
+        }
+        todoItemsBehaviorSubject.on(.next(fileCache.todoItems))
+        todoItemsBehaviorSubject.subscribe (onNext: { items in
+            items.forEach { item in
+                fileCache.addTask(item)
+            }
+            fileCache.todoItems.forEach { cacheItem in
+                if !items.contains(where: {cacheItem.id == $0.id }) {
+                    fileCache.removeTask(id: cacheItem.id)
+                }
+            }
+            if let url = cacheFilePath {
+                fileCache.save(to: url)
+            } else {
+                print("Unable to save files, invalid path")
+            }
+        })
+            .disposed(by: disposeBag)
+
 //        handleNetwork(queryService: queryService, fileCache: fileCache)
 
         let todoListSubscription = queryService.getTodoList()
-        let _ = todoListSubscription.subscribe { event in
-            switch event {
-            case .success(let todoItemsArray):
-                // Write all items in cache, duplicates will be merged automatically
-                todoItemsArray.forEach { item in
-                    fileCache.addTask(item)
+        todoListSubscription.subscribe { event in
+                    switch event {
+                    case .success(let todoItemsArray): 
+                        todoItemsBehaviorSubject.on(.next(todoItemsArray))
+                    case .failure(let error):
+                        print("Error: ", error)
+                    }
                 }
-                fileCache.save(to: cacheFilePath!)
-                todoItemsBehaviorSubject.on(.next(fileCache.todoItems))
-            case .failure(let error):
-                print("Error: ", error)
-            }
-        }
+                .disposed(by: disposeBag)
         let modeSubject: BehaviorSubject<HeaderViewModel.Mode> = .init(value: .show)
 
         let updateAction: (TodoItem) -> Void = { item in
@@ -158,8 +177,7 @@ class TaskListGraph {
                 }
             }
 
-            return resultedItems.map {
-                ToDoCellViewModel(todoItem: $0,updateAction: updateAction, editAction: editAction,
+            return resultedItems.map { ToDoCellViewModel(todoItem: $0, updateAction: updateAction, editAction: editAction,
                     deleteAction: deleteAction
                 )
             }
@@ -169,7 +187,7 @@ class TaskListGraph {
             strings: TaskListViewController.Strings(
                 titleNavigationBarText: NSLocalizedString("Tasks", comment: "")
             ),
-            todoItemViewModelsObservale: viewModelsObservable,
+            todoItemViewModelsObservable: viewModelsObservable,
             headerViewModel: HeaderViewModel(
                 todoItemsObservable: todoItemsBehaviorSubject,
                 strings: HeaderViewModel.Strings(
@@ -182,29 +200,4 @@ class TaskListGraph {
             makeNewItemAction: { editAction(.present, $0, .emptyItem) }
         )
     }
-}
-
-
-fileprivate extension FileCache {
-    static var test: FileCache = {
-        let manager = FileCache.FileManager(write: { data, url in
-            try data.write(to: url)
-        }, read: { url in
-                try Data(contentsOf: url)
-            })
-        let file = FileCache(manager: manager)
-        let buyFood = TodoItem(id: "BuyFoodIdString", text: "Working for food", priority: .low, done: true)
-        let goRun = TodoItem(text: "Running is good", priority: .normal, done: true)
-        let homework = TodoItem(text: "Copy It", deadline: Date().addingTimeInterval(3600), priority: .high, done: false)
-        let cookLunch = TodoItem(text: "Cook yourself!", priority: .normal, done: true)
-        let eatLunch = TodoItem(text: "Enjoy", priority: .normal, done: false)
-        let goSleep = TodoItem(text: "Sleeping is essential", deadline: Date().addingTimeInterval(3600 * 5), priority: .high, done: false)
-        file.addTask(buyFood)
-        file.addTask(goRun)
-        file.addTask(homework)
-        file.addTask(cookLunch)
-        file.addTask(eatLunch)
-        file.addTask(goSleep)
-        return file
-    }()
 }

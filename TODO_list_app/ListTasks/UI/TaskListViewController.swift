@@ -10,8 +10,8 @@ import UIKit
 import RxSwift
 
 class TaskListViewController: UIViewController {
-    public static let numberOfRows = 3
-    private var todoItems: [TodoItem] = []
+    private var todoItemViewModels: [ToDoCellViewModel] = []
+    //private var todoItemViewModelsDone: [TodoItem] = []
 
     private struct SwipeIcons {
         static let doneIconName = "doneIcon"
@@ -67,16 +67,21 @@ class TaskListViewController: UIViewController {
     typealias TransitionAction = (TransitionMode, UIViewController) -> Void
     private var transitionAction: TransitionAction
 
-    init(strings: Strings, transitionToEdit: @escaping TransitionAction, cachedItems: [TodoItem], todoItemsSubscription: Single<[TodoItem]>?) {
+    init(
+        strings: Strings,
+        transitionToEdit: @escaping TransitionAction,
+        todoItemViewModels: [ToDoCellViewModel],
+        todoItemsSubscription: Single<[ToDoCellViewModel]>?
+    ) {
         self.strings = strings
         transitionAction = transitionToEdit
-        todoItems = cachedItems
+        self.todoItemViewModels = todoItemViewModels
         super.init(nibName: nil, bundle: nil)
 
         todoItemsSubscription?.subscribe { event in
             switch event {
             case .success(let arr):
-                self.todoItems = arr
+                self.todoItemViewModels = arr
                 DispatchQueue.main.async {
                     self.taskTableView.reloadData()
                 }
@@ -101,15 +106,16 @@ class TaskListViewController: UIViewController {
         super.viewWillLayoutSubviews()
         taskTableView.frame = view.bounds
         plusButton.frame = CGRect(
-                origin: CGPoint(x: view.bounds.midX - PlusButton.dimension / 2,
-                        y: view.bounds.maxY - (PlusButton.bottomOffset + PlusButton.dimension)),
-                size: PlusButton.size)
+            origin: CGPoint(x: view.bounds.midX - PlusButton.dimension / 2,
+                y: view.bounds.maxY - (PlusButton.bottomOffset + PlusButton.dimension)),
+            size: PlusButton.size)
 
         taskTableView.frame = view.bounds
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         navigationItem.largeTitleDisplayMode = .always
         title = strings.titleNavigationBarText
         setUpTableView()
@@ -148,13 +154,13 @@ class TaskListViewController: UIViewController {
     }
 
     private func isLastRow(_ indexPath: IndexPath) -> Bool {
-        indexPath.row == todoItems.count
+        indexPath.row == todoItemViewModels.count
     }
 }
 
 extension TaskListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        todoItems.count + 1
+        todoItemViewModels.count + 1
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -163,21 +169,17 @@ extension TaskListViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if isLastRow(indexPath) {
-            guard let newTaskCell = tableView.dequeueReusableCell(withIdentifier: AddNewTaskCell.defaultReuseIdentifier) as? AddNewTaskCell else {
-                print("Unable to dequeue a cell with Identifier: \(reuseIdentifier)")
-                return UITableViewCell()
+            guard let newTaskCell = tableView.dequeueReusableCell(withIdentifier: AddNewTaskCell.defaultReuseIdentifier) as? AddNewTaskCell else { return UITableViewCell()
             }
             newTaskCell.backgroundColor = Color.backgroundSecondary
             return newTaskCell
         } else {
 
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: ToDoCell.identifier) as? ToDoCell else {
-                print("Unable to dequeue a cell with Identifier: \(reuseIdentifier)")
-                return UITableViewCell()
-            }
-            let currentItem = todoItems[indexPath.row]
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: ToDoCell.identifier) as? ToDoCell
+                else { return UITableViewCell() }
+
             cell.backgroundColor = Color.backgroundSecondary
-            cell.configureCell(todoItem: currentItem)
+            cell.configureCell(viewModel: todoItemViewModels[indexPath.row])
             cell.separatorInset = UIEdgeInsets(top: 0, left: 52, bottom: 0, right: 0)
 
             return cell
@@ -188,13 +190,12 @@ extension TaskListViewController: UITableViewDataSource {
 extension TaskListViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-
         let headerView = HeaderView()
         headerView.configureHeader(
-                doneAmount: 5,
-                labelText: strings.doneAmountLabelText,
-                showDoneButtonText: strings.showDoneButtonText,
-                hideDoneButtonText: strings.hideDoneButtonText)
+            doneAmount: 5,
+            labelText: strings.doneAmountLabelText,
+            showDoneButtonText: strings.showDoneButtonText,
+            hideDoneButtonText: strings.hideDoneButtonText)
 
         return headerView
     }
@@ -234,7 +235,7 @@ extension TaskListViewController: UITableViewDelegate {
     private func deleteItemAction(indexPath: IndexPath) -> UIContextualAction {
         let deleteAction = UIContextualAction(style: .normal, title: nil) { (action, sourceView, completion) in
             self.handleDeleteTask(at: indexPath)
-            self.todoItems.remove(at: indexPath.row)
+            self.todoItemViewModels.remove(at: indexPath.row)
             self.taskTableView.deleteRows(at: [indexPath], with: .automatic)
             completion(true)
         }
@@ -261,7 +262,6 @@ extension TaskListViewController: UITableViewDelegate {
     private func doneItemAction(indexPath: IndexPath) -> UIContextualAction {
         let doneAction = UIContextualAction(style: .normal, title: nil) { (action, sourceView, completion) in
             self.handleMarkAsDone(at: indexPath)
-            self.todoItems[indexPath.row].done = !(self.todoItems[indexPath.row].done)
             completion(true)
         }
 
@@ -276,7 +276,6 @@ extension TaskListViewController: UITableViewDelegate {
 
 }
 
-fileprivate let reuseIdentifier = "test"
-fileprivate let numberOfRows = 20
+
 fileprivate let defaultHeight: CGFloat = 56
 

@@ -33,14 +33,42 @@ class ToDoCellViewModel {
         print("button pressed")
     }
 
-    init(text: String = "default text", deadline: DeadlineViewModel?, completeButtonImage: UIImage?, priorityImage: PriorityImageViewModel?) {
-        if let img = completeButtonImage {
-            self.completeButtonImage = Observable.just(img)
+    init(todoItem: TodoItem) {
+
+        if let date = todoItem.deadline {
+            deadline = DeadlineViewModel(
+                icon: UIImage(systemName: "calendar")!,
+                date: DateFormatter.todoItemViewModelFormatter.string(from: date)
+            )
         } else {
-            self.completeButtonImage = Observable.just(UIImage(named: "notDoneState")!)
+            self.deadline = nil
         }
-        self.priorityImage = priorityImage
-        taskText = text
-        self.deadline = deadline
+
+        switch todoItem.priority {
+        case .high:
+            priorityImage = PriorityImageViewModel(icon: UIImage(named: "highPriorityIcon"), spacing: 5)
+        case .normal:
+            priorityImage = PriorityImageViewModel(icon: nil, spacing: 0)
+        case .low:
+            priorityImage = PriorityImageViewModel(icon: UIImage(named: "lowPriorityIcon"), spacing: 5)
+        }
+
+        taskText = todoItem.text
+
+        if todoItem.done {
+            completeButtonImage = Observable.just(UIImage(named: "doneState")!)
+        } else {
+            completeButtonImage = Observable.just(UIImage(named: "notDoneState")!)
+        }
     }
 }
+
+fileprivate extension DateFormatter {
+    static let todoItemViewModelFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.timeStyle = .none
+        formatter.dateStyle = .short
+        return formatter
+    }()
+}
+

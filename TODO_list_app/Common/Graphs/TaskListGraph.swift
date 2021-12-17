@@ -21,31 +21,31 @@ class TaskListGraph {
             let transitionToTaskListVC: PopAction
             switch mode {
             case .push: transitionToTaskListVC = {
-                rootRouter.popAction()
-            }
+                    rootRouter.popAction()
+                }
             case .present: transitionToTaskListVC = {
-                rootRouter.dismissAction(vc)
-            }
+                    rootRouter.dismissAction(vc)
+                }
             }
 
             let editTaskVC = EditTaskViewController(
-                    notificationCenter: .default,
-                    strings: EditTaskViewController.Strings(
-                            leftNavigationBarText: NSLocalizedString("Cancel", comment: ""),
-                            rightNavigationBarText: NSLocalizedString("Save", comment: ""),
-                            titleNavigationBarText: NSLocalizedString("Task", comment: ""),
-                            textViewPlaceholder: NSLocalizedString("TaskDescriptionPlaceholder", comment: ""),
-                            buttonText: NSLocalizedString("Delete", comment: ""),
+                notificationCenter: .default,
+                strings: EditTaskViewController.Strings(
+                    leftNavigationBarText: NSLocalizedString("Cancel", comment: ""),
+                    rightNavigationBarText: NSLocalizedString("Save", comment: ""),
+                    titleNavigationBarText: NSLocalizedString("Task", comment: ""),
+                    textViewPlaceholder: NSLocalizedString("TaskDescriptionPlaceholder", comment: ""),
+                    buttonText: NSLocalizedString("Delete", comment: ""),
                             doBeforeText: NSLocalizedString("Make up", comment: "")),
-                    styles: EditTaskViewController.Styles(
-                            itemsBackground: Color.backgroundSecondary,
-                            backgroundColor: Color.backgroundPrimary,
-                            textViewTextColor: Color.labelPrimary,
-                            textViewPlaceholderColor: Color.labelTertiary,
-                            buttonTextColor: Color.labelTertiary,
-                            buttonPressedTextColor: Color.labelPrimary,
+                styles: EditTaskViewController.Styles(
+                    itemsBackground: Color.backgroundSecondary,
+                    backgroundColor: Color.backgroundPrimary,
+                    textViewTextColor: Color.labelPrimary,
+                    textViewPlaceholderColor: Color.labelTertiary,
+                    buttonTextColor: Color.labelTertiary,
+                    buttonPressedTextColor: Color.labelPrimary,
                     showingCancelButton: mode == .push ? false : true),
-                    transitionToTaskList: transitionToTaskListVC
+                transitionToTaskList: transitionToTaskListVC
             )
 
             switch mode {
@@ -64,6 +64,9 @@ class TaskListGraph {
         )
 
         let todoListSubscription = try? QueryService.getTodoList()
+        let todoListViewModelsSubscription = todoListSubscription?.map { items in
+            items.map { ToDoCellViewModel(todoItem: $0) }
+        }
         let cacheFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
                 .first?.appendingPathComponent(cacheFilename)
 
@@ -90,8 +93,8 @@ class TaskListGraph {
                         hideDoneButtonText: NSLocalizedString("Hide", comment: "")
                 ),
                 transitionToEdit: transitionToEditVC,
-                cachedItems: fileCache.todoItems,
-                todoItemsSubscription: todoListSubscription
+                todoItemViewModels: FileCache.test.todoItems.map { .init(todoItem: $0) },
+                todoItemsSubscription: todoListViewModelsSubscription
         )
     }
 }
@@ -101,15 +104,15 @@ fileprivate extension FileCache {
         let manager = FileCache.FileManager(write: { data, url in
             try data.write(to: url)
         }, read: { url in
-            try Data(contentsOf: url)
-        })
+                try Data(contentsOf: url)
+            })
         let file = FileCache(manager: manager)
-        let buyFood = TodoItem(id: "BuyFoodIdString", text: "Working for food", priority: .low)
-        let goRun = TodoItem(text: "Running is good", priority: .normal)
-        let homework = TodoItem(text: "Copy It", deadline: Date().addingTimeInterval(3600), priority: .high)
-        let cookLunch = TodoItem(text: "Cook yourself!", priority: .normal)
-        let eatLunch = TodoItem(text: "Enjoy", priority: .normal)
-        let goSleep = TodoItem(text: "Sleeping is essential", deadline: Date().addingTimeInterval(3600 * 5), priority: .high)
+        let buyFood = TodoItem(id: "BuyFoodIdString", text: "Working for food", priority: .low, done: true)
+        let goRun = TodoItem(text: "Running is good", priority: .normal, done: true)
+        let homework = TodoItem(text: "Copy It", deadline: Date().addingTimeInterval(3600), priority: .high, done: false)
+        let cookLunch = TodoItem(text: "Cook yourself!", priority: .normal, done: true)
+        let eatLunch = TodoItem(text: "Enjoy", priority: .normal, done: false)
+        let goSleep = TodoItem(text: "Sleeping is essential", deadline: Date().addingTimeInterval(3600 * 5), priority: .high, done: false)
         file.addTask(buyFood)
         file.addTask(goRun)
         file.addTask(homework)

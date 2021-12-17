@@ -59,7 +59,9 @@ class HeaderView: UIView {
 
     viewModel.observableDoneAmount.subscribe(
         onNext: { [weak self] text in
-          self?.doneAmountLabel.text = text
+            DispatchQueue.main.async {
+                self?.doneAmountLabel.text = text
+            }
         },
         onError: nil,
         onCompleted: nil,

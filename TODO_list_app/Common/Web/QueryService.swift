@@ -1,7 +1,6 @@
 import UIKit
 import RxSwift
 
-
 class QueryService {
     enum APIError: Int, Error {
         case notFound = 404

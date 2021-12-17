@@ -11,7 +11,47 @@ import RxSwift
 import RxCocoa
 
 class ToDoCellViewModel {
-    var completeButtonImage: Observable<UIImage>
+    private let componentsSubject: BehaviorSubject<UIComponents>
+    var componentsObservable: Observable<UIComponents> { componentsSubject }
+
+    struct UIComponents {
+        var swipeImage: UIImage
+        var swipeColor: UIColor
+        var buttonImage: UIImage
+        var attributedText: NSAttributedString
+
+        init(for item: TodoItem) {
+            if item.done {
+                swipeImage = UIImage(systemName: SwipeIconsStyle.undoneIconName)!.withTintColor(.white, renderingMode: .alwaysOriginal)
+                swipeColor = SwipeIconsStyle.backgroundUndone
+                buttonImage = UIImage(named: "doneState")!
+                attributedText = NSAttributedString(string: item.text, attributes: [
+                    .foregroundColor : TextColor.secondary,
+                    .strikethroughStyle : 2,
+                    .strikethroughColor : TextColor.secondary
+                ])
+            } else {
+                swipeImage = UIImage(named: SwipeIconsStyle.doneIconName)!
+                swipeColor = SwipeIconsStyle.backgroundDone
+                buttonImage = UIImage(named: "notDoneState")!
+                attributedText = NSAttributedString(string: item.text, attributes: [
+                    .foregroundColor : TextColor.primary
+                ])
+            }
+        }
+    }
+
+    private struct SwipeIconsStyle {
+        static let doneIconName = "doneIcon"
+        static let undoneIconName = "clear"
+        static let backgroundDone = Color.green
+        static let backgroundUndone = Color.red
+    }
+
+    private struct TextColor {
+        static let primary = Color.labelPrimary
+        static let secondary = Color.labelTertiary
+    }
 
     struct PriorityImageViewModel {
         let icon: UIImage?
@@ -20,7 +60,7 @@ class ToDoCellViewModel {
 
     let priorityImage: PriorityImageViewModel?
 
-    let taskText: String
+//    let taskText: String
 
     struct DeadlineViewModel {
         let icon: UIImage?
@@ -30,18 +70,23 @@ class ToDoCellViewModel {
     let deadline: DeadlineViewModel?
 
     func buttonPressed() {
-        print("button pressed")
+        var item = todoItem
+        item.done.toggle()
+        updateAction(item)
+
+        componentsSubject.on(.next(UIComponents(for: todoItem)))
     }
 
     private let editAction: TransitionAction
     private let deleteAction: DeleteAction
     private let todoItem: TodoItem
 
-    init(
-        todoItem: TodoItem,
-        editAction: @escaping TransitionAction,
-        deleteAction: @escaping DeleteAction
-    ) {
+    typealias UpdateAction = (TodoItem) -> Void
+    private let updateAction: UpdateAction
+
+    init(todoItem: TodoItem, updateAction: @escaping UpdateAction, editAction: @escaping TransitionAction,
+        deleteAction: @escaping DeleteAction) {
+        self.updateAction = updateAction
         self.todoItem = todoItem
         self.editAction = editAction
         self.deleteAction = deleteAction
@@ -63,13 +108,9 @@ class ToDoCellViewModel {
             priorityImage = PriorityImageViewModel(icon: UIImage(named: "lowPriorityIcon"), spacing: 5)
         }
 
-        taskText = todoItem.text
+//        taskText = todoItem.text
 
-        if todoItem.done {
-            completeButtonImage = Observable.just(UIImage(named: "doneState")!)
-        } else {
-            completeButtonImage = Observable.just(UIImage(named: "notDoneState")!)
-        }
+        componentsSubject = BehaviorSubject(value: UIComponents(for: todoItem))
     }
 
     func select(mode: TransitionMode, viewController: UIViewController) {

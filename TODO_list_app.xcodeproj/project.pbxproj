@@ -20,7 +20,6 @@
 		36EBC8195291A752899130CE /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBC0652191F57277CE4043 /* FileCache.swift */; };
 		36EBC8E8A85D9C6D22B43F58 /* RootGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBC66F8BD718350577B1E8 /* RootGraph.swift */; };
 		36EBC9DACF32B48FE0D040E8 /* EditTaskItemsLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBC678B263B94A527F8FBA /* EditTaskItemsLayout.swift */; };
-		36EBCB0734B4B518E726E2F1 /* EditTaskGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBCD1ECA867212ECA94419 /* EditTaskGraph.swift */; };
 		36EBCB101ECB84BF4AB35A53 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBCA3CC84C690BE387C456 /* Router.swift */; };
 		36EBCB3606218F7A50BF3B21 /* QueryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBC76FFAC8BF8E551CEC58 /* QueryService.swift */; };
 		36EBCD1B88C6444A83631AA5 /* TaskListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBC36EC43130347FE2DA59 /* TaskListViewController.swift */; };
@@ -83,7 +82,6 @@
 		36EBCA3CC84C690BE387C456 /* Router.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 		36EBCB7872AEFF43D2EAE0D0 /* DeadLineStackViewContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeadLineStackViewContainer.swift; sourceTree = "<group>"; };
 		36EBCBCD1BBC827443B14CFA /* HeaderViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderViewModel.swift; sourceTree = "<group>"; };
-		36EBCD1ECA867212ECA94419 /* EditTaskGraph.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditTaskGraph.swift; sourceTree = "<group>"; };
 		36EBCD43D0BCA2255E823917 /* HeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		36EBCDB75757748B17D08BCB /* TodoItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoItem.swift; sourceTree = "<group>"; };
 		36EBCE39C1B29F23FE236BA0 /* PriorityStackViewContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PriorityStackViewContainer.swift; sourceTree = "<group>"; };
@@ -148,7 +146,6 @@
 		36EBC149A5F7F7E0DB2D2859 /* Graphs */ = {
 			isa = PBXGroup;
 			children = (
-				36EBCD1ECA867212ECA94419 /* EditTaskGraph.swift */,
 				36EBCFE6F79FA0A97DB9F7BF /* TaskListGraph.swift */,
 				36EBC66F8BD718350577B1E8 /* RootGraph.swift */,
 			);
@@ -478,7 +475,6 @@
 			files = (
 				CE3CD61B2760FF1000365472 /* AppDelegate.swift in Sources */,
 				CE3CD61D2760FF1000365472 /* SceneDelegate.swift in Sources */,
-				36EBCB0734B4B518E726E2F1 /* EditTaskGraph.swift in Sources */,
 				36EBC40F69D906B36899204B /* TaskListGraph.swift in Sources */,
 				36EBC8E8A85D9C6D22B43F58 /* RootGraph.swift in Sources */,
 				36EBC6950C9827AB348771B6 /* Color.swift in Sources */,

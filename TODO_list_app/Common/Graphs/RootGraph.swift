@@ -24,7 +24,6 @@ class RootGraph {
                 dismissAction: {
                     $0.dismiss(animated: true, completion: nil)
                 }
-
             )
         )
         navigationController = UINavigationController(

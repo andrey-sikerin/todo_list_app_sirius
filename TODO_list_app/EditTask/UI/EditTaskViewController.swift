@@ -176,7 +176,6 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
 
     @objc func datePicked(sender: UIDatePicker) {
         viewModel.selectNewDate(datePicker.date)
-//        selectedDate = datePicker.date
     }
 
     @objc func onKeyboardOpened(keyboardShowNotification notification: Notification) {
@@ -362,8 +361,6 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
             boundsHeight: scrollView.bounds.size.height,
             contentInsetBottom: scrollView.contentInset.bottom
         )
-
-
         stackView.frame = editTaskItemsLayout.stackViewFrame
         button.frame = editTaskItemsLayout.buttonFrame
         scrollView.contentSize.height = editTaskItemsLayout.contentSizeHeight
@@ -371,7 +368,6 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         if (view.frame.size.height <= editTaskItemsLayout.contentSizeHeight) {
             scrollView.setContentOffset(editTaskItemsLayout.contentOffset, animated: true)
         }
-
     }
 
     override func viewWillLayoutSubviews() {

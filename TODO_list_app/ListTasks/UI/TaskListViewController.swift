@@ -214,14 +214,15 @@ extension TaskListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-      if !isLastRow(indexPath) {
-        todoItemViewModels[indexPath.row].select(
-            mode: isLastRow(indexPath) ? .present : .push ,
-            viewController: self
-        )
-      } else {
-        makeNewItemAction(self)
-      }
+        tableView.deselectRow(at: indexPath, animated: true)
+        if !isLastRow(indexPath) {
+            todoItemViewModels[indexPath.row].select(
+                mode: isLastRow(indexPath) ? .present : .push ,
+                viewController: self
+            )
+        } else {
+            makeNewItemAction(self)
+        }
     }
 
     private func deleteItemAction(indexPath: IndexPath) -> UIContextualAction {
@@ -255,13 +256,16 @@ extension TaskListViewController: UITableViewDelegate {
     private func doneItemAction(indexPath: IndexPath) -> UIContextualAction {
         let doneAction = UIContextualAction(style: .normal, title: nil) { (action, sourceView, completion) in
             self.handleMarkAsDone(at: indexPath)
+            self.todoItemViewModels[indexPath.row].buttonPressed()
             completion(true)
         }
+        
+        todoItemViewModels[indexPath.row].componentsObservable.subscribe(onNext: { components in
+            doneAction.image = components.swipeImage
+            doneAction.backgroundColor = components.swipeColor
+        }, onError: nil, onCompleted: nil, onDisposed: nil)
+            .disposed(by: disposeBag)
 
-        doneAction.image = UIGraphicsImageRenderer(bounds: CGRect(origin: .zero, size: SwipeIcons.doneContainerSize)).image { _ in
-            UIImage(named: SwipeIcons.doneIconName)?.draw(in: CGRect(origin: SwipeIcons.doneIconPosition, size: SwipeIcons.doneIconSize))
-        }
-        doneAction.backgroundColor = SwipeIcons.doneIconColor
         return doneAction
     }
 }

@@ -29,9 +29,6 @@ class FileCache {
     /// false if failed
     @discardableResult
     func addTask(_ task: TodoItem) -> Bool {
-        if items[task.id] != nil {
-            return false
-        }
         items[task.id] = task
         return true
     }

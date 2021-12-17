@@ -1,4 +1,5 @@
 import UIKit
+import RxSwift
 
 class DeadLineStackViewContainer: UIView {
     typealias ToggleCalendar = () -> Void
@@ -21,12 +22,16 @@ class DeadLineStackViewContainer: UIView {
         doBeforeText: NSLocalizedString("Make up", comment: "")
     )
     
+    private var viewModel: EditTaskViewModel.DeadlineContainer
+    
     private var switcherTapped: OnSwitcherTapped
     private var toggleCalendar: ToggleCalendar
     required init(
+        viewModel: EditTaskViewModel.DeadlineContainer,
         switcherTapped: @escaping OnSwitcherTapped,
         toggleCalendar: @escaping ToggleCalendar)
     {
+        self.viewModel = viewModel
         self.switcherTapped = switcherTapped
         self.toggleCalendar = toggleCalendar
         super.init(frame: .zero)
@@ -57,7 +62,13 @@ class DeadLineStackViewContainer: UIView {
         switcherTapped(sender.isOn)
     }
     
+    private var disposeBag = DisposeBag()
+    
     private func setupSwitcher() {
+        viewModel.isSwitcherOn.subscribe(onNext: { [weak self] isOn in
+            self?.switcher.isOn = isOn
+        }, onError: nil, onCompleted: nil, onDisposed: nil)
+            .disposed(by: disposeBag)
         switcher.preferredStyle = .sliding
         switcher.addTarget(self, action: #selector(switcherTap), for: .allTouchEvents)
     }
@@ -77,7 +88,10 @@ class DeadLineStackViewContainer: UIView {
     }
     
     private func setupSecondaryLabel() {
-        secondaryLabel.text = ""
+        viewModel.secondaryLabelText.subscribe(onNext: { [weak self] text in
+            self?.secondaryLabel.text = text
+        }, onError: nil, onCompleted: nil, onDisposed: nil)
+            .disposed(by: disposeBag)
         secondaryLabel.font = .boldSystemFont(ofSize: layoutStyles.secondaryLabelFontSize)
         secondaryLabel.textColor = .systemBlue
     }

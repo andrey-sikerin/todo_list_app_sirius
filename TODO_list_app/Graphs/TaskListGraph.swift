@@ -27,8 +27,16 @@ class TaskListGraph {
                 rootRouter.dismissAction(vc)
             }
             }
-
+            
+            let editTaskVM = EditTaskViewModel(
+                item: TodoItem(
+                    text: "Some Text",
+                    priority: .low
+                ),
+                transitionToTaskList: transitionToTaskListVC)
+            
             let editTaskVC = EditTaskViewController(
+                viewModel: editTaskVM,
                     notificationCenter: .default,
                     strings: EditTaskViewController.Strings(
                             leftNavigationBarText: NSLocalizedString("Cancel", comment: ""),
@@ -44,8 +52,7 @@ class TaskListGraph {
                             textViewPlaceholderColor: Color.labelTertiary,
                             buttonTextColor: Color.labelTertiary,
                             buttonPressedTextColor: Color.labelPrimary,
-                    showingCancelButton: mode == .push ? false : true),
-                    transitionToTaskList: transitionToTaskListVC
+                    showingCancelButton: mode == .push ? false : true)
             )
 
             switch mode {

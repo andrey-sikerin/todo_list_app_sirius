@@ -110,8 +110,6 @@ class TaskListViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationController?.navigationBar.prefersLargeTitles = false
-
         navigationItem.largeTitleDisplayMode = .always
         title = strings.titleNavigationBarText
         setUpTableView()
@@ -205,14 +203,9 @@ extension TaskListViewController: UITableViewDelegate {
         guard !isLastRow(indexPath) else {
             return nil
         }
-        let doneAction = UIContextualAction(style: .normal, title: nil) { (action, sourceView, completion) in
-            self.handleMarkAsDone(at: indexPath)
-            completion(true)
-        }
-        doneAction.image = UIGraphicsImageRenderer(bounds: CGRect(origin: .zero, size: SwipeIcons.doneContainerSize)).image { _ in
-            UIImage(named: SwipeIcons.doneIconName)?.draw(in: CGRect(origin: SwipeIcons.doneIconPosition, size: SwipeIcons.doneIconSize))
-        }
-        doneAction.backgroundColor = SwipeIcons.doneIconColor
+
+        let doneAction = doneItemAction(indexPath: indexPath)
+
         return UISwipeActionsConfiguration(actions: [doneAction])
     }
 
@@ -221,23 +214,8 @@ extension TaskListViewController: UITableViewDelegate {
             return nil
         }
 
-        let infoAction = UIContextualAction(style: .normal, title: nil) { (action, sourceView, completion) in
-            self.handleInfoTask(at: indexPath)
-            completion(true)
-        }
-        infoAction.image = UIGraphicsImageRenderer(size: SwipeIcons.infoContainerSize).image { _ in
-            UIImage(named: SwipeIcons.infoIconName)?.draw(in: CGRect(origin: SwipeIcons.infoIconPosition, size: SwipeIcons.infoIconSize))
-        }
-        infoAction.backgroundColor = SwipeIcons.infoIconColor
-
-        let deleteAction = UIContextualAction(style: .normal, title: nil) { (action, sourceView, completion) in
-            self.handleDeleteTask(at: indexPath)
-            completion(true)
-        }
-        deleteAction.image = UIGraphicsImageRenderer(size: SwipeIcons.doneContainerSize).image { _ in
-            UIImage(named: SwipeIcons.deleteIconName)?.draw(in: CGRect(origin: SwipeIcons.deleteIconPosition, size: SwipeIcons.deleteIconSize))
-        }
-        deleteAction.backgroundColor = SwipeIcons.deleteIconColor
+        let infoAction = infoItemAction(indexPath: indexPath)
+        let deleteAction = deleteItemAction(indexPath: indexPath)
 
         let configuration = UISwipeActionsConfiguration(actions: [deleteAction, infoAction])
         configuration.performsFirstActionWithFullSwipe = true
@@ -252,6 +230,50 @@ extension TaskListViewController: UITableViewDelegate {
             transitionAction(.push, self)
         }
     }
+
+    private func deleteItemAction(indexPath: IndexPath) -> UIContextualAction {
+        let deleteAction = UIContextualAction(style: .normal, title: nil) { (action, sourceView, completion) in
+            self.handleDeleteTask(at: indexPath)
+            self.todoItems.remove(at: indexPath.row)
+            self.taskTableView.deleteRows(at: [indexPath], with: .automatic)
+            completion(true)
+        }
+        deleteAction.image = UIGraphicsImageRenderer(size: SwipeIcons.doneContainerSize).image { _ in
+            UIImage(named: SwipeIcons.deleteIconName)?.draw(in: CGRect(origin: SwipeIcons.deleteIconPosition, size: SwipeIcons.deleteIconSize))
+        }
+        deleteAction.backgroundColor = SwipeIcons.deleteIconColor
+        return deleteAction
+    }
+
+    private func infoItemAction(indexPath: IndexPath) -> UIContextualAction {
+        let infoAction = UIContextualAction(style: .normal, title: nil) { (action, sourceView, completion) in
+            self.handleInfoTask(at: indexPath)
+            self.transitionAction(.push, self)
+            completion(true)
+        }
+        infoAction.image = UIGraphicsImageRenderer(size: SwipeIcons.infoContainerSize).image { _ in
+            UIImage(named: SwipeIcons.infoIconName)?.draw(in: CGRect(origin: SwipeIcons.infoIconPosition, size: SwipeIcons.infoIconSize))
+        }
+        infoAction.backgroundColor = SwipeIcons.infoIconColor
+        return infoAction
+    }
+
+    private func doneItemAction(indexPath: IndexPath) -> UIContextualAction {
+        let doneAction = UIContextualAction(style: .normal, title: nil) { (action, sourceView, completion) in
+            self.handleMarkAsDone(at: indexPath)
+            self.todoItems[indexPath.row].done = !(self.todoItems[indexPath.row].done)
+            completion(true)
+        }
+
+        doneAction.image = UIGraphicsImageRenderer(bounds: CGRect(origin: .zero, size: SwipeIcons.doneContainerSize)).image { _ in
+            UIImage(named: SwipeIcons.doneIconName)?.draw(in: CGRect(origin: SwipeIcons.doneIconPosition, size: SwipeIcons.doneIconSize))
+        }
+        doneAction.backgroundColor = SwipeIcons.doneIconColor
+        return doneAction
+    }
+
+
+
 }
 
 fileprivate let reuseIdentifier = "test"

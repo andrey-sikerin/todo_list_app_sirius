@@ -227,9 +227,7 @@ extension TaskListViewController: UITableViewDelegate {
     private func deleteItemAction(indexPath: IndexPath) -> UIContextualAction {
         let deleteAction = UIContextualAction(style: .normal, title: nil) { (action, sourceView, completion) in
             self.handleDeleteTask(at: indexPath)
-            self.todoItemViewModels.remove(at: indexPath.row)
-            self.taskTableView.deleteRows(at: [indexPath], with: .automatic)
-            completion(true)
+            self.todoItemViewModels[indexPath.row].delete()
         }
         deleteAction.image = UIGraphicsImageRenderer(size: SwipeIcons.doneContainerSize).image { _ in
             UIImage(named: SwipeIcons.deleteIconName)?.draw(in: CGRect(origin: SwipeIcons.deleteIconPosition, size: SwipeIcons.deleteIconSize))

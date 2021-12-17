@@ -25,11 +25,11 @@ class TaskListGraph {
             let transitionToTaskListVC: PopAction
             switch mode {
             case .push: transitionToTaskListVC = {
-                rootRouter.popAction()
-            }
+                    rootRouter.popAction()
+                }
             case .present: transitionToTaskListVC = {
-                rootRouter.dismissAction(vc)
-            }
+                    rootRouter.dismissAction(vc)
+                }
             }
             let editTaskVC = EditTaskViewController(
                 viewModel: EditTaskViewModel(
@@ -61,12 +61,19 @@ class TaskListGraph {
 
         }
 
+        let deleteAction: DeleteAction = { id in
+            var value = try! todoItemsBehaviorSubject.value()
+            value.removeAll(where: { $0.id == id })
+
+            todoItemsBehaviorSubject.on(.next(value))
+        }
+
         let fileCache = FileCache(
             manager: FileCache.FileManager(write: { data, url in
                 try data.write(to: url)
             }, read: { url in
-                return try Data(contentsOf: url)
-            })
+                    return try Data(contentsOf: url)
+                })
         )
 
         todoItemsBehaviorSubject.on(.next(FileCache.test.todoItems))
@@ -96,7 +103,7 @@ class TaskListGraph {
 
 
         let viewModelsObservable: Observable<[ToDoCellViewModel]> =
-        Observable.combineLatest(todoItemsBehaviorSubject, modeSubject).map { (items: [TodoItem], mode: HeaderViewModel.Mode) in
+            Observable.combineLatest(todoItemsBehaviorSubject, modeSubject).map { (items: [TodoItem], mode: HeaderViewModel.Mode) in
             var resultedItems: [TodoItem]
             switch mode {
             case .show:
@@ -105,7 +112,13 @@ class TaskListGraph {
                 resultedItems = items.filter { !$0.done }
             }
 
-            return resultedItems.map { ToDoCellViewModel(todoItem: $0, editAction: editAction) }
+            return resultedItems.map {
+                ToDoCellViewModel(
+                    todoItem: $0,
+                    editAction: editAction,
+                    deleteAction: deleteAction
+                )
+            }
         }
 
         fileCache.load(from: cacheFilePath!)
@@ -133,8 +146,8 @@ fileprivate extension FileCache {
         let manager = FileCache.FileManager(write: { data, url in
             try data.write(to: url)
         }, read: { url in
-            try Data(contentsOf: url)
-        })
+                try Data(contentsOf: url)
+            })
         let file = FileCache(manager: manager)
         let buyFood = TodoItem(id: "BuyFoodIdString", text: "Working for food", priority: .low, done: true)
         let goRun = TodoItem(text: "Running is good", priority: .normal, done: true)

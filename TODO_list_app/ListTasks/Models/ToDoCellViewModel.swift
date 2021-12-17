@@ -34,11 +34,17 @@ class ToDoCellViewModel {
     }
 
     private let editAction: TransitionAction
+    private let deleteAction: DeleteAction
     private let todoItem: TodoItem
 
-    init(todoItem: TodoItem, editAction: @escaping TransitionAction) {
+    init(
+        todoItem: TodoItem,
+        editAction: @escaping TransitionAction,
+        deleteAction: @escaping DeleteAction
+    ) {
         self.todoItem = todoItem
         self.editAction = editAction
+        self.deleteAction = deleteAction
         if let date = todoItem.deadline {
             deadline = DeadlineViewModel(
                 icon: UIImage(systemName: "calendar")!,
@@ -67,7 +73,11 @@ class ToDoCellViewModel {
     }
 
     func select(mode: TransitionMode, viewController: UIViewController) {
-      editAction(mode, viewController, todoItem)
+        editAction(mode, viewController, todoItem)
+    }
+
+    func delete() {
+        deleteAction(todoItem.id)
     }
 }
 

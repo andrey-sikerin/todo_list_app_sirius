@@ -30,6 +30,7 @@
 		8150DB3D2764F1D700BA3FF1 /* CacheFileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8150DB3B2764F1D700BA3FF1 /* CacheFileTests.swift */; };
 		8150DB3E2764F1D700BA3FF1 /* TodoItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8150DB3C2764F1D700BA3FF1 /* TodoItemTests.swift */; };
 		8150DB412764F22E00BA3FF1 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 8150DB402764F22E00BA3FF1 /* OrderedCollections */; };
+		8168FE1C276CDE1B00F9F126 /* TombstoneCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8168FE1B276CDE1B00F9F126 /* TombstoneCache.swift */; };
 		8CC8EF42276C903800009207 /* SnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC8EF41276C903800009207 /* SnapshotTests.swift */; };
 		8CC8EF48276C914000009207 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 8CC8EF47276C914000009207 /* SnapshotTesting */; };
 		CE3CD61B2760FF1000365472 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3CD61A2760FF1000365472 /* AppDelegate.swift */; };
@@ -91,6 +92,7 @@
 		6F71393B276CBFD40001D22B /* EditTaskViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditTaskViewModel.swift; sourceTree = "<group>"; };
 		8150DB3B2764F1D700BA3FF1 /* CacheFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CacheFileTests.swift; sourceTree = "<group>"; };
 		8150DB3C2764F1D700BA3FF1 /* TodoItemTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoItemTests.swift; sourceTree = "<group>"; };
+		8168FE1B276CDE1B00F9F126 /* TombstoneCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TombstoneCache.swift; path = TODO_list_app/Common/Web/TombstoneCache.swift; sourceTree = SOURCE_ROOT; };
 		8CC8EF41276C903800009207 /* SnapshotTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotTests.swift; sourceTree = "<group>"; };
 		CE3CD6172760FF1000365472 /* TODO_list_app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TODO_list_app.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE3CD61A2760FF1000365472 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -253,6 +255,7 @@
 		36EBCF8BE71A684D727E979B /* Web */ = {
 			isa = PBXGroup;
 			children = (
+				8168FE1B276CDE1B00F9F126 /* TombstoneCache.swift */,
 				36EBC76FFAC8BF8E551CEC58 /* QueryService.swift */,
 			);
 			path = Web;
@@ -482,6 +485,7 @@
 				36EBC40F69D906B36899204B /* TaskListGraph.swift in Sources */,
 				36EBC8E8A85D9C6D22B43F58 /* RootGraph.swift in Sources */,
 				36EBC6950C9827AB348771B6 /* Color.swift in Sources */,
+				8168FE1C276CDE1B00F9F126 /* TombstoneCache.swift in Sources */,
 				36EBC4AF12C4946420A368A1 /* AppStyles.swift in Sources */,
 				36EBCD1B88C6444A83631AA5 /* TaskListViewController.swift in Sources */,
 				36EBC02255D76F329EAAC0E9 /* AddNewTaskCell.swift in Sources */,

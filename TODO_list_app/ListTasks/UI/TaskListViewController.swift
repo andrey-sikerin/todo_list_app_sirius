@@ -46,9 +46,6 @@ class TaskListViewController: UIViewController {
 
     struct Strings {
         let titleNavigationBarText: String
-        let doneAmountLabelText: String
-        let showDoneButtonText: String
-        let hideDoneButtonText: String
     }
 
     private let strings: Strings
@@ -65,15 +62,17 @@ class TaskListViewController: UIViewController {
         return tableView
     }()
 
-
-    private var makeNewItemAction: PresentAction
+    private let makeNewItemAction: PresentAction
+    private let headerViewModel: HeaderViewModel
 
     init(
         strings: Strings,
         todoItemViewModelsObservale: Observable<[ToDoCellViewModel]>,
+        headerViewModel: HeaderViewModel,
         makeNewItemAction: @escaping PresentAction
     ) {
         self.strings = strings
+        self.headerViewModel = headerViewModel
         self.makeNewItemAction = makeNewItemAction
         self.todoItemViewModels = []
         self.todoItemViewModelsObservale = todoItemViewModelsObservale
@@ -188,14 +187,7 @@ extension TaskListViewController: UITableViewDataSource {
 extension TaskListViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerView = HeaderView()
-        headerView.configureHeader(
-            doneAmount: 5,
-            labelText: strings.doneAmountLabelText,
-            showDoneButtonText: strings.showDoneButtonText,
-            hideDoneButtonText: strings.hideDoneButtonText)
-
-        return headerView
+        return HeaderView(viewModel: headerViewModel)
     }
 
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {

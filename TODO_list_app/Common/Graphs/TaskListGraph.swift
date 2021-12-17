@@ -25,25 +25,25 @@ class TaskListGraph {
             let transitionToTaskListVC: PopAction
             switch mode {
             case .push: transitionToTaskListVC = {
-                    rootRouter.popAction()
-                }
+                rootRouter.popAction()
+            }
             case .present: transitionToTaskListVC = {
-                    rootRouter.dismissAction(vc)
-                }
+                rootRouter.dismissAction(vc)
+            }
             }
             let editTaskVC = EditTaskViewController(
-              viewModel: EditTaskViewModel(
-                item: item,
-                transitionToTaskList: transitionToTaskListVC
-              ),
-              notificationCenter: .default,
+                viewModel: EditTaskViewModel(
+                    item: item,
+                    transitionToTaskList: transitionToTaskListVC
+                ),
+                notificationCenter: .default,
                 strings: EditTaskViewController.Strings(
                     leftNavigationBarText: NSLocalizedString("Cancel", comment: ""),
                     rightNavigationBarText: NSLocalizedString("Save", comment: ""),
                     titleNavigationBarText: NSLocalizedString("Task", comment: ""),
                     textViewPlaceholder: NSLocalizedString("TaskDescriptionPlaceholder", comment: ""),
                     buttonText: NSLocalizedString("Delete", comment: ""),
-                            doBeforeText: NSLocalizedString("Make up", comment: "")),
+                    doBeforeText: NSLocalizedString("Make up", comment: "")),
                 styles: EditTaskViewController.Styles(
                     itemsBackground: Color.backgroundSecondary,
                     backgroundColor: Color.backgroundPrimary,
@@ -51,7 +51,7 @@ class TaskListGraph {
                     textViewPlaceholderColor: Color.labelTertiary,
                     buttonTextColor: Color.labelTertiary,
                     buttonPressedTextColor: Color.labelPrimary,
-                    showingCancelButton: mode == .push ? false : true)          
+                    showingCancelButton: mode == .push ? false : true)
             )
 
             switch mode {
@@ -62,18 +62,18 @@ class TaskListGraph {
         }
 
         let fileCache = FileCache(
-                manager: FileCache.FileManager(write: { data, url in
-                    try data.write(to: url)
-                }, read: { url in
-                    return try Data(contentsOf: url)
-                })
+            manager: FileCache.FileManager(write: { data, url in
+                try data.write(to: url)
+            }, read: { url in
+                return try Data(contentsOf: url)
+            })
         )
 
         todoItemsBehaviorSubject.on(.next(FileCache.test.todoItems))
 
-      let todoListSubscription = try? QueryService.getTodoList()
-      let cacheFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-                .first?.appendingPathComponent(cacheFilename)
+        let todoListSubscription = try? QueryService.getTodoList()
+        let cacheFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+            .first?.appendingPathComponent(cacheFilename)
 
         let _ = todoListSubscription?.subscribe { event in
             switch event {
@@ -88,19 +88,42 @@ class TaskListGraph {
                 print("Error: ", error)
             }
         }
+        let modeSubject: BehaviorSubject<HeaderViewModel.Mode> = .init(value: .show)
+        //        let viewModelsObservable = todoItemsBehaviorSubject.map { items in
+        //          items.map { ToDoCellViewModel(todoItem: $0, editAction: editAction) }
+        //        }
+
+
+
+        let viewModelsObservable: Observable<[ToDoCellViewModel]> =
+        Observable.combineLatest(todoItemsBehaviorSubject, modeSubject).map { (items: [TodoItem], mode: HeaderViewModel.Mode) in
+            var resultedItems: [TodoItem]
+            switch mode {
+            case .show:
+                resultedItems = items
+            case .hide:
+                resultedItems = items.filter { !$0.done }
+            }
+
+            return resultedItems.map { ToDoCellViewModel(todoItem: $0, editAction: editAction) }
+        }
 
         fileCache.load(from: cacheFilePath!)
         viewController = TaskListViewController(
-                strings: TaskListViewController.Strings(
-                        titleNavigationBarText: NSLocalizedString("Tasks", comment: ""),
-                        doneAmountLabelText: NSLocalizedString("Completed", comment: ""),
-                        showDoneButtonText: NSLocalizedString("Show", comment: ""),
-                        hideDoneButtonText: NSLocalizedString("Hide", comment: "")
+            strings: TaskListViewController.Strings(
+                titleNavigationBarText: NSLocalizedString("Tasks", comment: "")
+            ),
+            todoItemViewModelsObservale: viewModelsObservable,
+            headerViewModel: HeaderViewModel(
+                todoItemsObservable: todoItemsBehaviorSubject,
+                strings: HeaderViewModel.Strings(
+                    doneText: NSLocalizedString("Completed", comment: ""),
+                    hideText: NSLocalizedString("Show", comment: ""),
+                    showText: NSLocalizedString("Hide", comment: "")
                 ),
-                todoItemViewModelsObservale: todoItemsBehaviorSubject.map { items in
-                  items.map { ToDoCellViewModel(todoItem: $0, editAction: editAction) }
-                },
-                makeNewItemAction: { editAction(.present, $0, .emptyItem) }
+                modeSubject: modeSubject
+            ),
+            makeNewItemAction: { editAction(.present, $0, .emptyItem) }
         )
     }
 }
@@ -110,8 +133,8 @@ fileprivate extension FileCache {
         let manager = FileCache.FileManager(write: { data, url in
             try data.write(to: url)
         }, read: { url in
-                try Data(contentsOf: url)
-            })
+            try Data(contentsOf: url)
+        })
         let file = FileCache(manager: manager)
         let buyFood = TodoItem(id: "BuyFoodIdString", text: "Working for food", priority: .low, done: true)
         let goRun = TodoItem(text: "Running is good", priority: .normal, done: true)

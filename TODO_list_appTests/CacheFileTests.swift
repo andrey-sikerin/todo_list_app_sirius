@@ -9,28 +9,28 @@ import XCTest
 @testable import TODO_list_app
 
 class CacheFileTests: XCTestCase {
-    
+
     var buyFood = TodoItem(id: "BuyFoodIdString", text: "Working for food", priority: .low)
     var goRun = TodoItem(text: "Running is good", priority: .normal)
     var homework = TodoItem(text: "Copy It", deadline: date, priority: .high)
-    
+
     let filename = getDocumentsDirectory().appendingPathComponent("todoItems.json")
     var fileCache: FileCache!
-    var dict: [URL : Data] = [:]
+    var dict: [URL: Data] = [:]
 
     override func setUpWithError() throws {
         let fileManager = FileCache.FileManager(write: { [unowned self] data, url in
             self.dict[url] = data
         }, read: { [unowned self] url in
-            self.dict[url]!
-        })
-        
+                self.dict[url]!
+            })
+
         fileCache = FileCache(manager: fileManager)
         fileCache.addTask(buyFood)
         fileCache.addTask(goRun)
         fileCache.addTask(homework)
     }
-    
+
     override func tearDownWithError() throws {
         dict.removeAll()
     }
@@ -43,7 +43,7 @@ class CacheFileTests: XCTestCase {
         fileCache.addTask(shave)
         XCTAssertEqual(fileCache.todoItems.count, 3)
         XCTAssertNil(fileCache.todoItems.firstIndex(of: buyFood))
-        
+
         let items = fileCache.todoItems
         fileCache.save(to: filename)
         fileCache.removeTask(id: shave.id)
@@ -51,18 +51,19 @@ class CacheFileTests: XCTestCase {
         fileCache.removeTask(id: homework.id)
         XCTAssertNotEqual(items, fileCache.todoItems)
         XCTAssertEqual(fileCache.todoItems.count, 0)
-                
+
         fileCache.load(from: filename)
         XCTAssertEqual(fileCache!.todoItems, items)
     }
-    
+
     func testUniqueIds() throws {
         let goOut = TodoItem(id: "SameId", text: "It is good for your health", priority: .normal)
         let goHome = TodoItem(id: "SameId", text: "Let's come home", priority: .normal)
         fileCache.addTask(goOut)
-        XCTAssertFalse(fileCache.addTask(goHome))
+        fileCache.addTask(goHome)
+        XCTAssertNil(fileCache.todoItems.first(where: { $0 == goOut }))
     }
-    
+
     func testRemovingIds() throws {
         XCTAssertNotNil(fileCache.removeTask(id: "BuyFoodIdString"))
         XCTAssertNil(fileCache.removeTask(id: "BuyFoodIdString"))

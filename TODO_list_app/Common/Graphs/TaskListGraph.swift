@@ -7,17 +7,21 @@
 
 import Foundation
 import UIKit
+import RxSwift
 
 class TaskListGraph {
     private(set) var viewController: UIViewController
     private var currentEdit: EditTaskGraph?
     public var rootRouter: RootRouter
     private let cacheFilename = "brawl_stars.txt"
+    private let todoItemsBehaviorSubject: BehaviorSubject<[TodoItem]>
 
     init(rootRouter: RootRouter) {
+        let todoItemsBehaviorSubject = BehaviorSubject<[TodoItem]>(value: [])
         self.rootRouter = rootRouter
-        let transitionToEditVC: (TransitionMode, UIViewController) -> Void = { mode, vc in
+        self.todoItemsBehaviorSubject = todoItemsBehaviorSubject
 
+        let editAction: TransitionAction = { mode, vc, item in
             let transitionToTaskListVC: PopAction
             switch mode {
             case .push: transitionToTaskListVC = {
@@ -27,16 +31,11 @@ class TaskListGraph {
                     rootRouter.dismissAction(vc)
                 }
             }
-
-          let editTaskVM = EditTaskViewModel(
-                          item: TodoItem(
-                              text: "Some Text",
-                              priority: .low
-                          ),
-                          transitionToTaskList: transitionToTaskListVC)
-
             let editTaskVC = EditTaskViewController(
-              viewModel: editTaskVM,
+              viewModel: EditTaskViewModel(
+                item: item,
+                transitionToTaskList: transitionToTaskListVC
+              ),
               notificationCenter: .default,
                 strings: EditTaskViewController.Strings(
                     leftNavigationBarText: NSLocalizedString("Cancel", comment: ""),
@@ -70,11 +69,10 @@ class TaskListGraph {
                 })
         )
 
-        let todoListSubscription = try? QueryService.getTodoList()
-        let todoListViewModelsSubscription = todoListSubscription?.map { items in
-            items.map { ToDoCellViewModel(todoItem: $0) }
-        }
-        let cacheFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        todoItemsBehaviorSubject.on(.next(FileCache.test.todoItems))
+
+      let todoListSubscription = try? QueryService.getTodoList()
+      let cacheFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
                 .first?.appendingPathComponent(cacheFilename)
 
         let _ = todoListSubscription?.subscribe { event in
@@ -85,13 +83,13 @@ class TaskListGraph {
                     fileCache.addTask(item)
                 }
                 fileCache.save(to: cacheFilePath!)
+                todoItemsBehaviorSubject.on(.next(todoItemsArray))
             case .failure(let error):
                 print("Error: ", error)
             }
         }
 
         fileCache.load(from: cacheFilePath!)
-
         viewController = TaskListViewController(
                 strings: TaskListViewController.Strings(
                         titleNavigationBarText: NSLocalizedString("Tasks", comment: ""),
@@ -99,9 +97,10 @@ class TaskListGraph {
                         showDoneButtonText: NSLocalizedString("Show", comment: ""),
                         hideDoneButtonText: NSLocalizedString("Hide", comment: "")
                 ),
-                transitionToEdit: transitionToEditVC,
-                todoItemViewModels: FileCache.test.todoItems.map { .init(todoItem: $0) },
-                todoItemsSubscription: todoListViewModelsSubscription
+                todoItemViewModelsObservale: todoItemsBehaviorSubject.map { items in
+                  items.map { ToDoCellViewModel(todoItem: $0, editAction: editAction) }
+                },
+                makeNewItemAction: { editAction(.present, $0, .emptyItem) }
         )
     }
 }

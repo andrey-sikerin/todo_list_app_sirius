@@ -175,6 +175,7 @@
 		36EBC2B67ABC8B01F18C4614 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				6F71393B276CBFD40001D22B /* EditTaskViewModel.swift */,
 				36EBC678B263B94A527F8FBA /* EditTaskItemsLayout.swift */,
 				36EBCDB75757748B17D08BCB /* TodoItem.swift */,
 			);
@@ -278,7 +279,6 @@
 		CE3CD6192760FF1000365472 /* TODO_list_app */ = {
 			isa = PBXGroup;
 			children = (
-				6F71393B276CBFD40001D22B /* EditTaskViewModel.swift */,
 				CE3CD61A2760FF1000365472 /* AppDelegate.swift */,
 				CE3CD61C2760FF1000365472 /* SceneDelegate.swift */,
 				CE3CD6232760FF1200365472 /* Assets.xcassets */,

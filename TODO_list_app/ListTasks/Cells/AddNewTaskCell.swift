@@ -29,7 +29,7 @@ class AddNewTaskCell: UITableViewCell {
     
     private lazy var label: UILabel = {
         let label = UILabel()
-        label.text = "Hовое"
+        label.text = NSLocalizedString("New", comment: "")
         label.textColor = UIColor(
             red: 0,
             green: 0.478,

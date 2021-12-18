@@ -15,13 +15,14 @@ class EditTaskViewModel {
     var showingDatePicker: BehaviorSubject<Bool>
     var showPlaceholder: BehaviorSubject<Bool>
     var priorityContainer: PriorityContainer
+    private let todoItem: TodoItem
     var deadlineContainer: DeadlineContainer
     private var _showingDatePicker: Bool
     private var selectedDate: Date?
-    
+
     struct PriorityContainer {
         var segmentedIndex: BehaviorSubject<Int>
-        
+
         init(priority: TodoItem.Priority) {
             let value: Int
             switch priority {
@@ -32,30 +33,40 @@ class EditTaskViewModel {
             self.segmentedIndex = BehaviorSubject(value: value)
         }
     }
-    
+
     struct DeadlineContainer {
         var secondaryLabelText: BehaviorSubject<String>
         var isSwitcherOn: BehaviorSubject<Bool>
         fileprivate var _isSwitcherOn: Bool
-        
+
         init(secondaryLabelText: String, isSwitcherOn: Bool) {
             self._isSwitcherOn = isSwitcherOn
-            
+
             self.isSwitcherOn = BehaviorSubject(value: isSwitcherOn)
-            
+
             self.secondaryLabelText = BehaviorSubject(value: secondaryLabelText)
         }
     }
-    
+
     typealias TransitionAction = () -> Void
     var transitionAction: TransitionAction
-    
-    init(item: TodoItem, transitionToTaskList: @escaping TransitionAction) {
+    let deleteAction: DeleteAction
+    let isDeleteButtonDisabled: Bool
+
+    init(
+        item: TodoItem,
+        transitionToTaskList: @escaping TransitionAction,
+        deleteAction: @escaping DeleteAction,
+        isDeleteButtonDisabled: Bool
+    ) {
         self.transitionAction = transitionToTaskList
+        self.isDeleteButtonDisabled = isDeleteButtonDisabled
+        self.deleteAction = deleteAction
+        self.todoItem = item
         self.text = BehaviorSubject(value: item.text)
-        
+
         self.selectedDate = item.deadline
-        
+
         let secondaryLabelText: String
         if let date = selectedDate {
             secondaryLabelText = dateFormatter.string(from: date)
@@ -66,27 +77,27 @@ class EditTaskViewModel {
             secondaryLabelText: secondaryLabelText,
             isSwitcherOn: selectedDate != nil
         )
-        
+
         self.priorityContainer = PriorityContainer(priority: item.priority)
         self.deadlineContainer = deadlineContainer
         self._showingDatePicker = false
-        
+
         self.showingDatePicker = BehaviorSubject(value: _showingDatePicker)
-        
+
         self.showPlaceholder = BehaviorSubject(value: item.text == "")
     }
-    
+
     func toggleCalendar(with date: Date) {
         _showingDatePicker.toggle()
-        
+
         showingDatePicker.on(.next(_showingDatePicker))
-        
+
         deadlineContainer._isSwitcherOn = deadlineContainer._isSwitcherOn || _showingDatePicker
         deadlineContainer.isSwitcherOn.on(.next(deadlineContainer._isSwitcherOn))
-        
+
         selectNewDate(date)
     }
-    
+
     func switcherTapped(isOn: Bool, date: Date) {
         showingDatePicker.on(.next(!isOn))
         if isOn {
@@ -95,7 +106,7 @@ class EditTaskViewModel {
             selectNewDate(nil)
         }
     }
-    
+
     func selectNewDate(_ date: Date?) {
         selectedDate = date
         if let date = date {
@@ -104,7 +115,11 @@ class EditTaskViewModel {
             deadlineContainer.secondaryLabelText.on(.next(""))
         }
     }
-    
+
+    func delete() {
+        deleteAction(todoItem.id)
+    }
+
     private var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium

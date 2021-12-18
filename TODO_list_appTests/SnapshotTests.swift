@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import RxSwift
 import SnapshotTesting
 @testable import TODO_list_app
 
@@ -13,37 +14,38 @@ class SnapshotTests: XCTestCase {
 
     func testToDoCell() {
         let toDoItems = [
-            TodoItem(id: "BuyFoodIdString", text: "Working for food", priority: .low),
-            TodoItem(text: "Running is good", priority: .normal),
-            TodoItem(text: "Copy It", deadline: Date().addingTimeInterval(3600), priority: .high),
-            TodoItem(text: "Cook yourself!", priority: .normal),
-            TodoItem(text: "Enjoy", priority: .normal),
-            TodoItem(text: "Sleeping is essential", deadline: Date().addingTimeInterval(3600 * 5), priority: .high)
+            TodoItem(id: "BuyFoodIdString", text: "Working for food", priority: .low, done: true),
+            TodoItem(text: "Running is good", priority: .normal, done: true),
+            TodoItem(text: "Copy It", deadline: Date().addingTimeInterval(3600), priority: .high, done: false),
+            TodoItem(text: "Cook yourself!", priority: .normal, done: true),
+            TodoItem(text: "Enjoy", priority: .normal, done: false),
+            TodoItem(text: "Sleeping is essential", deadline: Date().addingTimeInterval(3600 * 5), priority: .high, done: false)
         ]
-
-        var toDoCells = [ToDoCell]()
+        
         toDoItems.forEach {
             let toDoCell = ToDoCell(style: .default, reuseIdentifier: ToDoCell.identifier)
-            toDoCell.configureCell(viewModel: ToDoCellViewModel(todoItem: $0))
+            toDoCell.configureCell(viewModel: .init(todoItem: $0, editAction: { _, _, _ in }, deleteAction: { _ in }))
             toDoCell.backgroundColor = Color.backgroundSecondary
-            toDoCells.append(toDoCell)
+            
+            assertSnapshot(matching: toDoCell, as: .image, record: false)
         }
 
         let taskListViewController = TaskListViewController(
             strings: TaskListViewController.Strings(
-                titleNavigationBarText: "Tasks",
-                doneAmountLabelText: "Completed",
-                showDoneButtonText: "Show",
-                hideDoneButtonText: "Hide"
+                titleNavigationBarText: NSLocalizedString("Tasks", comment: "")
             ),
-            transitionToEdit: { _, _ in },
-                todoItemViewModels: toDoItems.map { .init(todoItem: $0) },
-            todoItemsSubscription: nil
+            todoItemViewModelsObservale: Observable.just(toDoItems.map({ .init(todoItem: $0, editAction: { _, _, _ in }, deleteAction: { _ in }) })),
+            headerViewModel: HeaderViewModel(
+                todoItemsObservable: Observable.just(toDoItems),
+                strings: HeaderViewModel.Strings(
+                    doneText: NSLocalizedString("Completed", comment: ""),
+                    hideText: NSLocalizedString("Show", comment: ""),
+                    showText: NSLocalizedString("Hide", comment: "")
+                ),
+                modeSubject: .init(value: .show)
+            ),
+            makeNewItemAction: { _ in }
         )
-
-        toDoCells.forEach {
-            assertSnapshot(matching: $0, as: .image, record: false)
-        }
 
         assertSnapshot(matching: taskListViewController, as: .image, record: false)
 

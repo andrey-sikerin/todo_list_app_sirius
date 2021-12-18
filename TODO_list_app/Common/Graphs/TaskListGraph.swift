@@ -21,6 +21,13 @@ class TaskListGraph {
         self.rootRouter = rootRouter
         self.todoItemsBehaviorSubject = todoItemsBehaviorSubject
 
+        let deleteAction: DeleteAction = { id in
+            var value = try! todoItemsBehaviorSubject.value()
+            value.removeAll(where: { $0.id == id })
+
+            todoItemsBehaviorSubject.on(.next(value))
+        }
+
         let editAction: TransitionAction = { mode, vc, item in
             let transitionToTaskListVC: PopAction
             switch mode {
@@ -34,7 +41,9 @@ class TaskListGraph {
             let editTaskVC = EditTaskViewController(
                 viewModel: EditTaskViewModel(
                     item: item,
-                    transitionToTaskList: transitionToTaskListVC
+                    transitionToTaskList: transitionToTaskListVC,
+                    deleteAction: deleteAction,
+                    isDeleteButtonDisabled: mode == .present
                 ),
                 notificationCenter: .default,
                 strings: EditTaskViewController.Strings(
@@ -51,7 +60,9 @@ class TaskListGraph {
                     textViewPlaceholderColor: Color.labelTertiary,
                     buttonTextColor: Color.labelTertiary,
                     buttonPressedTextColor: Color.labelPrimary,
-                    showingCancelButton: mode == .push ? false : true)
+                    showingCancelButton: mode == .push ? false : true,
+                    activeDeleteButtonColor: Color.red
+                )
             )
 
             switch mode {
@@ -59,13 +70,6 @@ class TaskListGraph {
             case .present: rootRouter.presentAction(UINavigationController(rootViewController: editTaskVC))
             }
 
-        }
-
-        let deleteAction: DeleteAction = { id in
-            var value = try! todoItemsBehaviorSubject.value()
-            value.removeAll(where: { $0.id == id })
-
-            todoItemsBehaviorSubject.on(.next(value))
         }
 
         let fileCache = FileCache(
@@ -78,11 +82,11 @@ class TaskListGraph {
 
         todoItemsBehaviorSubject.on(.next(FileCache.test.todoItems))
 
-        let todoListSubscription = try? QueryService.getTodoList()
+        let todoListSubscription = QueryService.getTodoList()
         let cacheFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
             .first?.appendingPathComponent(cacheFilename)
 
-        let _ = todoListSubscription?.subscribe { event in
+        let _ = todoListSubscription.subscribe { event in
             switch event {
             case .success(let todoItemsArray):
                 // Write all items in cache, duplicates will be merged automatically

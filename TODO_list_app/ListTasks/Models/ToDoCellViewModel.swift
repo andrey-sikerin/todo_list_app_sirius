@@ -81,7 +81,6 @@ class ToDoCellViewModel {
     private let deleteAction: DeleteAction
     private let todoItem: TodoItem
 
-    typealias UpdateAction = (TodoItem) -> Void
     private let updateAction: UpdateAction
 
     init(todoItem: TodoItem, updateAction: @escaping UpdateAction, editAction: @escaping TransitionAction,

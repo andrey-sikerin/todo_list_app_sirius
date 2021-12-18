@@ -71,6 +71,8 @@ class ToDoCellViewModel {
 
     func buttonPressed() {
         var item = todoItem
+        item.isDirty = true
+        item.updatedAt = Date().timeIntervalSince1970
         item.done.toggle()
         updateAction(item)
 
@@ -89,7 +91,7 @@ class ToDoCellViewModel {
         self.todoItem = todoItem
         self.editAction = editAction
         self.deleteAction = deleteAction
-        if let date = todoItem.deadline {
+        if let date = todoItem.deadlineDate {
             deadline = DeadlineViewModel(
                 icon: UIImage(systemName: "calendar")!,
                 date: DateFormatter.todoItemViewModelFormatter.string(from: date)
@@ -108,12 +110,14 @@ class ToDoCellViewModel {
         }
 
 //        taskText = todoItem.text
-
+        
         componentsSubject = BehaviorSubject(value: UIComponents(for: todoItem))
     }
 
     func select(mode: TransitionMode, viewController: UIViewController) {
-        editAction(mode, viewController, todoItem)
+        var updateItem = todoItem
+        updateItem.updatedAt = Date().timeIntervalSince1970
+        editAction(mode, viewController, updateItem)
     }
 
     func delete() {

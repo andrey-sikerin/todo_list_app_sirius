@@ -124,12 +124,13 @@ class ToDoCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.addSubview(stackView)
-        stackView.frame = CGRect(
-            x: 16,
-            y: 0,
-            width: contentView.bounds.width,
-            height: 56
-        )
+        
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.widthAnchor.constraint(equalTo: contentView.widthAnchor, constant: -32).isActive = true
+        stackView.heightAnchor.constraint(equalTo: contentView.heightAnchor, constant: 0).isActive = true
+        stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16).isActive = true
+        stackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: 0).isActive = true
+    
         stackView.addArrangedSubview(completeButton)
         stackView.addArrangedSubview(cellStackView)
         stackView.addArrangedSubview(rightArrowImageView)

@@ -77,7 +77,7 @@ class EditTaskViewModel {
         self.updateAction = updateAction
         self.todoItem = item
         self.text = BehaviorSubject(value: item.text)
-        self.selectedDate = item.deadline
+        self.selectedDate = item.deadlineDate
 
         let secondaryLabelText: String
         if let date = selectedDate {
@@ -136,7 +136,7 @@ class EditTaskViewModel {
         var updatedItem = todoItem
         updatedItem.text = try! text.value()
         updatedItem.updatedAt = NSDate().timeIntervalSince1970
-        updatedItem.deadline = selectedDate
+        updatedItem.deadline = selectedDate?.timeIntervalSince1970
         updatedItem.isDirty = true
         updatedItem.priority = priorityContainer.getPriority
         updateAction(updatedItem)

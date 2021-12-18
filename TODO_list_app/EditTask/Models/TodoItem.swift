@@ -9,7 +9,7 @@ struct TodoItem {
 
     var id: String = UUID().uuidString
     var text: String
-    var deadline: Date?
+    var deadline: Double?
     var priority: Priority
     var createdAt: Double = NSDate().timeIntervalSince1970
     var updatedAt: Double?
@@ -37,11 +37,8 @@ extension TodoItem: Codable {
         done = try values.decode(Bool.self, forKey: .done)
 
         // if nil is decoded than deadline is assigned to nil automatically
-        let stringDate = try values.decode(String?.self, forKey: .deadline)
-        if let stringDate = stringDate {
-            deadline =  DateFormatter.todoItemFormatter.date(from: stringDate)
-        }
-
+        deadline = try values.decode(Double?.self, forKey: .deadline)
+        
         // if decode a nil then priority is not decoded, this it's normal
         // if decode a value then priority is declared based on that value
         if let stringPriority = try values.decode(String?.self, forKey: .importance) {
@@ -63,14 +60,25 @@ extension TodoItem: Codable {
         try container.encode(done, forKey: .done)
         try container.encode(updatedAt, forKey: .updated_at)
         try container.encode(priority.rawValue, forKey: .importance)
-
+        try container.encode(deadline, forKey: .deadline)
+        
         // if there is a deadline, encode it, else don't
-        if let date = deadline {
-            let stringDate = DateFormatter.todoItemFormatter.string(from: date)
-            try container.encode(stringDate, forKey: .deadline)
-        } else {
-            try container.encode(String?.none, forKey: .deadline)
+//        if let date = deadline {
+//            let stringDate = String(date)
+////            let stringDate = DateFormatter.todoItemFormatter.string(from: date)
+//            try container.encode(stringDate, forKey: .deadline)
+//        } else {
+//            try container.encode(String?.none, forKey: .deadline)
+//        }
+    }
+}
+
+extension TodoItem {
+    var deadlineDate: Date? {
+        guard let value = deadline else {
+            return nil
         }
+        return Date(timeIntervalSince1970: value)
     }
 }
 

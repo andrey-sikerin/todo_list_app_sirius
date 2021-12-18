@@ -105,6 +105,17 @@ class TaskListGraph {
         }
         todoItemsBehaviorSubject.on(.next(fileCache.todoItems))
         todoItemsBehaviorSubject.subscribe (onNext: {items in
+            if let newItem = items.first(where: { item in
+                !fileCache.todoItems.contains(where: { todoItem in
+                    todoItem.id == item.id
+                })}) {
+                let addRes = try? queryService.addTodo(payload: newItem)
+                addRes?.subscribe(onSuccess: {item in
+                    print("New task was appended", item)
+                }, onFailure: {error in
+                    print("Add task to server error", error)
+                })
+            }
             items.forEach { item in
                 fileCache.addTask(item)
             }
@@ -126,10 +137,15 @@ class TaskListGraph {
         todoListSubscription.subscribe { event in
                     switch event {
                     case .success(let todoItemsArray):
-                        let filtered = todoItemsArray.filter{item in
+                        var filtered = todoItemsArray.filter{item in
                             return !fileCache.deleted.contains(where: {tombstone in
                                 item.id == tombstone.itemId
                             })
+                        }
+                        fileCache.todoItems.forEach { item in
+                            if !filtered.contains(where: {item.id == $0.id}) {
+                                filtered.append(item)
+                            }
                         }
                         todoItemsBehaviorSubject.on(.next(filtered))
                     case .failure(let error):

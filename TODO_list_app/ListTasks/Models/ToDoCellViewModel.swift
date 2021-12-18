@@ -89,7 +89,7 @@ class ToDoCellViewModel {
         self.todoItem = todoItem
         self.editAction = editAction
         self.deleteAction = deleteAction
-        if let date = todoItem.deadline {
+        if let date = todoItem.deadlineDate {
             deadline = DeadlineViewModel(
                 icon: UIImage(systemName: "calendar")!,
                 date: DateFormatter.todoItemViewModelFormatter.string(from: date)

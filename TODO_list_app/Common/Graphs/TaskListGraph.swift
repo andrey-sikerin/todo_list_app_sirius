@@ -60,6 +60,17 @@ class TaskListGraph {
 
 
         self.todoItemsBehaviorSubject = todoItemsBehaviorSubject
+
+        let updateAction: UpdateAction = { item in
+            var value = try! todoItemsBehaviorSubject.value()
+            if let index = value.firstIndex(where: {$0.id == item.id}) {
+                value[index] = item
+            } else {
+                value.append(item)
+            }
+            todoItemsBehaviorSubject.on(.next(value))
+        }
+
         let deleteAction: DeleteAction = { id in
             var value = try! todoItemsBehaviorSubject.value()
             value.removeAll(where: { $0.id == id })
@@ -80,7 +91,8 @@ class TaskListGraph {
                 viewModel: EditTaskViewModel(
                     item: item,
                     transitionToTaskList: transitionToTaskListVC,
-                deleteAction: deleteAction,
+                    deleteAction: deleteAction,
+                    updateAction: updateAction,
                     isDeleteButtonDisabled: mode == .present),
                 notificationCenter: .default,
                 strings: EditTaskViewController.Strings(
@@ -158,13 +170,6 @@ class TaskListGraph {
                 .disposed(by: disposeBag)
         let modeSubject: BehaviorSubject<HeaderViewModel.Mode> = .init(value: .show)
 
-        let updateAction: (TodoItem) -> Void = { item in
-            var value = try! todoItemsBehaviorSubject.value()
-            if let index = value.firstIndex(where: {$0.id == item.id}) {
-                value[index] = item
-            }
-            todoItemsBehaviorSubject.on(.next(value))
-        }
         let viewModelsObservable: Observable<[ToDoCellViewModel]> =
             Observable.combineLatest(todoItemsBehaviorSubject, modeSubject).map { (items: [TodoItem], mode: HeaderViewModel.Mode) in
             var resultedItems: [TodoItem]

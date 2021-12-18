@@ -187,7 +187,6 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     }
 
     @objc func onButtonPress() {
-
         viewModel.delete()
         viewModel.transitionAction()
     }
@@ -200,6 +199,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
 
     @objc func onRightBarButtonClicked() {
         textView.resignFirstResponder()
+        viewModel.saveUpdateItem()
     }
 
     @objc func onLeftBarButtonClicked() {
@@ -215,7 +215,6 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
     }
 
     private func toggleCalendar() {
-//        deadLineStackViewContainer.switcher.isOn = deadLineStackViewContainer.switcher.isOn || showingDatePicker
         viewModel.toggleCalendar(with: datePicker.date)
         setItemsLayout()
     }
@@ -347,6 +346,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         } else {
             showPlaceholder = false
         }
+        viewModel.text.onNext(textView.text)
     }
 
     private func setItemsLayout() {

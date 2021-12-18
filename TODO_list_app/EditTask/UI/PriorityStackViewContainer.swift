@@ -83,7 +83,6 @@ class PriorityStackViewContainer: UIView {
     }
 
     @objc func segmentControlValueChanged(_ sender: UISegmentedControl) {
-        print(sender.selectedSegmentIndex)
+        viewModel.segmentedIndex.onNext(segmentControl.selectedSegmentIndex)
     }
-
 }

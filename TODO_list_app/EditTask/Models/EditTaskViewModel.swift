@@ -11,17 +11,17 @@ import RxSwift
 import RxCocoa
 
 class EditTaskViewModel {
-    var text: BehaviorSubject<String>
-    var showingDatePicker: BehaviorSubject<Bool>
-    var showPlaceholder: BehaviorSubject<Bool>
-    var priorityContainer: PriorityContainer
+    let text: BehaviorSubject<String>
+    let showingDatePicker: BehaviorSubject<Bool>
+    let showPlaceholder: BehaviorSubject<Bool>
+    let priorityContainer: PriorityContainer
     private let todoItem: TodoItem
-    var deadlineContainer: DeadlineContainer
+    let deadlineContainer: DeadlineContainer
     private var _showingDatePicker: Bool
     private var selectedDate: Date?
 
     struct PriorityContainer {
-        var segmentedIndex: BehaviorSubject<Int>
+        let segmentedIndex: BehaviorSubject<Int>
 
         init(priority: TodoItem.Priority) {
             let value: Int
@@ -31,6 +31,16 @@ class EditTaskViewModel {
             case .high: value = 2
             }
             self.segmentedIndex = BehaviorSubject(value: value)
+        }
+
+        var getPriority: TodoItem.Priority {
+            let value = try! segmentedIndex.value()
+            switch value {
+            case 0: return .low
+            case 1: return .normal
+            case 2: return .high
+            default: return .normal
+            }
         }
     }
 
@@ -49,22 +59,24 @@ class EditTaskViewModel {
     }
 
     typealias TransitionAction = () -> Void
-    var transitionAction: TransitionAction
-    let deleteAction: DeleteAction
+    let transitionAction: TransitionAction
+    private let deleteAction: DeleteAction
+    private let updateAction: UpdateAction
     let isDeleteButtonDisabled: Bool
 
     init(
         item: TodoItem,
         transitionToTaskList: @escaping TransitionAction,
         deleteAction: @escaping DeleteAction,
+        updateAction: @escaping UpdateAction,
         isDeleteButtonDisabled: Bool
     ) {
         self.transitionAction = transitionToTaskList
         self.isDeleteButtonDisabled = isDeleteButtonDisabled
         self.deleteAction = deleteAction
+        self.updateAction = updateAction
         self.todoItem = item
         self.text = BehaviorSubject(value: item.text)
-
         self.selectedDate = item.deadline
 
         let secondaryLabelText: String
@@ -92,8 +104,8 @@ class EditTaskViewModel {
 
         showingDatePicker.on(.next(_showingDatePicker))
 
-        deadlineContainer._isSwitcherOn = deadlineContainer._isSwitcherOn || _showingDatePicker
-        deadlineContainer.isSwitcherOn.on(.next(deadlineContainer._isSwitcherOn))
+        let isSwitcherOn = deadlineContainer._isSwitcherOn || _showingDatePicker
+        deadlineContainer.isSwitcherOn.on(.next(isSwitcherOn))
 
         selectNewDate(date)
     }
@@ -118,6 +130,17 @@ class EditTaskViewModel {
 
     func delete() {
         deleteAction(todoItem.id)
+    }
+
+    func saveUpdateItem() {
+        var updatedItem = todoItem
+        updatedItem.text = try! text.value()
+        updatedItem.updatedAt = NSDate().timeIntervalSince1970
+        updatedItem.deadline = selectedDate
+        updatedItem.isDirty = true
+        updatedItem.priority = priorityContainer.getPriority
+        updateAction(updatedItem)
+        transitionAction()
     }
 
     private var dateFormatter: DateFormatter = {

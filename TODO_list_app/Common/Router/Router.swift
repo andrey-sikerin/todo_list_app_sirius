@@ -15,6 +15,7 @@ typealias PresentAction = (UIViewController) -> Void
 typealias TransitionAction = (TransitionMode, UIViewController, TodoItem) -> Void
 typealias DeleteAction =  (String) -> Void
 typealias VoidAction = () -> Void
+typealias UpdateAction = (TodoItem) -> Void
 
 struct RootRouter {
     var pushAction: PushAction

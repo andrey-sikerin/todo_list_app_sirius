@@ -33,7 +33,7 @@ class ToDoCellViewModel {
             } else {
                 swipeImage = UIImage(named: SwipeIconsStyle.doneIconName)!
                 swipeColor = SwipeIconsStyle.backgroundDone
-                buttonImage = UIImage(named: "notDoneState")!
+                buttonImage =  UIImage(named: item.priority != .high ? "notDoneState" : "highPriorityState")!
                 attributedText = NSAttributedString(string: item.text, attributes: [
                     .foregroundColor : TextColor.primary
                 ])

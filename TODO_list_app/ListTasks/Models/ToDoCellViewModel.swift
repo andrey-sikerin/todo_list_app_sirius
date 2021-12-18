@@ -71,6 +71,8 @@ class ToDoCellViewModel {
 
     func buttonPressed() {
         var item = todoItem
+        item.isDirty = true
+        item.updatedAt = Date().timeIntervalSince1970
         item.done.toggle()
         updateAction(item)
 
@@ -108,12 +110,14 @@ class ToDoCellViewModel {
         }
 
 //        taskText = todoItem.text
-
+        
         componentsSubject = BehaviorSubject(value: UIComponents(for: todoItem))
     }
 
     func select(mode: TransitionMode, viewController: UIViewController) {
-        editAction(mode, viewController, todoItem)
+        var updateItem = todoItem
+        updateItem.updatedAt = Date().timeIntervalSince1970
+        editAction(mode, viewController, updateItem)
     }
 
     func delete() {

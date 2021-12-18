@@ -137,6 +137,7 @@ class TaskListGraph {
         todoListSubscription.subscribe { event in
                     switch event {
                     case .success(let todoItemsArray):
+                        print("list got")
                         var filtered = todoItemsArray.filter{item in
                             return !fileCache.deleted.contains(where: {tombstone in
                                 item.id == tombstone.itemId
@@ -147,6 +148,17 @@ class TaskListGraph {
                                 filtered.append(item)
                             }
                         }
+                        
+                        filtered = filtered.map {item in
+                            if let fileCacheItem = fileCache.todoItems.first(where: {$0.id == item.id}) {
+                                if fileCacheItem.updatedAt ?? 0 > item.updatedAt ?? 0 {
+                                    return fileCacheItem
+                                }
+                            }
+                            return item
+                        }
+                        
+                        
                         todoItemsBehaviorSubject.on(.next(filtered))
                     case .failure(let error):
                         print("Error: ", error)

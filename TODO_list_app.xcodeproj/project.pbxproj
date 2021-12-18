@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		36EBC02255D76F329EAAC0E9 /* AddNewTaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBC058D040385B704CBEB6 /* AddNewTaskCell.swift */; };
 		36EBC181454D8CFD7BAE788F /* PriorityStackViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBCE39C1B29F23FE236BA0 /* PriorityStackViewContainer.swift */; };
+		36EBC263DDEAFBB38A671FDA /* Tombstone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBCB7DF0DC342EC33E0C6C /* Tombstone.swift */; };
 		36EBC29B0290D21E79E78C62 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBCD43D0BCA2255E823917 /* HeaderView.swift */; };
 		36EBC39A0CC516D828DBC8E7 /* HeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBCBCD1BBC827443B14CFA /* HeaderViewModel.swift */; };
 		36EBC40F69D906B36899204B /* TaskListGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBCFE6F79FA0A97DB9F7BF /* TaskListGraph.swift */; };
@@ -81,6 +82,7 @@
 		36EBC9106A7C8BBE73021209 /* AppStyles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStyles.swift; sourceTree = "<group>"; };
 		36EBCA3CC84C690BE387C456 /* Router.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 		36EBCB7872AEFF43D2EAE0D0 /* DeadLineStackViewContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeadLineStackViewContainer.swift; sourceTree = "<group>"; };
+		36EBCB7DF0DC342EC33E0C6C /* Tombstone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tombstone.swift; sourceTree = "<group>"; };
 		36EBCBCD1BBC827443B14CFA /* HeaderViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderViewModel.swift; sourceTree = "<group>"; };
 		36EBCD43D0BCA2255E823917 /* HeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		36EBCDB75757748B17D08BCB /* TodoItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoItem.swift; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 				6F71393B276CBFD40001D22B /* EditTaskViewModel.swift */,
 				36EBC678B263B94A527F8FBA /* EditTaskItemsLayout.swift */,
 				36EBCDB75757748B17D08BCB /* TodoItem.swift */,
+				36EBCB7DF0DC342EC33E0C6C /* Tombstone.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -494,6 +497,7 @@
 				36EBC6B8812A767496D92DC7 /* TodoItem.swift in Sources */,
 				36EBCB3606218F7A50BF3B21 /* QueryService.swift in Sources */,
 				36EBC39A0CC516D828DBC8E7 /* HeaderViewModel.swift in Sources */,
+				36EBC263DDEAFBB38A671FDA /* Tombstone.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

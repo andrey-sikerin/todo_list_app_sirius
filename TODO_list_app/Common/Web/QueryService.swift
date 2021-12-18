@@ -25,10 +25,15 @@ class QueryService {
         case tasks
     }
 
-    private static let baseUrl = "https://d5dps3h13rv6902lp5c8.apigw.yandexcloud.net/"
-    private static let token = "zmkyqsxknnjiuftazbqthmnbagguxtvr" // TODO init from secret storage
+    private let baseUrl: String
+    private let token: String
 
-    private static func getRequest(handle: Handle, method: Method, id: String? = nil) -> URLRequest {
+    init(baseUrl: String, token: String) {
+        self.baseUrl = baseUrl
+        self.token = token
+    }
+
+    private func getRequest(handle: Handle, method: Method, id: String? = nil) -> URLRequest {
         var url = baseUrl + handle.rawValue
         if let id = id {
             url += "/\(id)"
@@ -40,7 +45,7 @@ class QueryService {
         return request
     }
 
-    public static func addTodo(payload: TodoItem) throws -> Single<TodoItem> {
+    public func addTodo(payload: TodoItem) throws -> Single<TodoItem> {
         var request = getRequest(handle: Handle.tasks, method: Method.POST)
         if let body = try? JSONEncoder().encode(payload) {
             request.httpBody = body
@@ -49,11 +54,11 @@ class QueryService {
         throw Errors.invalidArguments
     }
 
-    public static func deleteTodo(itemId: String) throws -> Single<TodoItem> {
+    public func deleteTodo(itemId: String) throws -> Single<TodoItem> {
         return handleRequest(request: getRequest(handle: Handle.tasks, method: Method.DELETE, id: itemId))
     }
 
-    public static func changeTodo(payload: TodoItem) throws -> Single<TodoItem> {
+    public func changeTodo(payload: TodoItem) throws -> Single<TodoItem> {
         guard payload.updatedAt != nil else {
             throw Errors.invalidArguments
         }
@@ -66,11 +71,11 @@ class QueryService {
         throw Errors.invalidArguments
     }
 
-    public static func getTodoList() -> Single<[TodoItem]> {
+    public func getTodoList() -> Single<[TodoItem]> {
         return handleRequest(request: getRequest(handle: Handle.tasks, method: Method.GET))
     }
 
-    private static func handleRequest<T: Decodable>(request: URLRequest) -> Single<T> {
+    private func handleRequest<T: Decodable>(request: URLRequest) -> Single<T> {
         return Single<T>.create { single in
             let task = URLSession.shared.dataTask(with: request) { data, response, requestError in
                 guard let response = response as? HTTPURLResponse else {

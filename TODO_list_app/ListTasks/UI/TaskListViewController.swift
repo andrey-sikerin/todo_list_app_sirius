@@ -67,7 +67,7 @@ class TaskListViewController: UIViewController {
 
     init(
         strings: Strings,
-        todoItemViewModelsObservale: Observable<[ToDoCellViewModel]>,
+        todoItemViewModelsObservable: Observable<[ToDoCellViewModel]>,
         headerViewModel: HeaderViewModel,
         makeNewItemAction: @escaping PresentAction
     ) {
@@ -75,11 +75,11 @@ class TaskListViewController: UIViewController {
         self.headerViewModel = headerViewModel
         self.makeNewItemAction = makeNewItemAction
         self.todoItemViewModels = []
-        self.todoItemViewModelsObservale = todoItemViewModelsObservale
+        self.todoItemViewModelsObservale = todoItemViewModelsObservable
 
         super.init(nibName: nil, bundle: nil)
 
-      todoItemViewModelsObservale.subscribe(
+      todoItemViewModelsObservable.subscribe(
         onNext: { [weak self] viewModels in
           self?.todoItemViewModels = viewModels
           DispatchQueue.main.async {

@@ -85,7 +85,7 @@ fileprivate extension DateFormatter {
 
 
 extension TodoItem {
-  static let emptyItem = {
+   static func makeEmptyItem() -> TodoItem {
     TodoItem(id: UUID().uuidString,
              text: "",
              deadline: nil,
@@ -94,5 +94,5 @@ extension TodoItem {
              updatedAt: nil,
              done: false)
 
-  }()
+  }
 }

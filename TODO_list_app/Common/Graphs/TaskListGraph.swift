@@ -202,7 +202,7 @@ class TaskListGraph {
                 ),
                 modeSubject: modeSubject
             ),
-            makeNewItemAction: { editAction(.present, $0, .emptyItem) }
+            makeNewItemAction: { editAction(.present, $0, TodoItem.makeEmptyItem()) }
         )
     }
 }

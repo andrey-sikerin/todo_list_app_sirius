@@ -11,7 +11,6 @@ import RxSwift
 
 class TaskListGraph {
     private(set) var viewController: UIViewController
-    private var currentEdit: EditTaskGraph?
     public var rootRouter: RootRouter
     private let cacheFilename = "brawl_stars.txt"
     private let todoItemsBehaviorSubject: BehaviorSubject<[TodoItem]>
@@ -30,14 +29,16 @@ class TaskListGraph {
 
         let editAction: TransitionAction = { mode, vc, item in
             let transitionToTaskListVC: PopAction
+
             switch mode {
-            case .push: transitionToTaskListVC = {
+                case .push: transitionToTaskListVC = {
                     rootRouter.popAction()
                 }
-            case .present: transitionToTaskListVC = {
+                case .present: transitionToTaskListVC = {
                     rootRouter.dismissAction(vc)
                 }
             }
+
             let editTaskVC = EditTaskViewController(
                 viewModel: EditTaskViewModel(
                     item: item,
@@ -100,12 +101,14 @@ class TaskListGraph {
             }
         }
         let modeSubject: BehaviorSubject<HeaderViewModel.Mode> = .init(value: .show)
-        //        let viewModelsObservable = todoItemsBehaviorSubject.map { items in
-        //          items.map { ToDoCellViewModel(todoItem: $0, editAction: editAction) }
-        //        }
 
-
-
+        let updateAction: (TodoItem) -> Void = { item in
+            var value = try! todoItemsBehaviorSubject.value()
+            if let index = value.firstIndex(where: {$0.id == item.id}) {
+                value[index] = item
+            }
+            todoItemsBehaviorSubject.on(.next(value))
+        }
         let viewModelsObservable: Observable<[ToDoCellViewModel]> =
             Observable.combineLatest(todoItemsBehaviorSubject, modeSubject).map { (items: [TodoItem], mode: HeaderViewModel.Mode) in
             var resultedItems: [TodoItem]
@@ -116,10 +119,7 @@ class TaskListGraph {
                 resultedItems = items.filter { !$0.done }
             }
 
-            return resultedItems.map {
-                ToDoCellViewModel(
-                    todoItem: $0,
-                    editAction: editAction,
+            return resultedItems.map { ToDoCellViewModel(todoItem: $0, updateAction: updateAction, editAction: editAction,
                     deleteAction: deleteAction
                 )
             }

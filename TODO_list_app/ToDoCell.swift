@@ -11,7 +11,7 @@ import RxSwift
 
 class ToDoCell: UITableViewCell {
 
-    private var viewModel: ToDoCellViewModel!
+    private var viewModel: ToDoCellViewModel?
 
     static let identifier = "toDoCellIdentifier"
 
@@ -19,7 +19,6 @@ class ToDoCell: UITableViewCell {
         compositeDisposableBag.dispose()
         self.viewModel = viewModel
 
-        taskLabel.text = viewModel.taskText
         if let deadline = viewModel.deadline {
             deadlineLabel.isHidden = false
             calendarImageView.isHidden = false
@@ -30,17 +29,22 @@ class ToDoCell: UITableViewCell {
             calendarImageView.isHidden = true
         }
 
-        priorityImageView.image = viewModel.priorityImage?.icon
-        taskStackView.spacing = viewModel.priorityImage?.spacing ?? 0
 
+        if let _ = viewModel.priorityImage {
+            priorityImageView.image = viewModel.priorityImage?.icon
+            taskStackView.spacing = viewModel.priorityImage?.spacing ?? 0
+        }
 
-        let subscription = viewModel.completeButtonImage.subscribe(onNext: { [weak self] image in
-            self?.completeButton.setImage(image, for: .normal)
+        completeButton.rx.tap.subscribe(onNext: { [weak self] in
+            self?.viewModel?.buttonPressed()
+        })
+            .disposed(by: disposeBag)
+
+        viewModel.componentsObservable.subscribe(onNext: { [weak self] components in
+            self?.taskLabel.attributedText = components.attributedText
+            self?.completeButton.setImage(components.buttonImage, for: .normal)
         }, onError: nil, onCompleted: nil, onDisposed: nil)
-
-        _ = compositeDisposableBag.insert(subscription)
-
-
+                .disposed(by: disposeBag)
     }
 
     private lazy var stackView: UIStackView = {
@@ -57,12 +61,6 @@ class ToDoCell: UITableViewCell {
 
     private lazy var completeButton: UIButton = {
         let button = UIButton()
-        button.rx.tap.subscribe(onNext: { [weak self] in
-            self?.viewModel.buttonPressed()
-        })
-            .disposed(by: disposeBag)
-
-
         return button
     }()
 

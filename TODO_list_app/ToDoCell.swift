@@ -30,10 +30,9 @@ class ToDoCell: UITableViewCell {
             calendarImageView.isHidden = true
         }
 
-        if let priorityImage = viewModel.priorityImage {
-            priorityImageView.image = viewModel.priorityImage?.icon
-            taskStackView.spacing = viewModel.priorityImage?.spacing ?? 0
-        }
+        priorityImageView.image = viewModel.priorityImage?.icon
+        taskStackView.spacing = viewModel.priorityImage?.spacing ?? 0
+
 
         let subscription = viewModel.completeButtonImage.subscribe(onNext: { [weak self] image in
             self?.completeButton.setImage(image, for: .normal)
